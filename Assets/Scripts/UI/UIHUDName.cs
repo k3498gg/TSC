@@ -48,6 +48,14 @@ public class UIHUDName : MonoBehaviour
         }
     }
 
+    void SetImage(Sprite sprite)
+    {
+        if(null != m_Image)
+        {
+            m_Image.sprite = sprite;
+        }
+    }
+
 
     private void Update()
     {

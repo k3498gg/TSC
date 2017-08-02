@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEditor;
 using System.Text;
+using UnityEditor.SceneManagement;
 
 public class ResourceExport
 {
@@ -43,18 +44,74 @@ public class ResourceExport
     #endregion
 
 
-    #region 导出道具显示布局
-
+    #region 导出道具布局文件
+    [MenuItem("Export/ExportItemMap")]
     static void ExportItemMap()
     {
-        foreach(EditorBuildSettingsScene s in EditorBuildSettings.scenes)
+        List<MapInfo> maps = new List<MapInfo>();
+        for (int idx = 0; idx < EditorBuildSettings.scenes.Length; idx++)
         {
-            if(s.enabled)
+            EditorBuildSettingsScene s = EditorBuildSettings.scenes[idx];
+            if (s.enabled)
             {
-                GameObject.FindGameObjectsWithTag("Item");
+                EditorSceneManager.OpenScene(s.path);
+                MapInfo mapInfo = new MapInfo();
+                mapInfo.Id = idx;
+                if (null != mapInfo.ItemMapInfo)
+                {
+                    mapInfo.ItemMapInfo.Clear();
+                }
+                else
+                {
+                    mapInfo.ItemMapInfo = new List<ItemMapInfo>();
+                }
+
+                GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
+                if (items.Length > 0)
+                {
+                    foreach (GameObject go in items)
+                    {
+                        Transform t = go.transform;
+                        Vector3 v = t.position;
+                        float w = t.localScale.x;
+                        float h = t.localScale.z;
+                        ItemMapInfo m = new ItemMapInfo(ItemMapType.ITEM, v.x, v.z, w, h);
+                        mapInfo.ItemMapInfo.Add(m);
+                    }
+                }
+
+                GameObject[] points = GameObject.FindGameObjectsWithTag("Point");
+                if (points.Length > 0)
+                {
+                    foreach (GameObject go in items)
+                    {
+                        Transform t = go.transform;
+                        Vector3 v = t.position;
+                        float w = t.localScale.x;
+                        float h = t.localScale.z;
+                        ItemMapInfo m = new ItemMapInfo(ItemMapType.POINT, v.x, v.z, w, h);
+                        mapInfo.ItemMapInfo.Add(m);
+                    }
+                }
+                maps.Add(mapInfo);
+            }
+        }
+        Util.Serialize<List<MapInfo>>(maps, AppConst.AppStreamingPath + "/map.bin");
+    }
+
+    [MenuItem("Export/ReadItemMap")]
+    static void ReadItemMap()
+    {
+        List<MapInfo> maps = Util.DeSerialize<List<MapInfo>>(AppConst.AppStreamingPath + "/map.bin");
+        for (int i = 0; i < maps.Count; i++)
+        {
+            Debuger.LogError(maps[i].Id);
+            Debuger.LogWarning("--------------------------");
+            for(int j =0; j < maps[i].ItemMapInfo.Count;j++)
+            {
+                Debuger.LogError(maps[i].ItemMapInfo[j].ToString());
             }
         }
     }
-
     #endregion
 }

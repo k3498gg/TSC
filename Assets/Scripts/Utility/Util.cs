@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
+using System;
 
 public class Util
 {
@@ -179,5 +181,43 @@ public class Util
                 break;
         }
         return path;
+    }
+
+    public static void Serialize<T>(T t, string path)
+    {
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Write, FileShare.ReadWrite);
+            formatter.Serialize(stream, t);
+            stream.Flush();
+            stream.Close();
+        }
+        catch (Exception e)
+        {
+            Debuger.LogError(e.Message);
+        }
+    }
+
+    public static T DeSerialize<T>(string path)
+    {
+        if (!File.Exists(path))
+        {
+            return default(T);
+        }
+
+        try
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            Stream stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            T t = (T)formatter.Deserialize(stream);
+            stream.Close();
+            return t;
+        }
+        catch (Exception e)
+        {
+            Debuger.LogError(e.Message);
+        }
+        return default(T);
     }
 }
