@@ -12,6 +12,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     private CharacterController m_characController; //主角控制器
     private ARPGCameraController m_cameraController; //相机跟随控制
     private ARPGAnimatorController m_animController; //主角动作控制器
+    private List<MapInfo> mapInfos;
 
     public ARPGAnimatorController ARPGAnimatController
     {
@@ -133,7 +134,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         Util.Init<ConstInfo>(path);
         Util.Init<OccupationInfo>(path);
 
-
+        MapInfos = Util.DeSerialize<List<MapInfo>>(path + "map.bin");
         CreateEntity(1);
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
     }
@@ -155,6 +156,18 @@ public class GameMgr : UnitySingleton<GameMgr>
         }
     }
 
+    public List<MapInfo> MapInfos
+    {
+        get
+        {
+            return mapInfos;
+        }
+
+        set
+        {
+            mapInfos = value;
+        }
+    }
 
     IEnumerator DownFiles(string from, string dest)
     {
@@ -249,7 +262,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         //    return;
         //}
         GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
-        if(null == go)
+        if (null == go)
         {
             Debuger.LogError("角色模型不存在Id:" + heroId);
             return;

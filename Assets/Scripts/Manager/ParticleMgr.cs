@@ -11,7 +11,6 @@ public class ParticleMgr : Singleton<ParticleMgr>
         {
             return inst.gameObject;
         }
-        Debuger.LogError("Particle is Null : " + name);
         return null;
     }
 
@@ -22,7 +21,6 @@ public class ParticleMgr : Singleton<ParticleMgr>
         {
             return Spawner(particleInfo.data, v, parent);
         }
-        Debuger.LogError("Particle is Null : " + effId);
         return null;
     }
 

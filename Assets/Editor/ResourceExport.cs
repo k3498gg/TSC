@@ -54,7 +54,7 @@ public class ResourceExport
             EditorBuildSettingsScene s = EditorBuildSettings.scenes[idx];
             if (s.enabled)
             {
-                EditorSceneManager.OpenScene(s.path);
+                //EditorSceneManager.OpenScene(s.path);
                 MapInfo mapInfo = new MapInfo();
                 mapInfo.Id = idx;
                 if (null != mapInfo.ItemMapInfo)
@@ -66,16 +66,23 @@ public class ResourceExport
                     mapInfo.ItemMapInfo = new List<ItemMapInfo>();
                 }
 
+
                 GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
                 if (items.Length > 0)
                 {
                     foreach (GameObject go in items)
                     {
                         Transform t = go.transform;
+                        MapArea area = MapArea.NONE;
+                        DropMapArea a = t.parent.GetComponent<DropMapArea>();
+                        if (null != a)
+                        {
+                            area = a.mapArea;
+                        }
                         Vector3 v = t.position;
                         float w = t.localScale.x;
                         float h = t.localScale.z;
-                        ItemMapInfo m = new ItemMapInfo(ItemMapType.ITEM, v.x, v.z, w, h);
+                        ItemMapInfo m = new ItemMapInfo(ItemMapType.ITEM, area, v.x, v.z, w, h);
                         mapInfo.ItemMapInfo.Add(m);
                     }
                 }
@@ -86,28 +93,35 @@ public class ResourceExport
                     foreach (GameObject go in items)
                     {
                         Transform t = go.transform;
+                        MapArea area = MapArea.NONE;
+                        DropMapArea a = t.parent.GetComponent<DropMapArea>();
+                        if (null != a)
+                        {
+                            area = a.mapArea;
+                        }
                         Vector3 v = t.position;
                         float w = t.localScale.x;
                         float h = t.localScale.z;
-                        ItemMapInfo m = new ItemMapInfo(ItemMapType.POINT, v.x, v.z, w, h);
+                        ItemMapInfo m = new ItemMapInfo(ItemMapType.POINT, area, v.x, v.z, w, h);
                         mapInfo.ItemMapInfo.Add(m);
                     }
                 }
                 maps.Add(mapInfo);
             }
         }
-        Util.Serialize<List<MapInfo>>(maps, AppConst.AppStreamingPath + "/map.bin");
+        Util.Serialize<List<MapInfo>>(maps, AppConst.AppStreamingPath + "/" + AppConst.TextDir + "/map.bin");
+        AssetDatabase.Refresh();
     }
 
     [MenuItem("Export/ReadItemMap")]
     static void ReadItemMap()
     {
-        List<MapInfo> maps = Util.DeSerialize<List<MapInfo>>(AppConst.AppStreamingPath + "/map.bin");
+        List<MapInfo> maps = Util.DeSerialize<List<MapInfo>>(AppConst.AppStreamingPath + "/" + AppConst.TextDir + "/map.bin");
         for (int i = 0; i < maps.Count; i++)
         {
             Debuger.LogError(maps[i].Id);
             Debuger.LogWarning("--------------------------");
-            for(int j =0; j < maps[i].ItemMapInfo.Count;j++)
+            for (int j = 0; j < maps[i].ItemMapInfo.Count; j++)
             {
                 Debuger.LogError(maps[i].ItemMapInfo[j].ToString());
             }

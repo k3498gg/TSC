@@ -4,9 +4,10 @@ animatortransinfo.bin|738
 constinfo.bin|74
 effectinfo.bin|52
 heroinfo.bin|715
-iteminfo.bin|97
+iteminfo.bin|190
 lansurinfo.bin|79
 lantxtinfo.bin|79
+map.bin|6280
 occupationinfo.bin|64
 particleinfo.bin|46
 skillinfo.bin|36

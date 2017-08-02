@@ -6,6 +6,8 @@ public class EntityMgr : Singleton<EntityMgr>
 {
     private Dictionary<int, IEntity> m_EntityDic; //实体字典存储中心
 
+    private Dictionary<int, DropItemInfo> m_DropItemDic;
+
     public Dictionary<int, IEntity> EntityDic
     {
         get

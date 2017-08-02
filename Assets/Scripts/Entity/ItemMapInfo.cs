@@ -15,6 +15,7 @@ public enum ItemMapType
 public class ItemMapInfo
 {
     private ItemMapType iMapType;
+    private MapArea area;
     private float width;
     private float height;
     private float posX;
@@ -86,11 +87,25 @@ public class ItemMapInfo
         }
     }
 
+    public MapArea Area
+    {
+        get
+        {
+            return area;
+        }
+
+        set
+        {
+            area = value;
+        }
+    }
+
     public ItemMapInfo() { }
 
-    public ItemMapInfo(ItemMapType mType, float x, float y, float w, float h)
+    public ItemMapInfo(ItemMapType mType, MapArea a, float x, float y, float w, float h)
     {
         this.IMapType = mType;
+        this.Area = a;
         this.posX = x;
         this.PosY = y;
         this.Width = w;
@@ -99,7 +114,7 @@ public class ItemMapInfo
 
     public override string ToString()
     {
-        return this.IMapType + " " + this.posX + "  " + this.PosY + "  " + this.Width + "  " + this.Height;
+        return this.IMapType + "  "+ this.Area+ " " + this.posX + "  " + this.PosY + "  " + this.Width + "  " + this.Height;
     }
 }
 
