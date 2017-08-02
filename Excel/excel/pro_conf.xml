@@ -1,0 +1,12 @@
+<Project xls_path="./xls" data_path="./data_out/server" data_type="bin" code_path="../../server/gamesvr/info" code_type="c++" enum_conf="./pro_enum.xml" data_start_line="3">
+<!--
+	<entry target_name="ConfigInfo" xls_file="j基本数据配置.xls" sheet_name="常用数据">
+		<field	column="编号" 	    			name="id" 								type="Number"	key="True"/>
+		<field	column="归属保护时间"			name="ownerloseTime"					type="Number" />
+		<field	column="物品清除时间"			name="itemLoseTime"						type="Number" />
+		<field	column="悬赏任务免费刷新时间"	name="freeRefreshTime" 					type="Number" />
+		<field	column="星级刷出比重"			name="rewardStarWeight" 				type="String" />
+        <field  column="道具间隔距离"          name="lootSep"                           type="Number"/>
+	</entry>
+	-->
+</Project>

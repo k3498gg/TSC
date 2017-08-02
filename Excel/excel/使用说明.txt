@@ -1,0 +1,14 @@
+1. 客户端
+执行build_client.bat脚本，会自动生成代码和数据二进制文件
+cs代码目录，client_out
+数据目录， data_out/client
+
+
+2. 服务器
+dd
+
+3. 策划
+修改表格数据
+执行脚本build_data.bat 打表， 注意提示信息是否报错
+数据输出目录，data_out/client->客户端二进制文件， data_out/server->服务器二进制文件
+提交修改，注意xls和二进制一起提交

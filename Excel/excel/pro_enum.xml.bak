@@ -1,0 +1,76 @@
+<Project>
+<!-- 这个是货币类型定义，包括特殊货币，商店支持所有货币购买，不支持道具兑换，id应该和道具表货币道具一致 
+	<enum name="CurrencyType" target_name="CurrencyInfo" desc="货币类型" >
+		<field name="CurrencyType_Ticket"		value="1"   desc="钻石" />
+		<field name="CurrencyType_Cyanite"    	value="2"   desc="水晶" />
+        <field name="CurrencyType_Coin"     	value="3"   desc="金币" />
+		<field name="CurrencyType_Star"    		value="4"   desc="星币" />
+		<field name="CurrencyType_MagCyanite"	value="5"	desc="魔晶" />
+		<field name="CurrencyType_GuildContri"	value="6"	desc="战盟贡献" />		
+    </enum>
+-->	
+	<enum name="AnimatState" target_name="AnimatorInfo" desc="动作状态" >
+		<field name="AnimaState_IDLE"		value="1"   desc="IDLE" />
+		<field name="AnimaState_WALK"    	value="2"   desc="WALK" />
+        <field name="AnimaState_FREE"     	value="3"   desc="FREE(表演)" />
+		<field name="AnimaState_ATK1"    	value="4"   desc="ATK1" />
+		<field name="AnimaState_ATK2"		value="5"	desc="ATK2" />
+		<field name="AnimaState_ATK3"		value="6"	desc="ATK3" />		
+		<field name="AnimaState_SKILL1"		value="7"	desc="SKILL1" />	
+		<field name="AnimaState_SKILL2"		value="8"	desc="SKILL2" />	
+		<field name="AnimaState_SKILL3"		value="9"	desc="SKILL3" />	
+		<field name="AnimaState_DIE"		value="10"	desc="DIE" />	
+		<field name="AnimaState_LIVE"		value="11"	desc="LIVE(复活)" />	
+		<field name="AnimaState_MAX"		value="12"	desc="最大值" />	
+    </enum>
+
+	<enum name="TransferValue" target_name="AnimatorInfo" desc="触发条件" >
+		<field name="TransferValue_INT"			value="1"   desc="int" />
+        <field name="TransferValue_BOOL"     	value="2"   desc="bool" />
+		<field name="TransferValue_EXIT"    	value="3"   desc="exit" />
+		<field name="TransferValue_TRIGGER"    	value="4"   desc="trigger" />
+    </enum>
+
+	<enum name="TransferParam" target_name="AnimatorInfo" desc="切换参数" >
+		<field name="WALK"			value="1"   desc="walk" />
+        <field name="FREE"     		value="2"   desc="free" />
+		<field name="ATK"    		value="3"   desc="atk" />
+		<field name="SKILL"    		value="4"   desc="skill" />
+		<field name="DIE"    		value="5"   desc="die" />
+		<field name="EXIT"    		value="6"   desc="exit" />
+    </enum>
+
+
+	<enum name="EffectType"		target_name="EffectInfo" desc="技能效果类型" >
+		<field name="NONE"			value="0"   desc="" />
+		<field name="ACCELERATE"			value="1"   desc="加速" />
+        <field name="WALKINSTANT"     		value="2"   desc="冲锋" />
+    </enum>
+	
+	<enum name="ConstType"		target_name="ConstInfo" desc="常量表枚举类型" >
+		<field name="NONE"					value="0"   desc="" />
+		<field name="CONST_SPEED"			value="1"   desc="移动基本速度" />
+		<field name="CONST_MAX_PHY"			value="2"   desc="体力最大值" />
+		<field name="CONST_COST_PHY_SPEED"	value="3"   desc="体力每秒消耗值" />
+		<field name="CONST_ATK_RADIO"		value="4"   desc="碰撞范围半径" />
+		<field name="CONST_REBORN"			value="5"   desc="复活等待时间" />
+    </enum>
+
+	<enum name="ResourceType"		target_name="HeroInfo" desc="资源类型UI,角色,特效,动画,道具" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="RESOURCE_UI"				value="1"   desc="UI资源" />
+        <field name="RESOURCE_ENTITY"     		value="2"   desc="角色模型" />
+		<field name="RESOURCE_PARTICLE"     	value="3"   desc="粒子特效" />
+		<field name="RESOURCE_ANIMATOR"     	value="4"   desc="动作文件" />
+		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
+    </enum>
+
+	<enum name="ItemType"			target_name="ItemInfo" desc="道具各种效果描述" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="ITEM_ACCT"					value="1"   desc="加速" />
+		<field name="ITEM_ENERGY"     			value="2"   desc="能量" />
+        <field name="ITEM_SLOW"     			value="3"   desc="减速" />
+		<field name="ITEM_INSTANT"     			value="4"   desc="瞬移" />
+    </enum>
+
+</Project>
