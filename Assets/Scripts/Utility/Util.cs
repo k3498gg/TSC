@@ -65,7 +65,6 @@ public class Util
         return str1.Equals(str2, comparison);
     }
 
-
     public static void AddChildToTarget(Transform target, Transform child)
     {
         child.parent = target;
@@ -230,4 +229,7 @@ public class Util
         }
         return default(T);
     }
+
+
+
 }

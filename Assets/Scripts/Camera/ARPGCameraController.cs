@@ -129,6 +129,7 @@ public class ARPGCameraController : BaseCameraController
     }
 
     private Renderer preRender = null;
+
     void FadeObject()
     {
         if (fadeObjects)

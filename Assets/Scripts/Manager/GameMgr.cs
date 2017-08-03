@@ -155,7 +155,6 @@ public class GameMgr : UnitySingleton<GameMgr>
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
     }
 
-
     //保存版本号
     void SaveVersion()
     {

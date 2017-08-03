@@ -119,9 +119,9 @@ public class Entity : IEntity
     {
         get
         {
-            if(null == cacheParticleParent)
+            if (null == cacheParticleParent)
             {
-                if(null != RoleModel)
+                if (null != RoleModel)
                 {
                     cacheParticleParent = RoleModel.Find("p");
                 }
@@ -171,10 +171,10 @@ public class Entity : IEntity
     private void OnTriggerEnter(Collider other)
     {
         Debuger.LogError(" 进入了" + other.transform.name);
-        if(other.CompareTag("Item"))
+        if (other.CompareTag("Item"))
         {
             DropItemInfo drop = other.GetComponent<DropItemInfo>();
-            if(null != drop)
+            if (null != drop)
             {
                 drop.FlyToEntity(this);
             }
@@ -236,13 +236,28 @@ public class Entity : IEntity
     }
 
     //先用物理引擎去检测碰撞,效率低再优化
-    //private float detectInterval = 0.5f;
-    //private float lastDetectTime = 0;
-    //private void Update()
-    //{
-    //    if(Time.realtimeSinceStartup - lastDetectTime >= detectInterval)
-    //    {
+    float mTotalTime = 0;
+    void Update()
+    {
+        mTotalTime += Time.deltaTime;
+        if (mTotalTime <= 0.2f)
+        {
+            return;
+        }
 
-    //    }
-    //}
+        mTotalTime = 0;
+
+        foreach (KeyValuePair<int, DropItemInfo> kv in EntityMgr.Instance.DropItemDic)
+        {
+            if(kv.Value.IsLock)
+            {
+                continue;
+            }
+            if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis))
+            {
+                Debug.LogError("Eat:" + kv.Key + " " + kv.Value.ItemId);
+                kv.Value.FlyToEntity(this);
+            }
+        }
+    }
 }

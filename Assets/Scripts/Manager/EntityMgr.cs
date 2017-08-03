@@ -41,4 +41,5 @@ public class EntityMgr : Singleton<EntityMgr>
             m_DropItemDic = value;
         }
     }
+
 }

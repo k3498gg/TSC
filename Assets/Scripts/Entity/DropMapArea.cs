@@ -19,7 +19,7 @@ public enum MapArea
     AREA_L = 12,
     AREA_M = 13,
     AREA_N = 14,
-    AREA_O = 15
+    AREA_MAX = 15
 }
 
 

@@ -151,7 +151,6 @@ public class MainUIWindow : UIBaseWindow
 
         float angle = Mathf.Rad2Deg * (Mathf.Atan2(x, y));
         GameMgr.Instance.MainEntity.CacheModel.rotation = Quaternion.Euler(0, angle + GameMgr.Instance.CameraController.EulerY, 0);
-        //if (!GameMgr.Instance.MainEntity.IsForceMove)
         if (EffType != EffectType.ACCELERATE)
         {
             GameMgr.Instance.ARPGAnimatController.Walk = true;

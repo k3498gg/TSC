@@ -7,7 +7,7 @@ public enum DropAI
 {
     NONE = 0,  //消失不再刷新
     INSTANCE = 1,//消失立即刷新
-    LATER =2, //消失等待一定时间刷新
+    LATER = 2, //消失等待一定时间刷新
 }
 
 
@@ -104,20 +104,21 @@ public class DropItemInfo : IEntity
 
     public void FlyToEntity(Entity entity)
     {
-        if(null == entity)
+        if (null == entity)
         {
             return;
         }
-        if(IsLock)
+        if (IsLock)
         {
             return;
         }
         IsLock = true;
-        Cache.DOJump(entity.CacheModel.position, 1, 1, 1);
-    }
 
-    private void OnDisable()
-    {
-        IsLock = false;
+        Vector3 v = entity.CacheModel.position;//.TransformPoint(Vector3.forward);
+        Cache.DOJump(v, 3, 0, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            gameObject.SetActive(false);
+            //IsLock = false;
+        });
     }
 }
