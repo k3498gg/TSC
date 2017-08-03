@@ -4,15 +4,18 @@ using UnityEngine;
 
 public class GameMgr : UnitySingleton<GameMgr>
 {
+    private bool init = false;
     private Transform m_cameraRoot;
     private Transform m_playerRoot;
+    private Transform m_itemRoot;
 
     private Entity m_MainEntity; //主角
     private Dictionary<string, int> downBinInfoDic;
     private CharacterController m_characController; //主角控制器
     private ARPGCameraController m_cameraController; //相机跟随控制
     private ARPGAnimatorController m_animController; //主角动作控制器
-    private List<MapInfo> mapInfos;
+    private Dictionary<int, MapInfo> m_dicMapInfo;
+    
 
     public ARPGAnimatorController ARPGAnimatController
     {
@@ -102,9 +105,15 @@ public class GameMgr : UnitySingleton<GameMgr>
 
     void Init()
     {
+        if(init)
+        {
+            return;
+        }
+        init = true;
         Transform m_self = transform;
         m_cameraRoot = m_self.Find("Camera");
         m_playerRoot = m_self.Find("Player");
+        m_itemRoot = m_self.Find("ItemRoot");
         LoadTemplate();
     }
 
@@ -133,11 +142,16 @@ public class GameMgr : UnitySingleton<GameMgr>
         Util.Init<LanTxtInfo>(path);
         Util.Init<ConstInfo>(path);
         Util.Init<OccupationInfo>(path);
+        Util.Init<ItemInfo>(path);
+        Util.Init<LevelInfo>(path);
+        Util.Init<ItemEffectInfo>(path);
 
-        MapInfos = Util.DeSerialize<List<MapInfo>>(path + "map.bin");
+        Util.InitMap(path + "map.bin");
         CreateEntity(1);
+        ItemDropMgr.Instance.InitMapDrop(2);
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
     }
+
 
     //保存版本号
     void SaveVersion()
@@ -156,16 +170,37 @@ public class GameMgr : UnitySingleton<GameMgr>
         }
     }
 
-    public List<MapInfo> MapInfos
+    public Dictionary<int, MapInfo> DicMapInfo
     {
         get
         {
-            return mapInfos;
+            if(null == m_dicMapInfo)
+            {
+                m_dicMapInfo = new Dictionary<int, MapInfo>();
+            }
+            return m_dicMapInfo;
         }
 
         set
         {
-            mapInfos = value;
+            m_dicMapInfo = value;
+        }
+    }
+
+    public Transform ItemRoot
+    {
+        get
+        {
+            if(null == m_itemRoot)
+            {
+                m_itemRoot = transform.Find("ItemRoot");
+            }
+            return m_itemRoot;
+        }
+
+        set
+        {
+            m_itemRoot = value;
         }
     }
 

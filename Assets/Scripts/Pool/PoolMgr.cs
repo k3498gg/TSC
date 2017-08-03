@@ -55,7 +55,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
 
 
 
-    Transform SpawnerEntity(Transform prefab, Transform parent, Vector3 v)
+    public Transform SpawnerEntity(Transform prefab, Transform parent, Vector3 v)
     {
         if (null != prefab && null != parent)
         {

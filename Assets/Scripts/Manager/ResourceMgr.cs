@@ -10,13 +10,14 @@ public class ResourcesMgr : Singleton<ResourcesMgr>
         return (T)Resources.Load(path);
     }
 
-    public GameObject Spawner(GameObject prefab)
+    public Transform Spawner(Transform prefab,Transform parent,Vector3 v)
     {
-        if (null != prefab)
-        {
-            return GameObject.Instantiate(prefab);
-        }
-        return null;
+        return PoolMgr.Instance.SpawnerEntity(prefab, parent, v);
+        //if (null != prefab)
+        //{
+        //    return GameObject.Instantiate(prefab);
+        //}
+        //return null;
     }
 
     public GameObject Spawner(string aName, Vector3 v, ResourceType mtype, Transform parent)

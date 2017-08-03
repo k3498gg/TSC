@@ -25,4 +25,20 @@ public class EntityMgr : Singleton<EntityMgr>
         }
     }
 
+    public Dictionary<int, DropItemInfo> DropItemDic
+    {
+        get
+        {
+            if(null == m_DropItemDic)
+            {
+                m_DropItemDic = new Dictionary<int, DropItemInfo>();
+            }
+            return m_DropItemDic;
+        }
+
+        set
+        {
+            m_DropItemDic = value;
+        }
+    }
 }
