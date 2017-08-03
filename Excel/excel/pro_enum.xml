@@ -67,10 +67,18 @@
 
 	<enum name="ItemType"			target_name="ItemInfo" desc="道具各种效果" >
 		<field name="NONE"						value="0"   desc="" />
-		<field name="ITEM_ACCT"					value="1"   desc="加速" />
-		<field name="ITEM_ENERGY"     			value="2"   desc="能量" />
-        <field name="ITEM_SLOW"     			value="3"   desc="减速" />
-		<field name="ITEM_INSTANT"     			value="4"   desc="瞬移" />
+		<field name="ITEM_MARK"					value="1"   desc="问号" />
+		<field name="ITEM_MAGNET"     			value="2"   desc="吸铁石" />
+        <field name="ITEM_TRANSFERGATE"     	value="3"   desc="传送门" />
+		<field name="ITEM_SPEED"     			value="4"   desc="变速" />
+		<field name="ITEM_PROTECT"     			value="5"   desc="保护罩" />
+		<field name="ITEM_ENERGY"     			value="6"   desc="积分" />
+    </enum>
+
+	<enum name="NpcType"			target_name="NpcInfo" desc="npc类型" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="NPC_NORMAL"				value="1"   desc="普通NPC" />
+		<field name="NPC_BOSS"     				value="2"   desc="BOSS" />
     </enum>
 
 </Project>

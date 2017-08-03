@@ -8,10 +8,12 @@ using System.Text;
 public enum ItemType
 {
     NONE = 0,  //
-    ITEM_ACCT = 1,  //加速
-    ITEM_ENERGY = 2,  //能量
-    ITEM_SLOW = 3,  //减速
-    ITEM_INSTANT = 4,  //瞬移
+    ITEM_MARK = 1,  //问号
+    ITEM_MAGNET = 2,  //吸铁石
+    ITEM_TRANSFERGATE = 3,  //传送门
+    ITEM_SPEED = 4,  //变速
+    ITEM_PROTECT = 5,  //保护罩
+    ITEM_ENERGY = 6,  //积分
 };
 
 [Serializable]
