@@ -36,6 +36,16 @@ public class Util
         InfoMgr<T>.Instance.Init(file);
     }
 
+    public static void InitMap(string file)
+    {
+        GameMgr.Instance.DicMapInfo.Clear();
+        List<MapInfo> mapInfos = Util.DeSerialize<List<MapInfo>>(file);
+        for (int i = 0; i < mapInfos.Count; i++)
+        {
+            GameMgr.Instance.DicMapInfo[mapInfos[i].Id] = mapInfos[i];
+        }
+    }
+
     public static void Copy(string source, string dest)
     {
         string[] files = Directory.GetFiles(source, "*.bin", SearchOption.AllDirectories);

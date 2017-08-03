@@ -7,8 +7,8 @@ using UnityEngine;
 public enum ItemMapType
 {
     NONE = 0,
-    POINT = 1,
-    ITEM = 2
+    POINT = 1, //特殊道具
+    ITEM = 2   //积分道具
 }
 
 [Serializable]
