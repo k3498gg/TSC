@@ -13,6 +13,9 @@ public enum ConstType
     CONST_COST_PHY_SPEED = 3,  //体力每秒消耗值
     CONST_ATK_RADIO = 4,  //碰撞范围半径
     CONST_REBORN = 5,  //复活等待时间
+    CONST_ENERGY_MAXCOUNT = 6,  //普通能量点最大数量
+    CONST_SUGAR_RADIO = 7,  //糖果掉落半径
+    CONST_ITEM_COUNT = 8,  //道具刷新数量上线
 };
 
 [Serializable]

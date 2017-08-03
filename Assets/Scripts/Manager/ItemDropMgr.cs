@@ -36,7 +36,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             List<ItemMapInfo> items = mapInfo.ItemMapInfo.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.ITEM; });
             HashSet<int> set = new HashSet<int>();
             int cout = points.Count;
-            while (set.Count < 5)
+            while (set.Count < AppConst.ItemFreshCount)
             {
                 int r = Random.Range(0, cout);
                 if (!set.Contains(r))
@@ -50,7 +50,6 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             {
                 if (idx < points.Count)
                 {
-                    Debuger.LogError("随机五个点刷新五种道具位置:" + idx);
                     poz++;
                     float offX = Random.Range(-points[idx].Width, points[idx].Width);
                     float offY = Random.Range(-points[idx].Height, points[idx].Height);
@@ -61,6 +60,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                     dropInfo.Area = points[idx].Area;
                     dropInfo.DropAI = DropAI.LATER;
                     EntityMgr.Instance.DropItemDic[idx] = dropInfo;
+                    Debuger.LogError("随机五个点刷新五种道具位置:" + idx + go.name);
                 }
             }
 
@@ -83,6 +83,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
     public GameObject Spawner(int id, Vector3 v, ResourceType t, Transform parent)
     {
         ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(id);
+        Debug.LogError(v);
         return ResourcesMgr.Instance.Spawner(item.model, v, t, parent);
     }
 }

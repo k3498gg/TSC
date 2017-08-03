@@ -23,6 +23,10 @@ public class AppConst
     public static string ParticlePrefabPath = "Particle/";
     public static string AnimatorPrefabPath = "Animator/";
     public static string ItemPrefabPath = "Item/";
+    public static int ItemAreaCount = 0; //区域普通能量点最大数量
+    public static int ItemFreshCount = 0; //道具刷新上限
+    public static float ItemSugarDistance = 0; //糖果的掉落半径
+
 
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {
@@ -58,5 +62,15 @@ public class AppConst
         {
             return Application.persistentDataPath;
         }
+    }
+
+    public static void InitConstData()
+    {
+        ConstInfo areaConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ENERGY_MAXCOUNT);
+        ConstInfo sugarConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SUGAR_RADIO);
+        ConstInfo freshConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ITEM_COUNT);
+        ItemAreaCount = int.Parse(areaConstInfo.data) /(int) AppConst.factor;
+        ItemFreshCount = int.Parse(freshConstInfo.data) / (int)AppConst.factor;
+        ItemSugarDistance = float.Parse(sugarConstInfo.data) / AppConst.factor;
     }
 } 

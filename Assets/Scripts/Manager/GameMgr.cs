@@ -147,6 +147,9 @@ public class GameMgr : UnitySingleton<GameMgr>
         Util.Init<ItemEffectInfo>(path);
 
         Util.InitMap(path + "map.bin");
+
+        //初始化常量表数据
+        AppConst.InitConstData();
         CreateEntity(1);
         ItemDropMgr.Instance.InitMapDrop(2);
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);

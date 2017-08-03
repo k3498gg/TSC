@@ -54,6 +54,9 @@
 		<field name="CONST_COST_PHY_SPEED"	value="3"   desc="体力每秒消耗值" />
 		<field name="CONST_ATK_RADIO"		value="4"   desc="碰撞范围半径" />
 		<field name="CONST_REBORN"			value="5"   desc="复活等待时间" />
+		<filed name="CONST_ENERGY_MAXCOUNT" value="6"   desc="普通能量点最大数量" />
+		<filed name="CONST_SUGAR_RADIO"		value="7"   desc="糖果掉落半径" />
+		<filed name="CONST_ITEM_COUNT"      value="8"   desc="道具刷新数量上线" />
     </enum>
 
 	<enum name="ResourceType"		target_name="HeroInfo" desc="资源类型UI,角色,特效,动画,道具" >

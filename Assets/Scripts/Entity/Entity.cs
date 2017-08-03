@@ -171,13 +171,20 @@ public class Entity : IEntity
     private void OnTriggerEnter(Collider other)
     {
         Debuger.LogError(" 进入了" + other.transform.name);
+        if(other.CompareTag("Item"))
+        {
+            DropItemInfo drop = other.GetComponent<DropItemInfo>();
+            if(null != drop)
+            {
+                drop.FlyToEntity(this);
+            }
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
         Debuger.LogError(" 离开了" + other.transform.name);
     }
-
 
     public void DespawnerParticle(EffectType type)
     {
@@ -191,7 +198,6 @@ public class Entity : IEntity
                 break;
         }
     }
-
 
     public void SpawnerParticle(int id, EffectType type, Vector3 v, Transform parent)
     {
@@ -228,4 +234,15 @@ public class Entity : IEntity
             CacheAccelParticleTran = null;
         }
     }
+
+    //先用物理引擎去检测碰撞,效率低再优化
+    //private float detectInterval = 0.5f;
+    //private float lastDetectTime = 0;
+    //private void Update()
+    //{
+    //    if(Time.realtimeSinceStartup - lastDetectTime >= detectInterval)
+    //    {
+
+    //    }
+    //}
 }
