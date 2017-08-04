@@ -8,14 +8,16 @@ using System.Text;
 public class ItemEffectInfo: IInfo
 {
     public int id; // 编号
-    public string data; // 参数
+    public int score; // 积分
+    public int phys; // 体力
 
     public  void Load(BinaryReader reader)
     {
         id = reader.ReadInt32();
  
-        int dataLen = reader.ReadInt32();
-        data = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(dataLen));
+        score = reader.ReadInt32();
+ 
+        phys = reader.ReadInt32();
  
     }
 

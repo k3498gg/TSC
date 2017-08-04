@@ -25,17 +25,18 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         }
     }
 
-    public void InitMapDrop(int mapId)
+    public void InitMapDrop()
     {
-        if (!GameMgr.Instance.DicMapInfo.ContainsKey(mapId))
-        {
-            return;
-        }
-        MapInfo mapInfo = GameMgr.Instance.DicMapInfo[mapId];
-        if (null != mapInfo)
-        {
-            List<ItemMapInfo> points = mapInfo.ItemMapInfo.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.POINT; });
+        //if (!GameMgr.Instance.DicMapInfo.ContainsKey(mapId))
+        //{
+        //    return;
+        //}
+        //MapInfo mapInfo = GameMgr.Instance.DicMapInfo[mapId];
 
+        List<ItemMapInfo> itemMaps = EntityMgr.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
+        if (null != itemMaps)
+        {
+            List<ItemMapInfo> points = itemMaps.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.POINT; });
             HashSet<int> set = new HashSet<int>();
             int cout = points.Count;
             while (set.Count < AppConst.ItemFreshCount)
@@ -58,22 +59,14 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                 if (idx < points.Count)
                 {
                     poz++;
-                    float offX = Random.Range(-points[idx].Width, points[idx].Width);
-                    float offY = Random.Range(-points[idx].Height, points[idx].Height);
-                    GameObject go = Spawner(poz, new Vector3(points[idx].PosX + offX, 0, points[idx].PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);
-                    DropItemInfo dropInfo = Util.AddComponent<DropItemInfo>(go);
-                    dropInfo.ItemId = EntityMgr.Instance.DropItemDic.Count;
-                    dropInfo.InfoId = poz;
-                    dropInfo.Area = points[idx].Area;
-                    dropInfo.DropAI = DropAI.LATER;
-                    EntityMgr.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
+                    InistantDropItem(points[idx]);
                 }
             }
 
 
             for (int idx = 0; idx < (int)MapArea.AREA_MAX; idx++)
             {
-                List<ItemMapInfo> items = mapInfo.ItemMapInfo.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.ITEM && map.Area == (MapArea)idx; });
+                List<ItemMapInfo> items = itemMaps.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.ITEM && map.Area == (MapArea)idx; });
                 if (items.Count > 0)
                 {
                     set.Clear();
@@ -96,20 +89,25 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                     {
                         if (i < items.Count)
                         {
-                            float offX = Random.Range(-items[i].Width, items[i].Width);
-                            float offY = Random.Range(-items[i].Height, items[i].Height);
-                            GameObject go = Spawner((int)ItemType.ITEM_ENERGY, new Vector3(items[i].PosX + offX, 0, items[i].PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);
-                            DropItemInfo dropInfo = Util.AddComponent<DropItemInfo>(go);
-                            dropInfo.ItemId = EntityMgr.Instance.DropItemDic.Count; 
-                            dropInfo.InfoId = (int)ItemType.ITEM_ENERGY;
-                            dropInfo.Area = items[i].Area;
-                            dropInfo.DropAI = DropAI.LATER;
-                            EntityMgr.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
+                            InistantDropItem(items[i]);
                         }
                     }
                 }
             }
         }
+    }
+
+    void InistantDropItem(ItemMapInfo mapInfo)
+    {
+        float offX = Random.Range(-mapInfo.Width, mapInfo.Width);
+        float offY = Random.Range(-mapInfo.Height, mapInfo.Height);
+        GameObject go = Spawner((int)ItemType.ITEM_ENERGY, new Vector3(mapInfo.PosX + offX, 0, mapInfo.PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);
+        DropItemInfo dropInfo = Util.AddComponent<DropItemInfo>(go);
+        dropInfo.ItemId = mapInfo.Index;
+        dropInfo.InfoId = (int)ItemType.ITEM_ENERGY;
+        dropInfo.Area = mapInfo.Area;
+        //dropInfo.DropAI = DropAI.LATER;
+        EntityMgr.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
     }
 
     public GameObject Spawner(int id, Vector3 v, ResourceType t, Transform parent)
@@ -118,17 +116,64 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         return ResourcesMgr.Instance.Spawner(item.model, v, t, parent);
     }
 
+    public void Despawner(ResourceType t, DropItemInfo dropItem)
+    {
+        if (null == dropItem)
+        {
+            return;
+        }
+
+        int itemId = dropItem.ItemId;
+        MapArea area = dropItem.Area;
+
+        if (EntityMgr.Instance.BackItemMapDic.ContainsKey(area))
+        {
+            EntityMgr.Instance.BackItemMapDic[area].Add(itemId);
+        }
+        else
+        {
+            List<int> itemIds = new List<int>();
+            itemIds.Add(itemId);
+            EntityMgr.Instance.BackItemMapDic[area] = itemIds;
+        }
+
+        if (EntityMgr.Instance.DropItemDic.ContainsKey(dropItem.ItemId))
+        {
+            EntityMgr.Instance.DropItemDic.Remove(dropItem.ItemId);
+        }
+        Despawner(t, dropItem.Cache);
+    }
+
+    public void Despawner(ResourceType t, Transform inst)
+    {
+        PoolMgr.Instance.Despawner(t, inst);
+    }
+
+
+    private void FreshMapDrop()
+    {
+        foreach (KeyValuePair<MapArea, List<int>> kv in EntityMgr.Instance.BackItemMapDic)
+        {
+            //kv.Key 
+        }
+    }
+
+    void FreshMapDropByArea(MapArea area)
+    {
+        List<ItemMapInfo> list = EntityMgr.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
+
+    }
+
     public void Update(float delateTime)
     {
         mTotalTime += delateTime;
-        if(mTotalTime <= 30)
+        if (mTotalTime <= 30)
         {
             return;
         }
 
         mTotalTime = 0;
-
         //重新刷新一次道具
-
+        FreshMapDrop();
     }
 }

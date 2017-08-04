@@ -66,7 +66,7 @@ public class ResourceExport
                     mapInfo.ItemMapInfo = new List<ItemMapInfo>();
                 }
 
-
+                int index = 0;
                 GameObject[] items = GameObject.FindGameObjectsWithTag("Item");
                 if (items.Length > 0)
                 {
@@ -80,10 +80,10 @@ public class ResourceExport
                             area = a.mapArea;
                         }
                         Vector3 v = t.position;
-                        //Debug.LogError(v + " item " + t.parent.name +"/"+ t.name);
                         float w = t.localScale.x * 0.5f;
                         float h = t.localScale.z * 0.5f;
                         ItemMapInfo m = new ItemMapInfo(ItemMapType.ITEM, area, v.x, v.z, w, h);
+                        m.Index = index++;
                         mapInfo.ItemMapInfo.Add(m);
                     }
                 }
@@ -101,10 +101,10 @@ public class ResourceExport
                             area = a.mapArea;
                         }
                         Vector3 v = t.position;
-                        //Debug.LogError(v + " point " + t.name);
                         float w = t.localScale.x * 0.5f;
                         float h = t.localScale.z * 0.5f;
                         ItemMapInfo m = new ItemMapInfo(ItemMapType.POINT, area, v.x, v.z, w, h);
+                        m.Index = index++;
                         mapInfo.ItemMapInfo.Add(m);
                     }
                 }
@@ -129,5 +129,7 @@ public class ResourceExport
             }
         }
     }
+
+
     #endregion
 }

@@ -221,7 +221,7 @@ public class Entity : IEntity
     {
         if (null != CacheSkillParticleTran)
         {
-            ParticleMgr.Instance.Despawner(CacheSkillParticleTran);
+            ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheSkillParticleTran);
             CacheSkillParticleTran = null;
         }
     }
@@ -230,7 +230,7 @@ public class Entity : IEntity
     {
         if (null != CacheAccelParticleTran)
         {
-            ParticleMgr.Instance.Despawner(CacheAccelParticleTran);
+            ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE,CacheAccelParticleTran);
             CacheAccelParticleTran = null;
         }
     }

@@ -4,7 +4,7 @@ animatortransinfo.bin|738
 constinfo.bin|114
 effectinfo.bin|52
 heroinfo.bin|715
-itemeffectinfo.bin|68
+itemeffectinfo.bin|100
 iteminfo.bin|284
 lansurinfo.bin|79
 lantxtinfo.bin|79

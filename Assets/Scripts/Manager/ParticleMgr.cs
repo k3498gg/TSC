@@ -24,8 +24,8 @@ public class ParticleMgr : Singleton<ParticleMgr>
         return null;
     }
 
-    public void Despawner(Transform inst)
+    public void Despawner(ResourceType t,Transform inst)
     {
-        PoolMgr.Instance.Despawner(inst);
+        PoolMgr.Instance.Despawner(t,inst);
     }
 }

@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class EntityMgr : Singleton<EntityMgr>
 {
+    private static EnumComparer<MapArea> fastCompare = new EnumComparer<MapArea>();
+
     private Dictionary<int, IEntity> m_EntityDic; //实体字典存储中心
 
+    private Dictionary<int, MapInfo> m_dicMapInfo; //地圖道具佈局
+
     private Dictionary<int, DropItemInfo> m_DropItemDic;
+
+    private Dictionary<MapArea, List<int>> backItemMapDic; //回收的道具 即將刷新
 
     public Dictionary<int, IEntity> EntityDic
     {
@@ -41,5 +47,49 @@ public class EntityMgr : Singleton<EntityMgr>
             m_DropItemDic = value;
         }
     }
+
+    public Dictionary<MapArea, List<int>> BackItemMapDic
+    {
+        get
+        {
+            if(null == backItemMapDic)
+            {
+                backItemMapDic = new Dictionary<MapArea, List<int>>(fastCompare);
+            }
+            return backItemMapDic;
+        }
+
+        set
+        {
+            backItemMapDic = value;
+        }
+    }
+
+    public Dictionary<int, MapInfo> DicMapInfo
+    {
+        get
+        {
+            if (null == m_dicMapInfo)
+            {
+                m_dicMapInfo = new Dictionary<int, MapInfo>();
+            }
+            return m_dicMapInfo;
+        }
+
+        set
+        {
+            m_dicMapInfo = value;
+        }
+    }
+
+    public List<ItemMapInfo> GetCurItemMapInfo(int mapId)
+    {
+        if (DicMapInfo.ContainsKey(mapId))
+        {
+            return DicMapInfo[mapId].ItemMapInfo;
+        }
+        return null;
+    }
+
 
 }

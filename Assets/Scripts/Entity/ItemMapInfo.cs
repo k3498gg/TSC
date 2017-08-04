@@ -14,6 +14,7 @@ public enum ItemMapType
 [Serializable]
 public class ItemMapInfo
 {
+    private int index;
     private ItemMapType iMapType;
     private MapArea area;
     private float width;
@@ -97,6 +98,19 @@ public class ItemMapInfo
         set
         {
             area = value;
+        }
+    }
+
+    public int Index
+    {
+        get
+        {
+            return index;
+        }
+
+        set
+        {
+            index = value;
         }
     }
 

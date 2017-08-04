@@ -38,11 +38,11 @@ public class Util
 
     public static void InitMap(string file)
     {
-        GameMgr.Instance.DicMapInfo.Clear();
+        EntityMgr.Instance.DicMapInfo.Clear();
         List<MapInfo> mapInfos = Util.DeSerialize<List<MapInfo>>(file);
         for (int i = 0; i < mapInfos.Count; i++)
         {
-            GameMgr.Instance.DicMapInfo[mapInfos[i].Id] = mapInfos[i];
+            EntityMgr.Instance.DicMapInfo[mapInfos[i].Id] = mapInfos[i];
         }
     }
 

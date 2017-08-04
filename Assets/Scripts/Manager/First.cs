@@ -29,7 +29,7 @@ public class First : MonoBehaviour
 
     void EnterGame(GameObject go)
     {
-        SceneManager.LoadScene("Test");
+        SceneManager.LoadScene(1);
     }
 
     void SetTargetFramRate()

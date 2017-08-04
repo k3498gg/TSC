@@ -6,8 +6,6 @@ using PathologicalGames;
 //同步方法，不需要回掉处理事件
 public class PoolMgr : UnitySingleton<PoolMgr>
 {
-    private SpawnPool pool;
-
     void Awake()
     {
         DontDestroyOnLoad(gameObject);
@@ -18,8 +16,9 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         Destroy(gameObject);
     }
 
-    void CreatePool(string poolName)
+    SpawnPool CreatePool(string poolName)
     {
+        SpawnPool pool = null;
         if (PoolManager.Pools.ContainsKey(poolName))
         {
             pool = PoolManager.Pools[poolName];
@@ -31,10 +30,11 @@ public class PoolMgr : UnitySingleton<PoolMgr>
             pool.group.localPosition = Vector3.zero;
             pool.group.localRotation = Quaternion.identity;
         }
+        return pool;
     }
 
 
-    void CreatePoolPrefab(string aName, Transform prefab)
+    void CreatePoolPrefab(SpawnPool pool, string aName, Transform prefab)
     {
         if (null == prefab)
         {
@@ -55,7 +55,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
 
 
 
-    public Transform SpawnerEntity(Transform prefab, Transform parent, Vector3 v)
+    public Transform SpawnerEntity(SpawnPool pool, Transform prefab, Transform parent, Vector3 v)
     {
         if (null != prefab && null != parent)
         {
@@ -67,9 +67,11 @@ public class PoolMgr : UnitySingleton<PoolMgr>
     public Transform SpawnerEntity(string avatarName, Vector3 v, ResourceType rType, Transform parent)
     {
         string poolName = Util.GetPoolName(rType);
-        if (!PoolManager.Pools.ContainsKey(poolName))
+        SpawnPool pool = CreatePool(poolName);
+        if (null == pool)
         {
-            CreatePool(poolName);
+            Debuger.LogError("init pool failed:" + poolName);
+            return null;
         }
 
         if (!pool.prefabPools.ContainsKey(avatarName))
@@ -80,32 +82,46 @@ public class PoolMgr : UnitySingleton<PoolMgr>
                 Debuger.LogError(avatarName + " is NULL!");
                 return null;
             }
-            CreatePoolPrefab(avatarName, prefab.transform);
+            CreatePoolPrefab(pool, avatarName, prefab.transform);
         }
         if (pool.prefabPools.ContainsKey(avatarName))
         {
-            Transform tran = SpawnerEntity(pool.prefabPools[avatarName].prefab, parent, v);
+            Transform tran = SpawnerEntity(pool, pool.prefabPools[avatarName].prefab, parent, v);
             return tran;
         }
         return null;
     }
 
-    public void Despawner(Transform inst)
+    public void Despawner(ResourceType type,Transform inst)
     {
-        if (null != this.pool && null != inst)
+        string poolName = Util.GetPoolName(type);
+        if (PoolManager.Pools.ContainsKey(poolName))
         {
-            if (this.pool.IsSpawned(inst))
+            SpawnPool pool = PoolManager.Pools[poolName];
+            Despawner(pool, inst);
+        }
+    }
+
+    public void Despawner(SpawnPool pool, Transform inst)
+    {
+        if (null != pool && null != inst)
+        {
+            if (pool.IsSpawned(inst))
             {
-                this.pool.Despawn(inst);
+                pool.Despawn(inst);
             }
         }
     }
 
     public void DespawnerAll()
     {
-        if (null != this.pool)
+       
+        foreach(KeyValuePair<string, SpawnPool> kv in PoolManager.Pools)
         {
-            this.pool.DespawnAll();
+            if (null != kv.Value)
+            {
+                kv.Value.DespawnAll();
+            }
         }
     }
 }

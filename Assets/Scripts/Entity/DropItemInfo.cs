@@ -16,8 +16,9 @@ public class DropItemInfo : IEntity
     private int itemId;
     private int infoId;
     private MapArea area;
-    private DropAI dropAI;
+    //private DropAI dropAI;
     private Transform cache;
+    private Transform child;
     private bool isLock = false; //用于判断当前是否被其他玩家占用
 
     public int ItemId
@@ -59,18 +60,18 @@ public class DropItemInfo : IEntity
         }
     }
 
-    public DropAI DropAI
-    {
-        get
-        {
-            return dropAI;
-        }
+    //public DropAI DropAI
+    //{
+    //    get
+    //    {
+    //        return dropAI;
+    //    }
 
-        set
-        {
-            dropAI = value;
-        }
-    }
+    //    set
+    //    {
+    //        dropAI = value;
+    //    }
+    //}
 
     public Transform Cache
     {
@@ -102,6 +103,23 @@ public class DropItemInfo : IEntity
         }
     }
 
+    public Transform Child
+    {
+        get
+        {
+            if (null == child)
+            {
+                child = Cache.GetChild(0);
+            }
+            return child;
+        }
+
+        set
+        {
+            child = value;
+        }
+    }
+
     public void FlyToEntity(Entity entity)
     {
         if (null == entity)
@@ -114,11 +132,19 @@ public class DropItemInfo : IEntity
         }
         IsLock = true;
 
-        Vector3 v = entity.CacheModel.position;//.TransformPoint(Vector3.forward);
-        Cache.DOJump(v, 3, 0, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+        Vector3 v = entity.CacheModel.position;
+
+        Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>
         {
-            gameObject.SetActive(false);
-            //IsLock = false;
+            ItemDropMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM, this);
+            ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(infoId);
+            ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
+            entity.Attribute.Score += (uint)effect.score;
+            entity.Attribute.CurPhy += (uint)effect.phys;
+            if (entity.Attribute.CurPhy > entity.Attribute.MaxPhy)
+            {
+                entity.Attribute.CurPhy = entity.Attribute.MaxPhy;
+            }
         });
     }
 }

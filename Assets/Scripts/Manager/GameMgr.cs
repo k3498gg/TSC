@@ -8,14 +8,13 @@ public class GameMgr : UnitySingleton<GameMgr>
     private Transform m_cameraRoot;
     private Transform m_playerRoot;
     private Transform m_itemRoot;
+    private int mapId;
 
     private Entity m_MainEntity; //主角
     private Dictionary<string, int> downBinInfoDic;
     private CharacterController m_characController; //主角控制器
     private ARPGCameraController m_cameraController; //相机跟随控制
     private ARPGAnimatorController m_animController; //主角动作控制器
-    private Dictionary<int, MapInfo> m_dicMapInfo;
-    
 
     public ARPGAnimatorController ARPGAnimatController
     {
@@ -151,7 +150,8 @@ public class GameMgr : UnitySingleton<GameMgr>
         //初始化常量表数据
         AppConst.InitConstData();
         CreateEntity(1);
-        ItemDropMgr.Instance.InitMapDrop(2);
+        MapId = 2;
+        ItemDropMgr.Instance.InitMapDrop();
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
     }
 
@@ -172,23 +172,6 @@ public class GameMgr : UnitySingleton<GameMgr>
         }
     }
 
-    public Dictionary<int, MapInfo> DicMapInfo
-    {
-        get
-        {
-            if(null == m_dicMapInfo)
-            {
-                m_dicMapInfo = new Dictionary<int, MapInfo>();
-            }
-            return m_dicMapInfo;
-        }
-
-        set
-        {
-            m_dicMapInfo = value;
-        }
-    }
-
     public Transform ItemRoot
     {
         get
@@ -203,6 +186,19 @@ public class GameMgr : UnitySingleton<GameMgr>
         set
         {
             m_itemRoot = value;
+        }
+    }
+
+    public int MapId
+    {
+        get
+        {
+            return mapId;
+        }
+
+        set
+        {
+            mapId = value;
         }
     }
 
@@ -284,6 +280,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         }
         yield return new WaitForEndOfFrame();
     }
+
 
 
     #region 资源模型加载

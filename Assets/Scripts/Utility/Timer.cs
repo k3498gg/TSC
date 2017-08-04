@@ -14,6 +14,7 @@ public class Timer : Singleton<Timer>
         private string id = string.Empty;
         private bool isInitialized = false;
         private float intervalTime;
+        public int data = 0;
 
         private void Initialize()
         {
@@ -100,7 +101,7 @@ public class Timer : Singleton<Timer>
             Debuger.LogError("TimerData≥ı ºªØ ß∞‹");
             return;
         }
-
+        data.data = 0;
         data.handler = null;
         mList.Remove(data);
         mUnused.Add(data);
@@ -113,13 +114,21 @@ public class Timer : Singleton<Timer>
         }
     }
 
-    public void AddTimer(float time, int invokeTimes, bool ingoreTimeScale, TimerHandler handler)
+    public TimerData AddTimer(float time, int invokeTimes, bool ingoreTimeScale, TimerHandler handler,int data)
+    {
+        TimerData timerData = AddTimer(time, invokeTimes, ingoreTimeScale, handler);
+        timerData.data = data;
+        return timerData;
+    }
+
+    public TimerData AddTimer(float time, int invokeTimes, bool ingoreTimeScale, TimerHandler handler)
     {
         TimerData data = Create();
         data.time = time;
         data.invokeTimes = invokeTimes;
         data.ingoreTimeScale = ingoreTimeScale;
         data.handler = handler;
+        return data;
     }
 
     public void RemoveTimer(string id)
