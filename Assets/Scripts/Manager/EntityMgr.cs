@@ -12,7 +12,9 @@ public class EntityMgr : Singleton<EntityMgr>
 
     private Dictionary<int, DropItemInfo> m_DropItemDic;
 
-    private Dictionary<MapArea, List<int>> backItemMapDic; //回收的道具 即將刷新
+    private Dictionary<MapArea, List<ItemDespawnerInfo>> backItemMapDic; //回收的道具 即將刷新
+
+    private Dictionary<MapArea, List<ItemMapInfo>> totalAreaItemMapDic;
 
     public Dictionary<int, IEntity> EntityDic
     {
@@ -48,13 +50,13 @@ public class EntityMgr : Singleton<EntityMgr>
         }
     }
 
-    public Dictionary<MapArea, List<int>> BackItemMapDic
+    public Dictionary<MapArea, List<ItemDespawnerInfo>> BackItemMapDic
     {
         get
         {
             if(null == backItemMapDic)
             {
-                backItemMapDic = new Dictionary<MapArea, List<int>>(fastCompare);
+                backItemMapDic = new Dictionary<MapArea, List<ItemDespawnerInfo>>(fastCompare);
             }
             return backItemMapDic;
         }
@@ -79,6 +81,23 @@ public class EntityMgr : Singleton<EntityMgr>
         set
         {
             m_dicMapInfo = value;
+        }
+    }
+
+    public Dictionary<MapArea, List<ItemMapInfo>> TotalAreaItemMapDic
+    {
+        get
+        {
+            if(null == totalAreaItemMapDic)
+            {
+                totalAreaItemMapDic = new Dictionary<MapArea, List<ItemMapInfo>>(fastCompare);
+            }
+            return totalAreaItemMapDic;
+        }
+
+        set
+        {
+            totalAreaItemMapDic = value;
         }
     }
 

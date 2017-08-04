@@ -39,6 +39,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             List<ItemMapInfo> points = itemMaps.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.POINT; });
             HashSet<int> set = new HashSet<int>();
             int cout = points.Count;
+
             while (set.Count < AppConst.ItemFreshCount)
             {
                 int r = Random.Range(0, cout);
@@ -53,13 +54,14 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                 }
             }
 
-            int poz = 0;
+            int min = (int)ItemType.ITEM_MARK;
+            int max = (int)ItemType.ITEM_ENERGY;
             foreach (int idx in set)
             {
                 if (idx < points.Count)
                 {
-                    poz++;
-                    InistantDropItem(points[idx]);
+                    int r = Random.Range(min,max);
+                    InistantDropItem(points[idx],(ItemType)r);
                 }
             }
 
@@ -89,7 +91,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                     {
                         if (i < items.Count)
                         {
-                            InistantDropItem(items[i]);
+                            InistantDropItem(items[i],ItemType.ITEM_ENERGY);
                         }
                     }
                 }
@@ -97,16 +99,18 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         }
     }
 
-    void InistantDropItem(ItemMapInfo mapInfo)
+    void InistantDropItem(ItemMapInfo mapInfo, ItemType type)
     {
         float offX = Random.Range(-mapInfo.Width, mapInfo.Width);
         float offY = Random.Range(-mapInfo.Height, mapInfo.Height);
-        GameObject go = Spawner((int)ItemType.ITEM_ENERGY, new Vector3(mapInfo.PosX + offX, 0, mapInfo.PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);
+        GameObject go = Spawner((int)type, new Vector3(mapInfo.PosX + offX, 0, mapInfo.PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);
         DropItemInfo dropInfo = Util.AddComponent<DropItemInfo>(go);
         dropInfo.ItemId = mapInfo.Index;
-        dropInfo.InfoId = (int)ItemType.ITEM_ENERGY;
+        dropInfo.InfoId = (int)type;
         dropInfo.Area = mapInfo.Area;
+        dropInfo.IsLock = false;
         //dropInfo.DropAI = DropAI.LATER;
+        Debug.LogError(mapInfo.Index +"　"+type);
         EntityMgr.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
     }
 
@@ -123,17 +127,18 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             return;
         }
 
-        int itemId = dropItem.ItemId;
+        //int itemId = dropItem.ItemId;
+        ItemDespawnerInfo despawnItem = new ItemDespawnerInfo(dropItem.ItemId, dropItem.InfoId);
         MapArea area = dropItem.Area;
 
         if (EntityMgr.Instance.BackItemMapDic.ContainsKey(area))
         {
-            EntityMgr.Instance.BackItemMapDic[area].Add(itemId);
+            EntityMgr.Instance.BackItemMapDic[area].Add(despawnItem);
         }
         else
         {
-            List<int> itemIds = new List<int>();
-            itemIds.Add(itemId);
+            List<ItemDespawnerInfo> itemIds = new List<ItemDespawnerInfo>();
+            itemIds.Add(despawnItem);
             EntityMgr.Instance.BackItemMapDic[area] = itemIds;
         }
 
@@ -152,22 +157,77 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
 
     private void FreshMapDrop()
     {
-        foreach (KeyValuePair<MapArea, List<int>> kv in EntityMgr.Instance.BackItemMapDic)
+        foreach (KeyValuePair<MapArea, List<ItemDespawnerInfo>> kv in EntityMgr.Instance.BackItemMapDic)
         {
-            //kv.Key 
+            FreshMapDropByArea(kv.Key);
         }
+        EntityMgr.Instance.BackItemMapDic.Clear();
     }
 
     void FreshMapDropByArea(MapArea area)
     {
         List<ItemMapInfo> list = EntityMgr.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
+        if (null == list)
+        {
+            return;
+        }
 
+        if (EntityMgr.Instance.BackItemMapDic.ContainsKey(area))
+        {
+            if (!EntityMgr.Instance.TotalAreaItemMapDic.ContainsKey(area))
+            {
+                List<ItemMapInfo> temp = list.FindAll(delegate (ItemMapInfo mapInfo) { return mapInfo.Area == area; });
+                EntityMgr.Instance.TotalAreaItemMapDic[area] = temp;
+            }
+
+            List<ItemMapInfo> areaItems = EntityMgr.Instance.TotalAreaItemMapDic[area];
+            List<ItemDespawnerInfo> spans = EntityMgr.Instance.BackItemMapDic[area];
+            int count = areaItems.Count;
+            if(count == 0)
+            {
+                return;
+            }
+            int nedCount = spans.Count;
+            HashSet<int> set = new HashSet<int>();
+            int idx = 0;
+            while (set.Count < nedCount)
+            {
+                int index = Random.Range(0, count);
+ 
+                if (EntityMgr.Instance.DropItemDic.ContainsKey(areaItems[index].Index))
+                {
+                    continue;
+                }
+
+                if (!set.Contains(index))
+                {
+                    set.Add(index);
+                }
+
+                idx++;
+                if (idx > AppConst.ItemFreshCount)
+                {
+                    break;
+                }
+            }
+
+            int spawcount = 0;
+            foreach(int pos in set)
+            {
+                if(pos < areaItems.Count)
+                {
+                    InistantDropItem(areaItems[pos], (ItemType) spans[spawcount].InfoId);
+                    spawcount++;
+                }
+            }
+            set.Clear();
+        }
     }
 
     public void Update(float delateTime)
     {
         mTotalTime += delateTime;
-        if (mTotalTime <= 30)
+        if (mTotalTime <= 10)
         {
             return;
         }

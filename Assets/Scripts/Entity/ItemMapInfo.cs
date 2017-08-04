@@ -128,7 +128,7 @@ public class ItemMapInfo
 
     public override string ToString()
     {
-        return this.IMapType + "  "+ this.Area+ " " + this.posX + "  " + this.PosY + "  " + this.Width + "  " + this.Height;
+        return this.Index + " " + this.IMapType + "  " + this.Area + " " + this.posX + "  " + this.PosY + "  " + this.Width + "  " + this.Height;
     }
 }
 
@@ -164,4 +164,49 @@ public class MapInfo
         }
     }
 }
+
+
+public class ItemDespawnerInfo
+{
+    private int itemId;
+    private int infoId;
+
+    public int ItemId
+    {
+        get
+        {
+            return itemId;
+        }
+
+        set
+        {
+            itemId = value;
+        }
+    }
+
+    public int InfoId
+    {
+        get
+        {
+            return infoId;
+        }
+
+        set
+        {
+            infoId = value;
+        }
+    }
+
+    public ItemDespawnerInfo()
+    { }
+
+
+    public ItemDespawnerInfo(int _itemId,int _infoId)
+    {
+        this.ItemId = _itemId;
+        this.InfoId = _infoId;
+    }
+}
+
+
 
