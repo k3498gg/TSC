@@ -5,6 +5,8 @@ using UnityEngine;
 public class ItemDropMgr : Singleton<ItemDropMgr>
 {
     private float mTotalTime = 0;
+    private int min = (int)ItemType.ITEM_MARK;
+    private int max = (int)ItemType.ITEM_ENERGY;
 
     //private List<DropItemInfo> dropItemInfos;
 
@@ -48,8 +50,8 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                 }
             }
 
-            int min = (int)ItemType.ITEM_MARK;
-            int max = (int)ItemType.ITEM_ENERGY;
+            //int min = (int)ItemType.ITEM_MARK;
+            //int max = (int)ItemType.ITEM_ENERGY;
             foreach (int idx in set)
             {
                 if (idx < points.Count)
@@ -215,7 +217,16 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             {
                 if(pos < areaItems.Count)
                 {
-                    InistantDropItem(areaItems[pos], (ItemType) spans[spawcount].InfoId);
+                    if(spans[spawcount].InfoId != (int)ItemType.ITEM_ENERGY)
+                    {
+                        int r = Random.Range(min, max); //状态道具刷新（随机一个）
+                        InistantDropItem(areaItems[pos], (ItemType)r);
+                    }
+                    else
+                    {
+                        //积分道具刷新
+                        InistantDropItem(areaItems[pos], (ItemType)spans[spawcount].InfoId);
+                    }
                     spawcount++;
                 }
             }

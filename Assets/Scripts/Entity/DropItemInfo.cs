@@ -124,65 +124,43 @@ public class DropItemInfo : IEntity
         {
             ItemDropMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM, this);
             ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(infoId);
-            if(null == item)
+            if (null == item)
             {
                 return;
             }
             ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
-            if(null == effect)
+            if (null == effect)
             {
                 return;
             }
             ItemType type = effect.effType;
+            StateType state = StateType.NONE;
             switch (type)
             {
                 case ItemType.ITEM_MARK: //问号变身
-
+                    state = StateType.STATE_MARK;
                     break;
                 case ItemType.ITEM_MAGNET: //吸铁石
-
+                    state = StateType.STATE_MAGNET;
                     break;
                 case ItemType.ITEM_TRANSFERGATE: //传送门
-
+                    state = StateType.STATE_TRANSFERGATE;
                     break;
                 case ItemType.ITEM_SPEED://速度变化
-
+                    state = StateType.STATE_SPEED;
                     break;
                 case ItemType.ITEM_PROTECT: //保护罩
-
+                    state = StateType.STATE_PROTECT;
                     break;
                 case ItemType.ITEM_ENERGY:
                     EnergyUpdate(entity, effect);
                     break;
             }
+            entity.UpdateState(state, item);
         });
     }
 
-    void MarkUpdate()
-    {
-        Debug.LogError("变身效果");
-    }
 
-    //吸鐵石
-    void MagnetUpdate()
-    {
-        Debug.LogError("吸铁石");
-    }
-
-    void TransferUpdate()
-    {
-        Debug.LogError("传送门");
-    }
-
-    void SpeedUpdate()
-    {
-        Debug.LogError("速度变化");
-    }
-
-    void ProtectUpdate(Entity entity, ItemEffectInfo effect)
-    {
-        Debug.LogError("保护时间");
-    }
 
     void EnergyUpdate(Entity entity, ItemEffectInfo effect)
     {

@@ -100,13 +100,14 @@
 		<field	column="缩放比例"	name="scale" 		type="Number"   />
 		<field	column="名字偏移"	name="offset" 		type="Number"   />
 		<field	column="道具效果"	name="effectId" 	type="Number"   />
+		<field	column="持续时间"	name="timer" 		type="Number"   />
 	</entry>
 
 	<entry target_name="ItemEffectInfo" xls_file="D道具表.xlsx" sheet_name="道具效果">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
 		<field	column="效果类型"	name="effType" 		type="Number"   refer_enum="ItemType"  />
-		<field	column="积分"		name="score" 		type="Number"   />
-		<field	column="体力"		name="phys" 		type="Number"   />
+		<field	column="参数1"		name="score" 		type="Number"   />
+		<field	column="参数2"		name="phys" 		type="Number"   />
 	</entry>
 
 	<entry target_name="LevelInfo" xls_file="D等级表.xlsx" sheet_name="等级">

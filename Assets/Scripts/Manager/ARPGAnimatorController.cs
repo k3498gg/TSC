@@ -41,24 +41,12 @@ public class ARPGAnimatorController : BaseAnimatorController
 
     public void Update()
     {
-        if (null == GameMgr.Instance.ARPGAnimatController.animator)
+        if (null == animator)
         {
             return;
         }
 
-        CurrentStateInfo = GameMgr.Instance.ARPGAnimatController.animator.GetCurrentAnimatorStateInfo(layer);
-        //m_nextStateInfo = GameMgr.Instance.AnimController.animator.GetNextAnimatorStateInfo(layer);
-        //isInTransaction = GameMgr.Instance.AnimController.animator.IsInTransition(layer);
-
-
-        //if (GameMgr.Instance.AnimController.Attack > 0)
-        //{
-        //    if (CurrentStateInfo.fullPathHash == atk1_NameHash && CurrentStateInfo.normalizedTime > 0.95f)
-        //    {
-        //        Debug.LogError(CurrentStateInfo.fullPathHash + "  " + idle_NameHash + " " + atk1_NameHash);
-        //        GameMgr.Instance.AnimController.Attack = 0;
-        //    }
-        //}
+        CurrentStateInfo = animator.GetCurrentAnimatorStateInfo(layer);
 
         if (Skill > 0)
         {

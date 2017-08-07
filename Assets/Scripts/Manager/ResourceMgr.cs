@@ -35,4 +35,9 @@ public class ResourcesMgr : Singleton<ResourcesMgr>
         }
         return tran.gameObject;
     }
+
+    public void Despawner(ResourceType type,Transform inst)
+    {
+        PoolMgr.Instance.Despawner(type, inst);
+    }
 }

@@ -20,20 +20,19 @@ public class BaseAnimatorController : MonoBehaviour
     private int attack;
     private int skill;
     public Animator animator;
+    //public GameObject m_baseTemp;
 
     public void  Init(Transform cache)
     {
-        if(null == animator)
-        {
+        //if(null == animator)
+        //{
             if (null != cache)
             {
                 animator = cache.GetComponent<Animator>();
+                //m_baseTemp = cache.gameObject;
             }
-        }
+        //}
     }
-
-
-
 
     public bool Free
     {

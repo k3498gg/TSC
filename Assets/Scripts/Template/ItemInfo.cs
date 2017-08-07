@@ -26,6 +26,7 @@ public class ItemInfo: IInfo
     public int scale; // 缩放比例
     public int offset; // 名字偏移
     public int effectId; // 道具效果
+    public int timer; // 持续时间
 
     public  void Load(BinaryReader reader)
     {
@@ -43,6 +44,8 @@ public class ItemInfo: IInfo
         offset = reader.ReadInt32();
  
         effectId = reader.ReadInt32();
+ 
+        timer = reader.ReadInt32();
  
     }
 

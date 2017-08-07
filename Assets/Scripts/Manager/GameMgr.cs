@@ -327,22 +327,17 @@ public class GameMgr : UnitySingleton<GameMgr>
     //主角模型加载
     void CreateEntity(int heroId)
     {
-        Debuger.LogError("CreateEntity 主角模型");
-        HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        //GameObject prefab = ResourcesMgr.Instance.LoadResource<GameObject>(ResourceType.RESOURCE_ENTITY, heroInfo.model);
-        //if (null == prefab)
+        MainEntity.InitEntity(heroId);
+        //Debuger.LogError("CreateEntity 主角模型");
+        //HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
+        //GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
+        //if (null == go)
         //{
         //    Debuger.LogError("角色模型不存在Id:" + heroId);
         //    return;
         //}
-        GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
-        if (null == go)
-        {
-            Debuger.LogError("角色模型不存在Id:" + heroId);
-            return;
-        }
-        MainEntity.InitCharactor(go);
-        MainEntity.InitEntityAttribute(heroInfo);
+        //MainEntity.InitCharactor(go);
+        //MainEntity.InitEntityAttribute(heroInfo);
     }
 
     #endregion

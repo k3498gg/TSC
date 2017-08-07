@@ -46,6 +46,15 @@
 		<field name="ACCELERATE"			value="1"   desc="加速" />
         <field name="WALKINSTANT"     		value="2"   desc="冲锋" />
     </enum>
+
+	<enum name="StateType"		target_name="EffectInfo" desc="道具效果类型" >
+		<field name="NONE"			value="0"   desc="" />
+		<field name="STATE_MARK"					value="1"   desc="问号" />
+		<field name="STATE_MAGNET"     			value="2"   desc="吸铁石" />
+        <field name="STATE_TRANSFERGATE"     	value="3"   desc="传送门" />
+		<field name="STATE_SPEED"     			value="4"   desc="变速" />
+		<field name="STATE_PROTECT"     			value="5"   desc="保护罩" />
+    </enum>
 	
 	<enum name="ConstType"		target_name="ConstInfo" desc="常量表枚举类型" >
 		<field name="NONE"					value="0"   desc="" />

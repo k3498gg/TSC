@@ -9,8 +9,8 @@ public class ItemEffectInfo: IInfo
 {
     public int id; // 编号
     public ItemType effType; // 效果类型
-    public int score; // 积分
-    public int phys; // 体力
+    public int score; // 参数1
+    public int phys; // 参数2
 
     public  void Load(BinaryReader reader)
     {
