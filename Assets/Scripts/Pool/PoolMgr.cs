@@ -92,6 +92,16 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         return null;
     }
 
+    public void Despawner(ResourceType type)
+    {
+        string poolName = Util.GetPoolName(type);
+        if (PoolManager.Pools.ContainsKey(poolName))
+        {
+            SpawnPool pool = PoolManager.Pools[poolName];
+            pool.DespawnAll();
+        }
+    }
+
     public void Despawner(ResourceType type,Transform inst)
     {
         string poolName = Util.GetPoolName(type);

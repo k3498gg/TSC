@@ -115,4 +115,9 @@
 		<field	column="积分"		name="score" 		type="Number"   />
 		<field	column="状态"		name="icon" 		type="String"   />
 	</entry>
+
+	<entry target_name="ObstacleInfo" xls_file="Z障碍物表.xlsx" sheet_name="障碍物">
+		<field	column="编号"		name="id"			type="Number"	key="True" />
+		<field	column="模型"		name="model" 		type="String"   />
+	</entry>
 </Project>

@@ -6,34 +6,28 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
 {
     private float mTotalTime = 0;
 
-    private List<DropItemInfo> dropItemInfos;
+    //private List<DropItemInfo> dropItemInfos;
 
-    public List<DropItemInfo> DropItemInfos
-    {
-        get
-        {
-            if (null == dropItemInfos)
-            {
-                dropItemInfos = new List<DropItemInfo>();
-            }
-            return dropItemInfos;
-        }
+    //public List<DropItemInfo> DropItemInfos
+    //{
+    //    get
+    //    {
+    //        if (null == dropItemInfos)
+    //        {
+    //            dropItemInfos = new List<DropItemInfo>();
+    //        }
+    //        return dropItemInfos;
+    //    }
 
-        set
-        {
-            dropItemInfos = value;
-        }
-    }
+    //    set
+    //    {
+    //        dropItemInfos = value;
+    //    }
+    //}
 
     public void InitMapDrop()
     {
-        //if (!GameMgr.Instance.DicMapInfo.ContainsKey(mapId))
-        //{
-        //    return;
-        //}
-        //MapInfo mapInfo = GameMgr.Instance.DicMapInfo[mapId];
-
-        List<ItemMapInfo> itemMaps = EntityMgr.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
+        List<ItemMapInfo> itemMaps = TSCData.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
         if (null != itemMaps)
         {
             List<ItemMapInfo> points = itemMaps.FindAll(delegate (ItemMapInfo map) { return map.IMapType == ItemMapType.POINT; });
@@ -101,6 +95,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
 
     void InistantDropItem(ItemMapInfo mapInfo, ItemType type)
     {
+        Debug.LogError("产生道具类型:" + type);
         float offX = Random.Range(-mapInfo.Width, mapInfo.Width);
         float offY = Random.Range(-mapInfo.Height, mapInfo.Height);
         GameObject go = Spawner((int)type, new Vector3(mapInfo.PosX + offX, 0, mapInfo.PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);
@@ -109,12 +104,10 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         dropInfo.InfoId = (int)type;
         dropInfo.Area = mapInfo.Area;
         dropInfo.IsLock = false;
-        //dropInfo.DropAI = DropAI.LATER;
-        //Debug.LogError(mapInfo.Index +"　"+type);
-        EntityMgr.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
+        TSCData.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
     }
 
-    public GameObject Spawner(int id, Vector3 v, ResourceType t, Transform parent)
+    GameObject Spawner(int id, Vector3 v, ResourceType t, Transform parent)
     {
         ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(id);
         return ResourcesMgr.Instance.Spawner(item.model, v, t, parent);
@@ -127,61 +120,67 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             return;
         }
 
-        //int itemId = dropItem.ItemId;
         ItemDespawnerInfo despawnItem = new ItemDespawnerInfo(dropItem.ItemId, dropItem.InfoId);
         MapArea area = dropItem.Area;
 
-        if (EntityMgr.Instance.BackItemMapDic.ContainsKey(area))
+        if (TSCData.Instance.BackItemMapDic.ContainsKey(area))
         {
-            EntityMgr.Instance.BackItemMapDic[area].Add(despawnItem);
+            TSCData.Instance.BackItemMapDic[area].Add(despawnItem);
         }
         else
         {
             List<ItemDespawnerInfo> itemIds = new List<ItemDespawnerInfo>();
             itemIds.Add(despawnItem);
-            EntityMgr.Instance.BackItemMapDic[area] = itemIds;
+            TSCData.Instance.BackItemMapDic[area] = itemIds;
         }
 
-        if (EntityMgr.Instance.DropItemDic.ContainsKey(dropItem.ItemId))
+        if (TSCData.Instance.DropItemDic.ContainsKey(dropItem.ItemId))
         {
-            EntityMgr.Instance.DropItemDic.Remove(dropItem.ItemId);
+            TSCData.Instance.DropItemDic.Remove(dropItem.ItemId);
         }
         Despawner(t, dropItem.Cache);
     }
 
-    public void Despawner(ResourceType t, Transform inst)
+    void Despawner(ResourceType t, Transform inst)
     {
         PoolMgr.Instance.Despawner(t, inst);
+    }
+
+    public void Clear()
+    {
+        TSCData.Instance.BackItemMapDic.Clear();
+        TSCData.Instance.DropItemDic.Clear();
+        PoolMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM);
     }
 
 
     private void FreshMapDrop()
     {
-        foreach (KeyValuePair<MapArea, List<ItemDespawnerInfo>> kv in EntityMgr.Instance.BackItemMapDic)
+        foreach (KeyValuePair<MapArea, List<ItemDespawnerInfo>> kv in TSCData.Instance.BackItemMapDic)
         {
             FreshMapDropByArea(kv.Key);
         }
-        EntityMgr.Instance.BackItemMapDic.Clear();
+        TSCData.Instance.BackItemMapDic.Clear();
     }
 
     void FreshMapDropByArea(MapArea area)
     {
-        List<ItemMapInfo> list = EntityMgr.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
+        List<ItemMapInfo> list = TSCData.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
         if (null == list)
         {
             return;
         }
 
-        if (EntityMgr.Instance.BackItemMapDic.ContainsKey(area))
+        if (TSCData.Instance.BackItemMapDic.ContainsKey(area))
         {
-            if (!EntityMgr.Instance.TotalAreaItemMapDic.ContainsKey(area))
+            if (!TSCData.Instance.TotalAreaItemMapDic.ContainsKey(area))
             {
                 List<ItemMapInfo> temp = list.FindAll(delegate (ItemMapInfo mapInfo) { return mapInfo.Area == area; });
-                EntityMgr.Instance.TotalAreaItemMapDic[area] = temp;
+                TSCData.Instance.TotalAreaItemMapDic[area] = temp;
             }
 
-            List<ItemMapInfo> areaItems = EntityMgr.Instance.TotalAreaItemMapDic[area];
-            List<ItemDespawnerInfo> spans = EntityMgr.Instance.BackItemMapDic[area];
+            List<ItemMapInfo> areaItems = TSCData.Instance.TotalAreaItemMapDic[area];
+            List<ItemDespawnerInfo> spans = TSCData.Instance.BackItemMapDic[area];
             int count = areaItems.Count;
             if(count == 0)
             {
@@ -194,7 +193,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             {
                 int index = Random.Range(0, count);
  
-                if (EntityMgr.Instance.DropItemDic.ContainsKey(areaItems[index].Index))
+                if (TSCData.Instance.DropItemDic.ContainsKey(areaItems[index].Index))
                 {
                     continue;
                 }

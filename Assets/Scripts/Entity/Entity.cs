@@ -13,8 +13,8 @@ public class Entity : IEntity
     private Transform roleModel;
     //当前节点模型Entity
     private Transform cacheModel;
-    //当前人物强制移动
-    private bool isForceMove = false;
+    ////当前人物强制移动
+    //private bool isForceMove = false;
 
     private bool isRecoverEnergy = false;
 
@@ -63,18 +63,18 @@ public class Entity : IEntity
         }
     }
 
-    public bool IsForceMove
-    {
-        get
-        {
-            return isForceMove;
-        }
+    //public bool IsForceMove
+    //{
+    //    get
+    //    {
+    //        return isForceMove;
+    //    }
 
-        set
-        {
-            isForceMove = value;
-        }
-    }
+    //    set
+    //    {
+    //        isForceMove = value;
+    //    }
+    //}
 
     public bool IsRecoverEnergy
     {
@@ -199,6 +199,7 @@ public class Entity : IEntity
         }
     }
 
+    //特效加载
     public void SpawnerParticle(int id, EffectType type, Vector3 v, Transform parent)
     {
         DespawnerParticle(type);
@@ -247,7 +248,7 @@ public class Entity : IEntity
 
         mTotalTime = 0;
 
-        foreach (KeyValuePair<int, DropItemInfo> kv in EntityMgr.Instance.DropItemDic)
+        foreach (KeyValuePair<int, DropItemInfo> kv in TSCData.Instance.DropItemDic)
         {
             if(kv.Value.IsLock)
             {

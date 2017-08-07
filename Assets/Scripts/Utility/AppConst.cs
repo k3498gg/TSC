@@ -23,6 +23,7 @@ public class AppConst
     public static string ParticlePrefabPath = "Particle/";
     public static string AnimatorPrefabPath = "Animator/";
     public static string ItemPrefabPath = "Item/";
+    public static string ObstaclePrefabPath = "Obstacle/";
     public static int ItemAreaCount = 0; //区域普通能量点最大数量
     public static int ItemFreshCount = 0; //道具刷新上限
     public static float ItemSugarDistance = 0; //糖果的掉落半径

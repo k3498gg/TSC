@@ -2,27 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EntityMgr : Singleton<EntityMgr>
+public class TSCData : Singleton<TSCData>
 {
     private static EnumComparer<MapArea> fastCompare = new EnumComparer<MapArea>();
 
-    private Dictionary<int, IEntity> m_EntityDic; //实体字典存储中心
+    private Dictionary<int, Entity> m_EntityDic; //实体字典存储中心
 
     private Dictionary<int, MapInfo> m_dicMapInfo; //地圖道具佈局
 
-    private Dictionary<int, DropItemInfo> m_DropItemDic;
+    private Dictionary<int, DropItemInfo> m_DropItemDic; //掉落道具
 
     private Dictionary<MapArea, List<ItemDespawnerInfo>> backItemMapDic; //回收的道具 即將刷新
 
     private Dictionary<MapArea, List<ItemMapInfo>> totalAreaItemMapDic;
 
-    public Dictionary<int, IEntity> EntityDic
+    private Dictionary<int, ObstacleEntity> obstacleDic;
+
+    public Dictionary<int, Entity> EntityDic
     {
         get
         {
             if (null == m_EntityDic)
             {
-                m_EntityDic = new Dictionary<int, IEntity>();
+                m_EntityDic = new Dictionary<int, Entity>();
             }
             return m_EntityDic;
         }
@@ -101,6 +103,23 @@ public class EntityMgr : Singleton<EntityMgr>
         }
     }
 
+    public Dictionary<int, ObstacleEntity> ObstacleDic
+    {
+        get
+        {
+            if(null == obstacleDic)
+            {
+                obstacleDic = new Dictionary<int, ObstacleEntity>();
+            }
+            return obstacleDic;
+        }
+
+        set
+        {
+            obstacleDic = value;
+        }
+    }
+
     public List<ItemMapInfo> GetCurItemMapInfo(int mapId)
     {
         if (DicMapInfo.ContainsKey(mapId))
@@ -110,5 +129,13 @@ public class EntityMgr : Singleton<EntityMgr>
         return null;
     }
 
+    public List<Obstacle> GetCurObstacleInfo(int mapId)
+    {
+        if (DicMapInfo.ContainsKey(mapId))
+        {
+            return DicMapInfo[mapId].Obstacles;
+        }
+        return null;
+    }
 
 }

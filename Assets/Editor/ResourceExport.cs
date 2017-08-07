@@ -108,6 +108,30 @@ public class ResourceExport
                         mapInfo.ItemMapInfo.Add(m);
                     }
                 }
+
+                GameObject[] obstacles = GameObject.FindGameObjectsWithTag("Obstacle");
+                if (obstacles.Length > 0)
+                {
+                    //foreach (GameObject go in obstacles)
+                    for (int obi = 0; obi < obstacles.Length; obi++)
+                    {
+                        Transform t = obstacles[obi].transform;
+                        ObstacleType otype = Util.GetComponent<ObstacleType>(obstacles[obi]);
+                        Vector3 v = t.position;
+                        Obstacle obs = new Obstacle();
+                        obs.Id = obi+1;
+                        obs.PosX = v.x;
+                        obs.PosY = v.z;
+                        obs.Poshh = v.y;
+                        obs.Rotate = t.localRotation.y;
+                        obs.Width = t.localScale.x;
+                        obs.Height = t.localScale.z;
+                        obs.Hh = t.localScale.y;
+                        obs.ObsType = otype.obstacle_type;
+                        mapInfo.Obstacles.Add(obs);
+                    }
+                }
+
                 maps.Add(mapInfo);
             }
         }
@@ -126,6 +150,11 @@ public class ResourceExport
             for (int j = 0; j < maps[i].ItemMapInfo.Count; j++)
             {
                 Debuger.LogError(maps[i].ItemMapInfo[j].ToString());
+            }
+
+            for(int j = 0; j < maps[i].Obstacles.Count;j++)
+            {
+                Debuger.LogError(maps[i].Obstacles[j].ToString());
             }
         }
     }

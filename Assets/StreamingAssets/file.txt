@@ -9,7 +9,8 @@ iteminfo.bin|284
 lansurinfo.bin|79
 lantxtinfo.bin|79
 levelinfo.bin|257
-map.bin|143865
+map.bin|144977
+obstacleinfo.bin|20
 occupationinfo.bin|64
 particleinfo.bin|46
 skillinfo.bin|36

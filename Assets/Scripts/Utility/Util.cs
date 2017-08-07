@@ -38,11 +38,11 @@ public class Util
 
     public static void InitMap(string file)
     {
-        EntityMgr.Instance.DicMapInfo.Clear();
+        TSCData.Instance.DicMapInfo.Clear();
         List<MapInfo> mapInfos = Util.DeSerialize<List<MapInfo>>(file);
         for (int i = 0; i < mapInfos.Count; i++)
         {
-            EntityMgr.Instance.DicMapInfo[mapInfos[i].Id] = mapInfos[i];
+            TSCData.Instance.DicMapInfo[mapInfos[i].Id] = mapInfos[i];
         }
     }
 
@@ -163,6 +163,9 @@ public class Util
             case ResourceType.RESOURCE_ITEM:
                 name = "Item";
                 break;
+            case ResourceType.RESOURCE_OBSTACLE:
+                name = "Obstacle";
+                break;
         }
         return name;
     }
@@ -187,6 +190,9 @@ public class Util
                 break;
             case ResourceType.RESOURCE_ITEM:
                 path = AppConst.ItemPrefabPath;
+                break;
+            case ResourceType.RESOURCE_OBSTACLE:
+                path = AppConst.ObstaclePrefabPath;
                 break;
         }
         return path;

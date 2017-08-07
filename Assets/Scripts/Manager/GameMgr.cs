@@ -8,6 +8,8 @@ public class GameMgr : UnitySingleton<GameMgr>
     private Transform m_cameraRoot;
     private Transform m_playerRoot;
     private Transform m_itemRoot;
+    private Transform m_entityRoot;
+    private Transform m_obstacleRoot;
     private int mapId;
 
     private Entity m_MainEntity; //主角
@@ -113,6 +115,8 @@ public class GameMgr : UnitySingleton<GameMgr>
         m_cameraRoot = m_self.Find("Camera");
         m_playerRoot = m_self.Find("Player");
         m_itemRoot = m_self.Find("ItemRoot");
+        m_entityRoot = m_self.Find("EntityRoot");
+        ObstacleRoot = m_self.Find("ObstacleRoot");
         LoadTemplate();
     }
 
@@ -144,6 +148,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         Util.Init<ItemInfo>(path);
         Util.Init<LevelInfo>(path);
         Util.Init<ItemEffectInfo>(path);
+        Util.Init<ObstacleInfo>(path);
 
         Util.InitMap(path + "map.bin");
 
@@ -152,6 +157,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         CreateEntity(1);
         MapId = 2;
         ItemDropMgr.Instance.InitMapDrop();
+        ObstacleMgr.Instance.InitMapObstacle();
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
     }
 
@@ -199,6 +205,40 @@ public class GameMgr : UnitySingleton<GameMgr>
         set
         {
             mapId = value;
+        }
+    }
+
+    public Transform EntityRoot
+    {
+        get
+        {
+            if (null == m_entityRoot)
+            {
+                m_entityRoot = transform.Find("EntityRoot");
+            }
+            return m_entityRoot;
+        }
+
+        set
+        {
+            m_entityRoot = value;
+        }
+    }
+
+    public Transform ObstacleRoot
+    {
+        get
+        {
+            if(null == m_obstacleRoot)
+            {
+                m_obstacleRoot = transform.Find("ObstacleRoot");
+            }
+            return m_obstacleRoot;
+        }
+
+        set
+        {
+            m_obstacleRoot = value;
         }
     }
 
