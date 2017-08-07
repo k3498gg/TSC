@@ -68,7 +68,7 @@
 		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
     </enum>
 
-	<enum name="ItemType"			target_name="ItemInfo" desc="道具各种效果" >
+	<enum name="ItemType"			target_name="ItemInfo" desc="效果类型" >
 		<field name="NONE"						value="0"   desc="" />
 		<field name="ITEM_MARK"					value="1"   desc="问号" />
 		<field name="ITEM_MAGNET"     			value="2"   desc="吸铁石" />

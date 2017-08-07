@@ -104,8 +104,9 @@
 
 	<entry target_name="ItemEffectInfo" xls_file="D道具表.xlsx" sheet_name="道具效果">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
+		<field	column="效果类型"	name="effType" 		type="Number"   refer_enum="ItemType"  />
 		<field	column="积分"		name="score" 		type="Number"   />
-		<field	column="体力"		name="score" 		type="Number"   />
+		<field	column="体力"		name="phys" 		type="Number"   />
 	</entry>
 
 	<entry target_name="LevelInfo" xls_file="D等级表.xlsx" sheet_name="等级">

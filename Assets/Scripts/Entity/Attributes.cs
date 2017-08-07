@@ -3,22 +3,22 @@ using System.Collections.Generic;
 
 public class Attributes
 {
-    private uint level;
+    private int level;
     private float speed;     //移动速度
     private float baseSpeed;  //基础速度
 
-    private uint score;
+    private int score;
 
-    public uint Level
+    public int Level
     {
         get
         {
-            return level;
+            return level - AppConst.randomValue;
         }
 
         set
         {
-            level = value;
+            level = value + AppConst.randomValue;
         }
     }
 
@@ -26,25 +26,25 @@ public class Attributes
     {
         get
         {
-            return speed;
+            return speed - AppConst.randomValue;
         }
 
         set
         {
-            speed = value;
+            speed = value + AppConst.randomValue;
         }
     }
 
-    public uint Score
+    public int Score
     {
         get
         {
-            return score;
+            return score - AppConst.randomValue;
         }
 
         set
         {
-            score = value;
+            score = value + AppConst.randomValue;
         }
     }
 
@@ -52,12 +52,12 @@ public class Attributes
     {
         get
         {
-            return baseSpeed;
+            return baseSpeed - AppConst.randomValue;
         }
 
         set
         {
-            baseSpeed = value;
+            baseSpeed = value + AppConst.randomValue;
         }
     }
 }

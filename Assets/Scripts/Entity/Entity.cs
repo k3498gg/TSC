@@ -155,14 +155,14 @@ public class Entity : IEntity
         Attribute.BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor;
         Attribute.Speed = Attribute.BaseSpeed;
         ConstInfo rebornconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_REBORN);
-        Attribute.RebornTime = uint.Parse(rebornconstInfo.data) / AppConst.factor;
+        Attribute.RebornTime = int.Parse(rebornconstInfo.data) / AppConst.factor;
         ConstInfo atkDisconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ATK_RADIO);
-        Attribute.Atkdis = uint.Parse(atkDisconstInfo.data) / AppConst.factor;
+        Attribute.Atkdis = int.Parse(atkDisconstInfo.data) / AppConst.factor;
         ConstInfo maxPhyconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_MAX_PHY);
-        Attribute.MaxPhy = uint.Parse(maxPhyconstInfo.data) / AppConst.factor;
+        Attribute.MaxPhy = int.Parse(maxPhyconstInfo.data) / AppConst.factor;
         Attribute.CurPhy = Attribute.MaxPhy;
         ConstInfo perPhyconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_COST_PHY_SPEED);
-        Attribute.CostPhySpeed = uint.Parse(perPhyconstInfo.data) / AppConst.factor;
+        Attribute.CostPhySpeed = int.Parse(perPhyconstInfo.data) / AppConst.factor;
 
         OccupationInfo occpInfo = InfoMgr<OccupationInfo>.Instance.GetInfo(info.occupationId);
         Attribute.Skills = occpInfo.skillId;
@@ -255,7 +255,7 @@ public class Entity : IEntity
             }
             if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis))
             {
-                Debug.LogError("Eat:" + kv.Key + " " + kv.Value.ItemId);
+                Debug.LogError("Eat:" + kv.Key + " " + kv.Value.ItemId　+" "+(ItemType) kv.Value.InfoId);
                 kv.Value.FlyToEntity(this);
             }
         }

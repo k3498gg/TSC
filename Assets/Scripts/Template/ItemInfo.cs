@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-// 道具各种效果
+// 效果类型
 public enum ItemType
 {
     NONE = 0,  //

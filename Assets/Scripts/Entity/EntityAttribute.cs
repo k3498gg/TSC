@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class EntityAttribute : Attributes
 {
-    private uint atkdis;     //攻击范围
-    private uint rebornTime; //复活时间
+    private int atkdis;     //攻击范围
+    private int rebornTime; //复活时间
     private float curPhy;
-    private uint maxPhy; //最大体力
-    private uint costPhySpeed; //每秒消耗的体力
+    private int maxPhy; //最大体力
+    private int costPhySpeed; //每秒消耗的体力
     private int[] skills;
-    private uint money;
+    private int money;
 
-    public uint Atkdis
+    public int Atkdis
     {
         get
         {
@@ -24,7 +24,7 @@ public class EntityAttribute : Attributes
             atkdis = value + AppConst.randomValue;
         }
     }
-    public uint RebornTime
+    public int RebornTime
     {
         get
         {
@@ -48,7 +48,7 @@ public class EntityAttribute : Attributes
             skills = value;
         }
     }
-    public uint MaxPhy
+    public int MaxPhy
     {
         get
         {
@@ -60,7 +60,7 @@ public class EntityAttribute : Attributes
             maxPhy = value + AppConst.randomValue;
         }
     }
-    public uint CostPhySpeed
+    public int CostPhySpeed
     {
         get
         {
@@ -84,7 +84,7 @@ public class EntityAttribute : Attributes
             curPhy = value + AppConst.randomValue;
         }
     }
-    public uint Money
+    public int Money
     {
         get
         {

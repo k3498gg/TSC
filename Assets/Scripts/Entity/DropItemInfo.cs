@@ -16,7 +16,6 @@ public class DropItemInfo : IEntity
     private int itemId;
     private int infoId;
     private MapArea area;
-    //private DropAI dropAI;
     private Transform cache;
     private Transform child;
     private bool isLock = false; //用于判断当前是否被其他玩家占用
@@ -59,19 +58,6 @@ public class DropItemInfo : IEntity
             area = value;
         }
     }
-
-    //public DropAI DropAI
-    //{
-    //    get
-    //    {
-    //        return dropAI;
-    //    }
-
-    //    set
-    //    {
-    //        dropAI = value;
-    //    }
-    //}
 
     public Transform Cache
     {
@@ -138,13 +124,73 @@ public class DropItemInfo : IEntity
         {
             ItemDropMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM, this);
             ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(infoId);
-            ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
-            entity.Attribute.Score += (uint)effect.score;
-            entity.Attribute.CurPhy += (uint)effect.phys;
-            if (entity.Attribute.CurPhy > entity.Attribute.MaxPhy)
+            if(null == item)
             {
-                entity.Attribute.CurPhy = entity.Attribute.MaxPhy;
+                return;
+            }
+            ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
+            if(null == effect)
+            {
+                return;
+            }
+            ItemType type = effect.effType;
+            switch (type)
+            {
+                case ItemType.ITEM_MARK: //问号变身
+
+                    break;
+                case ItemType.ITEM_MAGNET: //吸铁石
+
+                    break;
+                case ItemType.ITEM_TRANSFERGATE: //传送门
+
+                    break;
+                case ItemType.ITEM_SPEED://速度变化
+
+                    break;
+                case ItemType.ITEM_PROTECT: //保护罩
+
+                    break;
+                case ItemType.ITEM_ENERGY:
+                    EnergyUpdate(entity, effect);
+                    break;
             }
         });
+    }
+
+    void MarkUpdate()
+    {
+        Debug.LogError("变身效果");
+    }
+
+    //吸鐵石
+    void MagnetUpdate()
+    {
+        Debug.LogError("吸铁石");
+    }
+
+    void TransferUpdate()
+    {
+        Debug.LogError("传送门");
+    }
+
+    void SpeedUpdate()
+    {
+        Debug.LogError("速度变化");
+    }
+
+    void ProtectUpdate(Entity entity, ItemEffectInfo effect)
+    {
+        Debug.LogError("保护时间");
+    }
+
+    void EnergyUpdate(Entity entity, ItemEffectInfo effect)
+    {
+        entity.Attribute.Score += effect.score;
+        entity.Attribute.CurPhy += effect.phys;
+        if (entity.Attribute.CurPhy > entity.Attribute.MaxPhy)
+        {
+            entity.Attribute.CurPhy = entity.Attribute.MaxPhy;
+        }
     }
 }

@@ -110,7 +110,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         dropInfo.Area = mapInfo.Area;
         dropInfo.IsLock = false;
         //dropInfo.DropAI = DropAI.LATER;
-        Debug.LogError(mapInfo.Index +"　"+type);
+        //Debug.LogError(mapInfo.Index +"　"+type);
         EntityMgr.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
     }
 

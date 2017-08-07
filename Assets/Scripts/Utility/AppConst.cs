@@ -16,8 +16,8 @@ public class AppConst
     public static char Separate = '|';
     public static string Version = "1.0";
     public static string VersionKey = "VersionKey";
-    public static uint factor = 10000;   //配置表换算因子
-    public static uint randomValue = 7515;
+    public static int factor = 10000;   //配置表换算因子
+    public static int randomValue = 7515;
     public static string UIPrefabPath = "UIPrefab/";
     public static string EntityPrefabPath = "Model/";
     public static string ParticlePrefabPath = "Particle/";
