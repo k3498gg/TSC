@@ -82,7 +82,6 @@ public class MainUIWindow : UIBaseWindow
         }
     }
 
-
     void OnPress(GameObject go, bool press)
     {
         if (press)
@@ -97,12 +96,33 @@ public class MainUIWindow : UIBaseWindow
 
     private void OnEnable()
     {
+        EventCenter.Instance.Register<Event_StopSkill>(StopSkill);
+        EventCenter.Instance.Register<Event_StopAcct>(StopAcct);
+        EventCenter.Instance.Register<Event_OpenAcct>(OpenAcct);
         BindStickEvt();
     }
 
     private void OnDisable()
     {
+        EventCenter.Instance.Unregister<Event_StopSkill>(StopSkill);
+        EventCenter.Instance.Unregister<Event_StopAcct>(StopAcct);
+        EventCenter.Instance.Unregister<Event_OpenAcct>(OpenAcct);
         UnBindStickEvt();
+    }
+
+    void StopSkill(object o,Event_StopSkill evt)
+    {
+        EffType = EffectType.NONE;
+    }
+
+    void StopAcct(object o,Event_StopAcct evt)
+    {
+        Debug.LogError("停止使用加速技能");
+    }
+
+    void OpenAcct(object o,Event_OpenAcct evt)
+    {
+        Debug.LogError("可以使用加速技能");
     }
 
     void BindStickEvt()
@@ -211,7 +231,6 @@ public class MainUIWindow : UIBaseWindow
         GameMgr.Instance.MainEntity.Attribute.CurPhy = GameMgr.Instance.MainEntity.Attribute.CurPhy - GameMgr.Instance.MainEntity.Attribute.CostPhySpeed * Time.deltaTime;
         float val = GameMgr.Instance.MainEntity.Attribute.CurPhy / GameMgr.Instance.MainEntity.Attribute.MaxPhy;
         m_timerImage[0].fillAmount = val;
-        GameMgr.Instance.CharacController.SimpleMove(GameMgr.Instance.MainEntity.CacheModel.forward * Time.deltaTime * GameMgr.Instance.MainEntity.Attribute.Speed);
     }
 
     void WalkInstant()
@@ -222,23 +241,7 @@ public class MainUIWindow : UIBaseWindow
     void CancelAccelerate()
     {
         EffType = EffectType.NONE;
-        GameMgr.Instance.MainEntity.Attribute.Speed = GameMgr.Instance.MainEntity.Attribute.BaseSpeed;
-        GameMgr.Instance.ARPGAnimatController.Attack = 0;
-        GameMgr.Instance.MainEntity.DespawnerParticle(EffectType.ACCELERATE);
-        Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
-    }
-
-    void TimerAccelerateHandler(Timer.TimerData data)
-    {
-        GameMgr.Instance.MainEntity.IsRecoverEnergy = true;
-    }
-
-    void TimerWalkInstantHandler(Timer.TimerData data)
-    {
-        EffType = EffectType.NONE;
-        GameMgr.Instance.MainEntity.Attribute.Speed = GameMgr.Instance.MainEntity.Attribute.BaseSpeed;
-        GameMgr.Instance.ARPGAnimatController.Skill = 0;
-        GameMgr.Instance.MainEntity.DespawnerParticle(EffectType.WALKINSTANT);
+        GameMgr.Instance.MainEntity.StopAccelerate();
     }
 
     void CancelSkill(GameObject go)
@@ -284,20 +287,12 @@ public class MainUIWindow : UIBaseWindow
         EffType = (EffectType)effectInfo.id;
         if (EffType == EffectType.ACCELERATE)//加速
         {
-            Timer.Instance.RemoveTimer(TimerAccelerateHandler);
-            GameMgr.Instance.ARPGAnimatController.Attack = 1;
-            GameMgr.Instance.MainEntity.IsRecoverEnergy = false;
-            GameMgr.Instance.MainEntity.Attribute.Speed = GameMgr.Instance.MainEntity.Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
+            GameMgr.Instance.MainEntity.Accelerate(skillInfo,effectInfo);
         }
         else if (EffType == EffectType.WALKINSTANT) //冲锋
         {
-            GameMgr.Instance.ARPGAnimatController.Skill = 1;
-            GameMgr.Instance.MainEntity.Attribute.Speed = GameMgr.Instance.MainEntity.Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
-            Timer.Instance.AddTimer((float)effectInfo.keeptime / AppConst.factor, 1, true, TimerWalkInstantHandler);
+            GameMgr.Instance.MainEntity.Walkinstant(skillInfo,effectInfo);
         }
-
-        //控制特效播放
-        GameMgr.Instance.MainEntity.SpawnerParticle(skillInfo.particleID, EffType, Vector3.zero + GameMgr.Instance.MainEntity.CacheParticleParent.position, GameMgr.Instance.MainEntity.CacheParticleParent);
 
         if (effectInfo.cd > 0)
         {

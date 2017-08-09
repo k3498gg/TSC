@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Entity : IEntity
+public class NetEntity : IEntity
 {
+    private int id;
     //角色属性
     private EntityAttribute attribute;
     private Transform cacheAccelParticleTran; //加速特效
@@ -14,9 +15,8 @@ public class Entity : IEntity
     //当前节点模型Entity
     private Transform cacheModel;
 
-    private bool isRecoverEnergy = false;
-
     private ARPGAnimatorController m_arpgAnimatContorller;
+    private CharacterController m_characterController;
 
     private int m_heroId;
 
@@ -70,19 +70,6 @@ public class Entity : IEntity
         private set
         {
             cacheModel = value;
-        }
-    }
-
-    public bool IsRecoverEnergy
-    {
-        get
-        {
-            return isRecoverEnergy;
-        }
-
-        set
-        {
-            isRecoverEnergy = value;
         }
     }
 
@@ -158,14 +145,6 @@ public class Entity : IEntity
         }
     }
 
-    public bool IsAlive
-    {
-        get
-        {
-            return Attribute.Hp > 0;
-        }
-    }
-
     public OccpType Occupation
     {
         get
@@ -183,7 +162,7 @@ public class Entity : IEntity
     {
         get
         {
-            if (null == m_arpgAnimatContorller)
+            if(null == m_arpgAnimatContorller)
             {
                 m_arpgAnimatContorller = CacheModel.GetComponent<ARPGAnimatorController>();
             }
@@ -193,6 +172,44 @@ public class Entity : IEntity
         set
         {
             m_arpgAnimatContorller = value;
+        }
+    }
+
+    public CharacterController CharacterController
+    {
+        get
+        {
+            if(null == m_characterController)
+            {
+                m_characterController = CacheModel.GetComponent<CharacterController>();
+            }
+            return m_characterController;
+        }
+
+        set
+        {
+            m_characterController = value;
+        }
+    }
+
+    public bool IsAlive
+    {
+        get
+        {
+            return Attribute.Hp > 0;
+        }
+    }
+
+    public int Id
+    {
+        get
+        {
+            return id;
+        }
+
+        set
+        {
+            id = value;
         }
     }
 
@@ -237,9 +254,9 @@ public class Entity : IEntity
         RoleModel.localScale = Vector3.one;
         RoleModel.localPosition = Vector3.zero;
         RoleModel.localRotation = Quaternion.identity;
+        ArpgAnimatContorller = CacheModel.GetComponent<ARPGAnimatorController>();
         ArpgAnimatContorller.Init(RoleModel);
-        GameMgr.Instance.CameraController.SetTarget(CacheModel);
-
+        //GameMgr.Instance.CameraController.SetTarget(CacheModel);
     }
 
     void InitEntityAttribute(HeroInfo info)
@@ -315,29 +332,11 @@ public class Entity : IEntity
         }
     }
 
-    //取消上一次的道具状态
-    void CancelLastState(StateType lastStaty)
-    {
-        switch (lastStaty)
-        {
-            case StateType.STATE_MARK:
-                break;
-            case StateType.STATE_MAGNET:
-                break;
-            case StateType.STATE_TRANSFERGATE:
-                break;
-            case StateType.STATE_SPEED:
-                break;
-            case StateType.STATE_PROTECT:
-                break;
-        }
-    }
-
     //积分变换，体力变换
     public void EnergyUpdate(ItemEffectInfo effect)
     {
         Attribute.Score = Attribute.Score + effect.param1;
-        Attribute.CurPhy = Attribute.CurPhy + effect.param2;
+        Attribute.CurPhy = Attribute.CurPhy+ effect.param2;
         if (Attribute.CurPhy > Attribute.MaxPhy)
         {
             Attribute.CurPhy = Attribute.MaxPhy;
@@ -351,24 +350,22 @@ public class Entity : IEntity
         LevelInfo info = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
         Dictionary<int, LevelInfo> level = InfoMgr<LevelInfo>.Instance.Dict;
         int lev = 0;
-        foreach (KeyValuePair<int, LevelInfo> kv in level)
+        foreach (KeyValuePair<int,LevelInfo> kv in level)
         {
-            if (Attribute.Score >= kv.Value.score)
+           if(Attribute.Score >= kv.Value.score)
             {
                 lev = Mathf.Max(lev, kv.Value.id);
-            }
-            else
+            }else
             {
                 break;
             }
         }
-        Debuger.LogError("Level:" + lev);
+        Debuger.LogError("Level:"+ lev);
         return lev;
     }
 
     public void UpdateState(StateType stateType, ItemInfo item, ItemEffectInfo effect)
     {
-        CancelLastState(State);
         this.State = stateType;
         switch (stateType)
         {
@@ -436,7 +433,6 @@ public class Entity : IEntity
     {
         Debug.LogError("速度变化");
         //加速道具 停止使用加速功能
-        EventCenter.Instance.Publish<Event_StopAcct>(null, new Event_StopAcct());
         this.Attribute.Speed = Attribute.BaseSpeed * effect.param1 / AppConst.factor;
         Timer.Instance.AddTimer(item.timer, 1, true, BackSpeed);
     }
@@ -444,7 +440,6 @@ public class Entity : IEntity
     void BackSpeed(Timer.TimerData data)
     {
         //发送事件 可以使用加速功能
-        EventCenter.Instance.Publish<Event_OpenAcct>(null, new Event_OpenAcct());
         this.Attribute.Speed = Attribute.BaseSpeed;
     }
 
@@ -463,7 +458,6 @@ public class Entity : IEntity
             }
             if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis))
             {
-                Debug.LogError("Eat:" + kv.Key + " " + kv.Value.ItemId + " " + (ItemType)kv.Value.InfoId);
                 kv.Value.FlyToEntity(this);
             }
         }
@@ -479,48 +473,9 @@ public class Entity : IEntity
                 {
                     if (Util.PtInRectArea(CacheModel, kv.Value.Cache, kv.Value.Width + Attribute.Atkdis, kv.Value.Height + Attribute.Atkdis))
                     {
-                        Debug.LogError("Collision:" + kv.Key + " " + kv.Value.Index + " " + kv.Value.Cache.name);
-                        //EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
                         StopSkill(CollisionType.Collision_OBSTACLE);
                     }
                 }
-            }
-        }
-    }
-
-
-    void DetectNetEntity()
-    {
-        foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
-        {
-            if (kv.Value.State == StateType.STATE_PROTECT)
-            {
-                continue;
-            }
-
-            if (!kv.Value.IsAlive)
-            {
-                continue;
-            }
-
-            if (!Util.CanKillBody(Occupation, kv.Value.Occupation))
-            {
-                continue;
-            }
-
-            Vector3 dir = kv.Value.CacheModel.position - CacheModel.position;
-            //角度小于45范围内的才被认为撞击到了
-            if (Vector3.Angle(CacheModel.forward, dir) > 45)
-            {
-                continue;
-            }
-
-            if (Util.PtInCircleArea(CacheModel, kv.Value.CacheModel, Attribute.Atkdis + kv.Value.Attribute.Atkdis))
-            {
-                Debug.LogError(Vector3.Angle(CacheModel.forward, dir) + "  " + Vector3.Dot(CacheModel.forward.normalized, dir.normalized));
-                Debug.LogError("Collision:" + kv.Key + " " + kv.Value.Id + " " + kv.Value.CacheModel.name);
-                kv.Value.BeHit();
-                StopSkill(CollisionType.Collision_NET);
             }
         }
     }
@@ -534,14 +489,8 @@ public class Entity : IEntity
     }
 
 
-    void TimerAccelerateHandler(Timer.TimerData data)
-    {
-        IsRecoverEnergy = true;
-    }
-
     void TimerWalkInstantHandler(Timer.TimerData data)
     {
-        EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
         Attribute.Speed = Attribute.BaseSpeed;
         ArpgAnimatContorller.Skill = 0;
         DespawnerParticle(EffectType.WALKINSTANT);
@@ -566,24 +515,16 @@ public class Entity : IEntity
         }
     }
 
-    public void BeHit()
-    {
-
-    }
-
     public void StopAccelerate()
     {
         Attribute.Speed = GameMgr.Instance.MainEntity.Attribute.BaseSpeed;
         DespawnerParticle(EffectType.ACCELERATE);
-        Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
     }
 
     //加速
     public void Accelerate(SkillInfo skill, EffectInfo effectInfo)
     {
         //加速停止恢复能量条
-        Timer.Instance.RemoveTimer(TimerAccelerateHandler);
-        IsRecoverEnergy = false;
         Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
         SpawnerParticle(skill.particleID, EffectType.ACCELERATE, CacheParticleParent.position, CacheParticleParent);
     }
@@ -595,6 +536,11 @@ public class Entity : IEntity
         Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
         SpawnerParticle(skill.particleID, EffectType.WALKINSTANT, CacheParticleParent.position, CacheParticleParent);
         Timer.Instance.AddTimer((float)effectInfo.keeptime / AppConst.factor, 1, true, TimerWalkInstantHandler);
+    }
+
+    public void BeHit()
+    {
+        Attribute.Hp = 0;
     }
 
     //先用物理引擎去检测碰撞,效率低再优化
@@ -616,7 +562,5 @@ public class Entity : IEntity
         DetectItem();
 
         DetectObstacle();
-
-        DetectNetEntity();
     }
 }

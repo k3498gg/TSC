@@ -106,7 +106,7 @@ public class GameMgr : UnitySingleton<GameMgr>
 
     void Init()
     {
-        if(init)
+        if (init)
         {
             return;
         }
@@ -154,11 +154,18 @@ public class GameMgr : UnitySingleton<GameMgr>
 
         //初始化常量表数据
         AppConst.InitConstData();
-        CreateEntity(1);
         MapId = 2;
+        InitMap();
+        CreateEntity();
+        UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
+
+        StartCoroutine(CreateNetEntity());
+    }
+
+    void InitMap()
+    {
         ItemDropMgr.Instance.InitMapDrop();
         ObstacleMgr.Instance.InitMapObstacle();
-        UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
     }
 
     //保存版本号
@@ -182,7 +189,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     {
         get
         {
-            if(null == m_itemRoot)
+            if (null == m_itemRoot)
             {
                 m_itemRoot = transform.Find("ItemRoot");
             }
@@ -229,7 +236,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     {
         get
         {
-            if(null == m_obstacleRoot)
+            if (null == m_obstacleRoot)
             {
                 m_obstacleRoot = transform.Find("ObstacleRoot");
             }
@@ -322,22 +329,60 @@ public class GameMgr : UnitySingleton<GameMgr>
     }
 
 
+    public Vector3 RandomLocation()
+    {
+        MapInfo map = TSCData.Instance.GetCurrentMapInfo(MapId);
+        if (null == map)
+        {
+            return new Vector3(1, 0, 1);
+        }
+        float width = map.Width;
+        float height = map.Height;
+        float w = Random.Range(1 - width, width - 1);
+        float h = Random.Range(1 - height, height - 1);
+        Vector3 v = new Vector3(w, 0, h);
+        while (true)
+        {
+            foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
+            {
+                if (Util.PtInRectArea(kv.Value.transform, v, kv.Value.Width, kv.Value.Height))
+                {
+                    continue;
+                }
+                return v;
+            }
+        }
+    }
 
     #region 资源模型加载
     //主角模型加载
-    void CreateEntity(int heroId)
+    void CreateEntity()
     {
-        MainEntity.InitEntity(heroId);
-        //Debuger.LogError("CreateEntity 主角模型");
-        //HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        //GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
-        //if (null == go)
-        //{
-        //    Debuger.LogError("角色模型不存在Id:" + heroId);
-        //    return;
-        //}
-        //MainEntity.InitCharactor(go);
-        //MainEntity.InitEntityAttribute(heroInfo);
+        int occp = Random.Range(1, (int)OccpType.Occp_MAZ);
+        MainEntity.InitEntity((OccpType)occp, 1);
+        Vector3 location = RandomLocation();
+        MainEntity.transform.position = location;
+    }
+
+
+    IEnumerator CreateNetEntity()
+    {
+        yield return null;
+        int count = Random.Range(15, 21);
+        TSCData.Instance.EntityDic.Clear();
+        for (int i = 0; i < count;i++)
+        {
+            GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
+            NetEntity e = Util.AddComponent<NetEntity>(go);
+            e.Id = (i+1);
+            int occp = i % 3;
+            OccpType oc = (OccpType)(occp + 1);
+            e.InitEntity(oc, Util.GetHeroIdByOccp(oc,1));
+            
+            Vector3 location = RandomLocation();
+            go.transform.position = location;
+            TSCData.Instance.EntityDic[e.Id] = e;
+        }
     }
 
     #endregion

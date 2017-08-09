@@ -6,7 +6,7 @@ public class TSCData : Singleton<TSCData>
 {
     private static EnumComparer<MapArea> fastCompare = new EnumComparer<MapArea>();
 
-    private Dictionary<int, Entity> m_EntityDic; //实体字典存储中心
+    private Dictionary<int, NetEntity> m_EntityDic; //实体字典存储中心
 
     private Dictionary<int, MapInfo> m_dicMapInfo; //地圖道具佈局
 
@@ -18,13 +18,13 @@ public class TSCData : Singleton<TSCData>
 
     private Dictionary<int, ObstacleEntity> obstacleDic;
 
-    public Dictionary<int, Entity> EntityDic
+    public Dictionary<int, NetEntity> EntityDic
     {
         get
         {
             if (null == m_EntityDic)
             {
-                m_EntityDic = new Dictionary<int, Entity>();
+                m_EntityDic = new Dictionary<int, NetEntity>();
             }
             return m_EntityDic;
         }
@@ -119,6 +119,16 @@ public class TSCData : Singleton<TSCData>
             obstacleDic = value;
         }
     }
+
+    public MapInfo GetCurrentMapInfo(int mapId)
+    {
+        if (DicMapInfo.ContainsKey(mapId))
+        {
+            return DicMapInfo[mapId];
+        }
+        return null;
+    }
+
 
     public List<ItemMapInfo> GetCurItemMapInfo(int mapId)
     {

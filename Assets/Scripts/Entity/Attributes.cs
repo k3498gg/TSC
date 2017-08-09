@@ -6,6 +6,8 @@ public class Attributes
     private int level;
     private float speed;     //移动速度
     private float baseSpeed;  //基础速度
+    private float hp;
+    private float maxHp;
 
     private int score;
 
@@ -58,6 +60,32 @@ public class Attributes
         set
         {
             baseSpeed = value + AppConst.randomValue;
+        }
+    }
+
+    public float Hp
+    {
+        get
+        {
+            return hp;
+        }
+
+        set
+        {
+            hp = value;
+        }
+    }
+
+    public float MaxHp
+    {
+        get
+        {
+            return maxHp;
+        }
+
+        set
+        {
+            maxHp = value;
         }
     }
 }

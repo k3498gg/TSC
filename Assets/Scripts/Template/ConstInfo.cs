@@ -18,6 +18,16 @@ public enum ConstType
     CONST_ITEM_COUNT = 8,  //道具刷新数量上线
 };
 
+// 碰撞停止类型
+public enum CollisionType
+{
+    NONE = 0,  //
+    Collision_NET = 1,  //玩家
+    Collision_ITEM = 2,  //道具
+    Collision_OBSTACLE = 3,  //障碍物
+    Collision_NOTHING = 4,  //自动停止
+};
+
 [Serializable]
 public class ConstInfo: IInfo
 {

@@ -140,7 +140,7 @@ public class Timer : Singleton<Timer>
         }
     }
 
-    //慎用此方法
+    //慎用此方法(当仅有一个此代理在调用的时候才能使用移除，否则移除错误的代理)
     public void RemoveTimer(TimerHandler handler)
     {
         TimerData td = mList.Find(delegate (TimerData temp) { return temp.handler == handler; });

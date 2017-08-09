@@ -125,7 +125,7 @@ public class Util
         right = new Vector3(right.x, 0, right.z);
         Vector3 forward = target.forward;
         forward = new Vector3(forward.x, 0, forward.z);
-        Vector3 dir = self.position - target.position;
+        Vector3 dir = new Vector3( self.position.x,0,self.position.z )- new Vector3( target.position.x,0,target.position.z);
         if (Mathf.Abs(Vector3.Dot(dir, right)) < width * 0.5f)
         {
             if (Mathf.Abs(Vector3.Dot(dir, forward)) < height * 0.5f)
@@ -141,6 +141,23 @@ public class Util
         Vector2 s_v = new Vector2(self.position.x, self.position.z);
         Vector2 t_v = new Vector2(target.position.x, target.position.z);
         return Vector2.SqrMagnitude(s_v - t_v) < radio * radio;
+    }
+
+    public static bool PtInRectArea(Transform target,Vector3 self,float width,float height)
+    {
+        Vector3 dir = new Vector3(target.position.x, 0, target.position.z) - new Vector3(self.x, 0, self.z);
+        Vector3 right = target.right;
+        right = new Vector3(right.x, 0, right.z);
+        Vector3 forward = target.forward;
+        forward = new Vector3(forward.x, 0, forward.z);
+        if (Mathf.Abs(Vector3.Dot(dir, right)) < width * 0.5f)
+        {
+            if (Mathf.Abs(Vector3.Dot(dir, forward)) < height * 0.5f)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static string GetPoolName(ResourceType type)
@@ -166,10 +183,12 @@ public class Util
             case ResourceType.RESOURCE_OBSTACLE:
                 name = "Obstacle";
                 break;
+            case ResourceType.RESOURCE_NET:
+                name = "Net";
+                break;
         }
         return name;
     }
-
 
     public static string GetPrefabPath(ResourceType type)
     {
@@ -193,6 +212,9 @@ public class Util
                 break;
             case ResourceType.RESOURCE_OBSTACLE:
                 path = AppConst.ObstaclePrefabPath;
+                break;
+            case ResourceType.RESOURCE_NET:
+                path = AppConst.NetEntityPrefabPath;
                 break;
         }
         return path;
@@ -236,6 +258,90 @@ public class Util
         return default(T);
     }
 
+    public static StateType ConvertItemType(ItemType type)
+    {
+        StateType state = StateType.NONE;
+        switch (type)
+        {
+            case ItemType.ITEM_MARK: //问号变身
+                state = StateType.STATE_MARK;
+                break;
+            case ItemType.ITEM_MAGNET: //吸铁石
+                state = StateType.STATE_MAGNET;
+                break;
+            case ItemType.ITEM_TRANSFERGATE: //传送门
+                state = StateType.STATE_TRANSFERGATE;
+                break;
+            case ItemType.ITEM_SPEED://速度变化
+                state = StateType.STATE_SPEED;
+                break;
+            case ItemType.ITEM_PROTECT: //保护罩
+                state = StateType.STATE_PROTECT;
+                break;
+        }
+        return state;
+    }
 
 
+    public static OccpType GetNextOccp(OccpType curType)
+    {
+        OccpType oc = OccpType.NONE;
+        switch (curType)
+        {
+            case OccpType.Occp_TIGER:
+                oc = OccpType.Occp_STICK;
+                break;
+            case OccpType.Occp_STICK:
+                oc = OccpType.Occp_CHICK;
+                break;
+            case OccpType.Occp_CHICK:
+                oc = OccpType.Occp_TIGER;
+                break;
+        }
+        return oc;
+    }
+
+    public static bool CanKillBody(OccpType type1,OccpType type2)
+    {
+        if(type1 == OccpType.Occp_TIGER)
+        {
+            if(type2 == OccpType.Occp_CHICK)
+            {
+                return true;
+            }
+        }else if (type1 == OccpType.Occp_STICK)
+        {
+            if (type2 == OccpType.Occp_TIGER)
+            {
+                return true;
+            }
+        }
+        else if (type1 == OccpType.Occp_CHICK)
+        {
+            if (type2 == OccpType.Occp_STICK)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static int GetHeroIdByOccp(OccpType occp,int heroId)
+    {
+        int id = 1;
+        switch (occp)
+        {
+            case OccpType.Occp_TIGER:
+                id = 1;
+                break;
+            case OccpType.Occp_STICK:
+                id = 2;
+                break;
+            case OccpType.Occp_CHICK:
+                id = 3;
+                break;
+        }
+        return id;
+    }
 }

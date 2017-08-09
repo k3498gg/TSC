@@ -14,6 +14,7 @@ public enum ResourceType
     RESOURCE_ANIMATOR = 4,  //动作文件
     RESOURCE_ITEM = 5,  //道具模型
     RESOURCE_OBSTACLE = 6,  //障碍物模型
+    RESOURCE_NET = 7,  //网络角色
 };
 
 [Serializable]

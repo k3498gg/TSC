@@ -57,6 +57,13 @@ public class ResourceExport
                 //EditorSceneManager.OpenScene(s.path);
                 MapInfo mapInfo = new MapInfo();
                 mapInfo.Id = idx;
+
+                GameObject ground = GameObject.FindGameObjectWithTag("ground");
+                Vector3 scale = ground.transform.localScale;
+                Vector3 bound = ground.GetComponent<MeshFilter>().sharedMesh.bounds.extents;
+                mapInfo.Width = bound.x * scale.x;
+                mapInfo.Height = bound.z * scale.z;
+
                 if (null != mapInfo.ItemMapInfo)
                 {
                     mapInfo.ItemMapInfo.Clear();

@@ -6,6 +6,8 @@ public class ObstacleEntity : IEntity
 {
     private int index;
     private Transform cache;
+    private float height;
+    private float width;
 
     public int Index
     {
@@ -34,6 +36,32 @@ public class ObstacleEntity : IEntity
         set
         {
             cache = value;
+        }
+    }
+
+    public float Height
+    {
+        get
+        {
+            return height;
+        }
+
+        set
+        {
+            height = value;
+        }
+    }
+
+    public float Width
+    {
+        get
+        {
+            return width;
+        }
+
+        set
+        {
+            width = value;
         }
     }
 }

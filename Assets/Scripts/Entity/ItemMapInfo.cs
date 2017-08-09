@@ -276,6 +276,8 @@ public class MapInfo
     private int id; //地图ID
     private List<ItemMapInfo> itemMapInfo; //地图对应的道具布局表
     private List<Obstacle> obstacles;
+    private float width;
+    private float height;
 
     public int Id
     {
@@ -321,6 +323,32 @@ public class MapInfo
         set
         {
             obstacles = value;
+        }
+    }
+
+    public float Width
+    {
+        get
+        {
+            return width;
+        }
+
+        set
+        {
+            width = value;
+        }
+    }
+
+    public float Height
+    {
+        get
+        {
+            return height;
+        }
+
+        set
+        {
+            height = value;
         }
     }
 }

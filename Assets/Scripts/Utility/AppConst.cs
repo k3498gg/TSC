@@ -24,10 +24,12 @@ public class AppConst
     public static string AnimatorPrefabPath = "Animator/";
     public static string ItemPrefabPath = "Item/";
     public static string ObstaclePrefabPath = "Obstacle/";
+    public static string NetEntityPrefabPath = "Net/";
     public static int ItemAreaCount = 0; //区域普通能量点最大数量
     public static int ItemFreshCount = 0; //道具刷新上限
     public static float ItemSugarDistance = 0; //糖果的掉落半径
-
+    public static string TAG_Obstacle = "Obstacle";
+    public static string NET_Entity = "NetEntity";
 
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {

@@ -97,7 +97,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
 
     void InistantDropItem(ItemMapInfo mapInfo, ItemType type)
     {
-        Debug.LogError("产生道具类型:" + type);
+        //Debug.LogError("产生道具类型:" + type);
         float offX = Random.Range(-mapInfo.Width, mapInfo.Width);
         float offY = Random.Range(-mapInfo.Height, mapInfo.Height);
         GameObject go = Spawner((int)type, new Vector3(mapInfo.PosX + offX, 0, mapInfo.PosY + offY), ResourceType.RESOURCE_ITEM, GameMgr.Instance.ItemRoot);

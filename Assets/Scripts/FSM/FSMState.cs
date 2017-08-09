@@ -12,6 +12,10 @@ public enum Transition
     NullTransition = 0,  //用这个过度来代表你的系统中不存在的状态
     SawPlayer,//这里配合NPCControl添加两个NPC的过渡(搜寻目标，丢失目标)
     LostPlayer,
+    FreeWalk,
+    Acct,
+    Skill,
+    Dead
 }
 
 /// <summary>
@@ -22,7 +26,11 @@ public enum StateID
 {
     NullStateID = 0,//使用这个ID来代表你系统中不存在的状态ID    
     ChasingPlayer,//这里配合NPCControl添加两个状态
-    FollowingPath,
+    LostPlayer,
+    Walk,
+    Acct,
+    Skill,
+    Dead
 }
 
 /// <summary>
@@ -116,19 +124,19 @@ public abstract class FSMState
     /// NPC的任何动作，移动或者交流都需要防止在这儿
     /// NPC是被该类约束下对象的一个引用
     /// </summary>
-    public abstract void OnExcute(GameObject player, GameObject npc);
+    public abstract void OnExcute(NetEntity entity);
 
     /// <summary>
     /// 动机(状态更新)-->这个方法用来决定当前状态是否需要过渡到列表中的其他状态
     /// NPC是被该类约束下对象的一个引用
     /// </summary>
-    public abstract void OnUpdate(GameObject player, GameObject npc);
+    public abstract void OnUpdate(NetEntity entity);
 
-    //根据需求定义自己的状态机行为方法
-    public abstract void OnExcute();
+    ////根据需求定义自己的状态机行为方法
+    //public abstract void OnExcute();
 
-    //状态更新函数
-    public abstract void OnUpdate();
+    ////状态更新函数
+    //public abstract void OnUpdate();
 
 }
 

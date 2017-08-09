@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class EntityAttribute : Attributes
 {
-    private int atkdis;     //攻击范围
+    private float atkdis;     //攻击范围,实际范围
+    private float basedis;     //攻击范围基础值
     private int rebornTime; //复活时间
     private float curPhy;
     private int maxPhy; //最大体力
@@ -12,7 +13,7 @@ public class EntityAttribute : Attributes
     private int[] skills;
     private int money;
 
-    public int Atkdis
+    public float Atkdis
     {
         get
         {
@@ -94,6 +95,19 @@ public class EntityAttribute : Attributes
         set
         {
             money = value + AppConst.randomValue;
+        }
+    }
+
+    public float Basedis
+    {
+        get
+        {
+            return basedis - AppConst.randomValue;
+        }
+
+        set
+        {
+            basedis = value + AppConst.randomValue;
         }
     }
 }

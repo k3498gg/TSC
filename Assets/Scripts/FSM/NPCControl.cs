@@ -3,12 +3,30 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody))]
+//[RequireComponent(typeof(Rigidbody))]
 public class NPCControl : MonoBehaviour
 {
     public GameObject player;
-    public Transform[] path;
+    private NetEntity m_netEntity;
     private FSMSystem fsm;
+    private float m_Time;
+
+    public NetEntity NEntity
+    {
+        get
+        {
+            if(null == m_netEntity)
+            {
+                m_netEntity = Util.AddComponent<NetEntity>(gameObject);
+            }
+            return m_netEntity;
+        }
+
+        set
+        {
+            m_netEntity = value;
+        }
+    }
 
     //该方法用来改变有限状态机的状体，有限状态机基于当前的状态和通过的过渡状态。如果当前的状态没有用来通过的过度状态，则会抛出错误
     public void SetTransition(Transition t)
@@ -23,8 +41,19 @@ public class NPCControl : MonoBehaviour
 
     public void Update()
     {
-        fsm.CurrentState.OnUpdate(player, gameObject);
-        fsm.CurrentState.OnExcute(player, gameObject);
+        if (null == fsm)
+        {
+            return;
+        }
+        m_Time += Time.deltaTime;
+        if (m_Time < 0.2f)
+        {
+            return;
+        }
+
+        m_Time = 0;
+        fsm.CurrentState.OnUpdate(NEntity);
+        fsm.CurrentState.OnExcute(NEntity);
     }
 
 
@@ -34,15 +63,27 @@ public class NPCControl : MonoBehaviour
 
     private void MakeFSM()//建造状态机
     {
-        FollowPathState follow = new FollowPathState(path);
-        follow.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
+        PlayerWalkState walk = new PlayerWalkState();
+        walk.AddTransition(Transition.FreeWalk, StateID.Walk);
+
+        LostPlayer lostPlayer = new LostPlayer();
+        lostPlayer.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
 
         ChasePlayerState chase = new ChasePlayerState();
-        chase.AddTransition(Transition.LostPlayer, StateID.FollowingPath);
+        chase.AddTransition(Transition.LostPlayer, StateID.LostPlayer);
+
+        PlayerAcceState acce = new PlayerAcceState();
+        acce.AddTransition(Transition.Acct, StateID.Acct);
+
+        PlayerSkillState skill = new PlayerSkillState();
+        skill.AddTransition(Transition.Skill, StateID.Skill);
 
         fsm = new FSMSystem();
-        fsm.AddState(follow);//添加状态到状态机，第一个添加的状态将作为初始状态
+        fsm.AddState(walk);
+        fsm.AddState(lostPlayer);
         fsm.AddState(chase);
+        fsm.AddState(acce);
+        fsm.AddState(skill);
     }
 }
 

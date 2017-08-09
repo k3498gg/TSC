@@ -46,10 +46,11 @@ public class ARPGAnimatorController : BaseAnimatorController
             return;
         }
 
-        CurrentStateInfo = animator.GetCurrentAnimatorStateInfo(layer);
 
         if (Skill > 0)
         {
+            CurrentStateInfo = animator.GetCurrentAnimatorStateInfo(layer);
+
             if (CurrentStateInfo.fullPathHash == skill1_NameHash && CurrentStateInfo.normalizedTime > 0.95f)
             {
                 Skill = 0;

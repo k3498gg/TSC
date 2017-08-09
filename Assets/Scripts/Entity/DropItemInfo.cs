@@ -120,55 +120,94 @@ public class DropItemInfo : IEntity
 
         Vector3 v = entity.CacheModel.position;
 
+        ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(infoId);
+        if (null == item)
+        {
+            return;
+        }
+        ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
+        if (null == effect)
+        {
+            return;
+        }
+        ItemType type = effect.effType;
+
+        if((int)type < (int)ItemType.ITEM_ENERGY)
+        {
+            //碰到状态道具 停止技能
+            Debuger.LogError("碰到状态道具，停止技能");
+            //EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
+            entity.StopSkill(CollisionType.Collision_ITEM);
+        }
+
+        //如果是积分道具(积分发生变化)
+        if (type == ItemType.ITEM_ENERGY)
+        {
+            entity.EnergyUpdate(effect);
+        }
+        else
+        {
+            //非积分道具  人物状态变化
+            StateType state = Util.ConvertItemType(type);
+            entity.UpdateState(state, item, effect);
+        }
+
         Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>
         {
             ItemDropMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM, this);
-            ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(infoId);
-            if (null == item)
-            {
-                return;
-            }
-            ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
-            if (null == effect)
-            {
-                return;
-            }
-            ItemType type = effect.effType;
-            StateType state = StateType.NONE;
-            switch (type)
-            {
-                case ItemType.ITEM_MARK: //问号变身
-                    state = StateType.STATE_MARK;
-                    break;
-                case ItemType.ITEM_MAGNET: //吸铁石
-                    state = StateType.STATE_MAGNET;
-                    break;
-                case ItemType.ITEM_TRANSFERGATE: //传送门
-                    state = StateType.STATE_TRANSFERGATE;
-                    break;
-                case ItemType.ITEM_SPEED://速度变化
-                    state = StateType.STATE_SPEED;
-                    break;
-                case ItemType.ITEM_PROTECT: //保护罩
-                    state = StateType.STATE_PROTECT;
-                    break;
-                case ItemType.ITEM_ENERGY:
-                    EnergyUpdate(entity, effect);
-                    break;
-            }
-            entity.UpdateState(state, item);
         });
     }
 
 
-
-    void EnergyUpdate(Entity entity, ItemEffectInfo effect)
+    public void FlyToEntity(NetEntity entity)
     {
-        entity.Attribute.Score += effect.score;
-        entity.Attribute.CurPhy += effect.phys;
-        if (entity.Attribute.CurPhy > entity.Attribute.MaxPhy)
+        if (null == entity)
         {
-            entity.Attribute.CurPhy = entity.Attribute.MaxPhy;
+            return;
         }
+        if (IsLock)
+        {
+            return;
+        }
+        IsLock = true;
+
+        Vector3 v = entity.CacheModel.position;
+
+        ItemInfo item = InfoMgr<ItemInfo>.Instance.GetInfo(infoId);
+        if (null == item)
+        {
+            return;
+        }
+        ItemEffectInfo effect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(item.effectId);
+        if (null == effect)
+        {
+            return;
+        }
+        ItemType type = effect.effType;
+
+        if ((int)type < (int)ItemType.ITEM_ENERGY)
+        {
+            //碰到状态道具 停止技能
+            Debuger.LogError("碰到状态道具，停止技能");
+            //EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
+            entity.StopSkill(CollisionType.Collision_ITEM);
+        }
+
+        //如果是积分道具(积分发生变化)
+        if (type == ItemType.ITEM_ENERGY)
+        {
+            entity.EnergyUpdate(effect);
+        }
+        else
+        {
+            //非积分道具  人物状态变化
+            StateType state = Util.ConvertItemType(type);
+            entity.UpdateState(state, item, effect);
+        }
+
+        Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>
+        {
+            ItemDropMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM, this);
+        });
     }
 }
