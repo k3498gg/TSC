@@ -160,6 +160,13 @@ public class Util
         return false;
     }
 
+    public static float GetEntityDistance(Transform cache1,Transform cache2)
+    {
+        Vector2 v1 = new Vector2(cache1.position.x, cache1.position.z);
+        Vector2 v2 = new Vector2(cache2.position.x, cache2.position.z);
+        return Vector2.Distance(v1, v2);
+    }
+
     public static string GetPoolName(ResourceType type)
     {
         string name = string.Empty;
@@ -282,6 +289,24 @@ public class Util
         return state;
     }
 
+
+    public static OccpType GetCanKillOccp(OccpType curType)
+    {
+        OccpType oc = OccpType.NONE;
+        switch (curType)
+        {
+            case OccpType.Occp_TIGER:
+                oc = OccpType.Occp_CHICK;
+                break;
+            case OccpType.Occp_STICK:
+                oc = OccpType.Occp_TIGER;
+                break;
+            case OccpType.Occp_CHICK:
+                oc = OccpType.Occp_STICK;
+                break;
+        }
+        return oc;
+    }
 
     public static OccpType GetNextOccp(OccpType curType)
     {

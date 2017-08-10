@@ -488,7 +488,6 @@ public class Entity : IEntity
         }
     }
 
-
     void DetectNetEntity()
     {
         foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
@@ -503,23 +502,26 @@ public class Entity : IEntity
                 continue;
             }
 
-            if (!Util.CanKillBody(Occupation, kv.Value.Occupation))
-            {
-                continue;
-            }
-
-            Vector3 dir = kv.Value.CacheModel.position - CacheModel.position;
-            //角度小于45范围内的才被认为撞击到了
-            if (Vector3.Angle(CacheModel.forward, dir) > 45)
-            {
-                continue;
-            }
+            //if (!Util.CanKillBody(Occupation, kv.Value.Occupation))
+            //{
+            //    continue;
+            //}
 
             if (Util.PtInCircleArea(CacheModel, kv.Value.CacheModel, Attribute.Atkdis + kv.Value.Attribute.Atkdis))
             {
-                Debug.LogError(Vector3.Angle(CacheModel.forward, dir) + "  " + Vector3.Dot(CacheModel.forward.normalized, dir.normalized));
-                Debug.LogError("Collision:" + kv.Key + " " + kv.Value.Id + " " + kv.Value.CacheModel.name);
-                kv.Value.BeHit();
+                Vector3 dir = kv.Value.CacheModel.position - CacheModel.position;
+                //角度小于45范围内的才被认为撞击到了
+                if (Vector3.Angle(CacheModel.forward, dir) > 45)
+                {
+                    //Debug.LogError("角度过大"+ Vector3.Angle(CacheModel.forward, dir));
+                    continue;
+                }
+
+                if (Util.CanKillBody(Occupation, kv.Value.Occupation))
+                {
+                    kv.Value.BeKilled();
+                }
+
                 StopSkill(CollisionType.Collision_NET);
             }
         }
@@ -527,10 +529,13 @@ public class Entity : IEntity
 
     public void StopSkill(CollisionType type)
     {
-        collision = type;
-        Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
-        TimerWalkInstantHandler(null);
-        collision = CollisionType.NONE;
+        if(ArpgAnimatContorller.Skill > 0)
+        {
+            collision = type;
+            Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
+            TimerWalkInstantHandler(null);
+            collision = CollisionType.NONE;
+        }
     }
 
 
@@ -549,16 +554,16 @@ public class Entity : IEntity
         switch (collision)
         {
             case CollisionType.Collision_NET:
-                Debug.LogError("碰到玩家了");
+                Debuger.LogError("碰到玩家了");
                 break;
             case CollisionType.Collision_ITEM:
-                Debug.LogError("碰到道具了");
+                Debuger.LogError("碰到道具了");
                 break;
             case CollisionType.Collision_OBSTACLE:
-                Debug.LogError("碰到障碍物了");
+                Debuger.LogError("碰到障碍物了");
                 break;
             case CollisionType.NONE:
-                Debug.LogError("自己停止了");
+                Debuger.LogError("自己停止了");
                 OccpType occp = Util.GetNextOccp(occupation);
                 int id = Util.GetHeroIdByOccp(occp, HeroId);
                 ChangeOccp(occp, id);
@@ -566,7 +571,7 @@ public class Entity : IEntity
         }
     }
 
-    public void BeHit()
+    public void BeKilled()
     {
 
     }

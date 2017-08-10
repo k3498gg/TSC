@@ -15,7 +15,8 @@ public enum Transition
     FreeWalk,
     Acct,
     Skill,
-    Dead
+    Dead,
+    Idle
 }
 
 /// <summary>
@@ -30,7 +31,8 @@ public enum StateID
     Walk,
     Acct,
     Skill,
-    Dead
+    Dead,
+    Idle
 }
 
 /// <summary>
@@ -111,13 +113,13 @@ public abstract class FSMState
     /// 这个方法用来设立进入状态前的条件
     /// 在状态机分配它到当前状态之前他会被自动调用
     /// </summary>
-    public virtual void OnEnter() { }
+    public virtual void OnEnter(NetEntity entity) { }
 
     /// <summary>
     /// 这个方法用来让一切都是必要的，例如在有限状态机变化的另一个时重置变量。
     /// 在状态机切换到新的状态之前它会被自动调用。
     /// </summary>
-    public virtual void OnExit() { }
+    public virtual void OnExit(NetEntity entity) { }
 
     /// <summary>
     /// 表现-->该方法用来控制NPC在游戏世界中的行为
@@ -239,7 +241,7 @@ public class FSMSystem
     /// <summary>
     /// 状态改变
     /// </summary>
-    public void SwitchTransition(Transition trans)
+    public void SwitchTransition(Transition trans,NetEntity entity)
     {
         //在改变当前状态前检测NullTransition
         if (trans == Transition.NullTransition)
@@ -265,10 +267,10 @@ public class FSMSystem
             if (states[i].ID == CurrentStateID)
             {
                 //离开旧状态执行方法
-                CurrentState.OnExit();
+                CurrentState.OnExit(entity);
                 CurrentState = states[i];
                 //进入新的状态
-                CurrentState.OnEnter();
+                CurrentState.OnEnter(entity);
                 break;
             }
         }

@@ -24,14 +24,19 @@ public class BaseAnimatorController : MonoBehaviour
 
     public void  Init(Transform cache)
     {
-        //if(null == animator)
-        //{
-            if (null != cache)
-            {
-                animator = cache.GetComponent<Animator>();
-                //m_baseTemp = cache.gameObject;
-            }
-        //}
+        if (null != cache)
+        {
+            animator = cache.GetComponent<Animator>();
+        }
+        Reset();
+    }
+
+    public void Reset()
+    {
+        Walk = false;
+        Die = false;
+        Attack = 0;
+        Skill = 0;
     }
 
     public bool Free

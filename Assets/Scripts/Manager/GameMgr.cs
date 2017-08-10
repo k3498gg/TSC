@@ -368,7 +368,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     IEnumerator CreateNetEntity()
     {
         yield return null;
-        int count = Random.Range(15, 21);
+        int count = Random.Range(1, 2);
         TSCData.Instance.EntityDic.Clear();
         for (int i = 0; i < count;i++)
         {

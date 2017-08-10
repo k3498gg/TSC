@@ -49,9 +49,6 @@
 
 	<enum name="StateType"		target_name="EffectInfo" desc="道具效果类型" >
 		<field name="NONE"			value="0"   desc="" />
-		<field name="STATE_PROTECT"			value="1"   desc="保护" />
-		<field name="STATE_SPEED"			value="2"   desc="加速" />
-		<field name="STATE_MAGENT"			value="3"   desc="吸铁石" />
 		<field name="STATE_MARK"					value="1"   desc="问号" />
 		<field name="STATE_MAGNET"     			value="2"   desc="吸铁石" />
         <field name="STATE_TRANSFERGATE"     	value="3"   desc="传送门" />
@@ -79,6 +76,7 @@
 		<field name="RESOURCE_ANIMATOR"     	value="4"   desc="动作文件" />
 		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
 		<field name="RESOURCE_OBSTACLE"     	value="6"   desc="障碍物模型" />
+		<field name="RESOURCE_NET"     			value="7"   desc="障碍物模型" />
     </enum>
 
 	<enum name="ItemType"			target_name="ItemInfo" desc="效果类型" >
@@ -95,6 +93,22 @@
 		<field name="NONE"						value="0"   desc="" />
 		<field name="NPC_NORMAL"				value="1"   desc="普通NPC" />
 		<field name="NPC_BOSS"     				value="2"   desc="BOSS" />
+    </enum>
+
+	<enum name="OccpType"			target_name="NpcInfo" desc="npc类型" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="Occp_TIGER"				value="1"   desc="老虎" />
+		<field name="Occp_STICK"     			value="2"   desc="棒子" />
+		<field name="Occp_CHICK"     			value="3"   desc="鸡" />
+		<field name="Occp_MAZ"     				value="4"   desc="最大限制值" />
+    </enum>
+
+	<enum name="CollisionType"			target_name="ConstInfo" desc="碰撞停止类型" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="Collision_NET"				value="1"   desc="玩家" />
+		<field name="Collision_ITEM"     			value="2"   desc="道具" />
+		<field name="Collision_OBSTACLE"     			value="3"   desc="障碍物" />
+		<field name="Collision_NOTHING"     				value="4"   desc="自动停止" />
     </enum>
 
 </Project>

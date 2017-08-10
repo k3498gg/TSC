@@ -87,37 +87,37 @@ public class ARPGCameraController : BaseCameraController
         Vector3 position = Target.position - trm;
         myTransform.position = position;
 #elif UNITY_ANDROID || UNITY_IPHONE
-        if (Input.touchCount == 2 && pinchZoom)
-        {
-            Vector2 touch0 = Input.GetTouch(0).position;
-            Vector2 touch1 = Input.GetTouch(1).position;
+        //if (Input.touchCount == 2 && pinchZoom)
+        //{
+        //    Vector2 touch0 = Input.GetTouch(0).position;
+        //    Vector2 touch1 = Input.GetTouch(1).position;
 
-            float distance = Vector2.Distance(touch0, touch1);
+        //    float distance = Vector2.Distance(touch0, touch1);
 
-            if (prevDistance != 0)
-            {
-                if (prevDistance > distance)
-                {
-                    startingDistance += Time.deltaTime * zoomSpeed;
-                    if (startingDistance > maxDistance)
-                        startingDistance = maxDistance;
-                }
-                else if (prevDistance < distance)
-                {
-                    startingDistance -= Time.deltaTime * zoomSpeed;
-                    if (startingDistance < minDistance)
-                        startingDistance = minDistance;
-                }
-            }
+        //    if (prevDistance != 0)
+        //    {
+        //        if (prevDistance > distance)
+        //        {
+        //            startingDistance += Time.deltaTime * zoomSpeed;
+        //            if (startingDistance > maxDistance)
+        //                startingDistance = maxDistance;
+        //        }
+        //        else if (prevDistance < distance)
+        //        {
+        //            startingDistance -= Time.deltaTime * zoomSpeed;
+        //            if (startingDistance < minDistance)
+        //                startingDistance = minDistance;
+        //        }
+        //    }
 
-            prevDistance = distance;
-        }
-        else
-        {
-            prevDistance = 0;
-        }
+        //    prevDistance = distance;
+        //}
+        //else
+        //{
+        //    prevDistance = 0;
+        //}
 
-        Quaternion rotation = Quaternion.Euler(camXAngle, y, 0);
+        Quaternion rotation = Quaternion.Euler(camXAngle, eulerY, 0);
         myTransform.rotation = rotation;
 
         Vector3 trm = rotation * Vector3.forward * startingDistance + new Vector3(0, -1 * targetHeight, 0);

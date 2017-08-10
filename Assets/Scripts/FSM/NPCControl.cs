@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-//[RequireComponent(typeof(Rigidbody))]
 public class NPCControl : MonoBehaviour
 {
-    public GameObject player;
     private NetEntity m_netEntity;
     private FSMSystem fsm;
-    private float m_Time;
 
     public NetEntity NEntity
     {
@@ -29,14 +26,18 @@ public class NPCControl : MonoBehaviour
     }
 
     //该方法用来改变有限状态机的状体，有限状态机基于当前的状态和通过的过渡状态。如果当前的状态没有用来通过的过度状态，则会抛出错误
-    public void SetTransition(Transition t)
+    public void SetTransition(Transition t,NetEntity entity)
     {
-        fsm.SwitchTransition(t);
+        if(null != fsm)
+        {
+            fsm.SwitchTransition(t, entity);
+        }
     }
 
     public void Start()
     {
         MakeFSM();
+        SetTransition(Transition.FreeWalk, NEntity);
     }
 
     public void Update()
@@ -45,13 +46,7 @@ public class NPCControl : MonoBehaviour
         {
             return;
         }
-        m_Time += Time.deltaTime;
-        if (m_Time < 0.2f)
-        {
-            return;
-        }
 
-        m_Time = 0;
         fsm.CurrentState.OnUpdate(NEntity);
         fsm.CurrentState.OnExcute(NEntity);
     }
@@ -63,20 +58,33 @@ public class NPCControl : MonoBehaviour
 
     private void MakeFSM()//建造状态机
     {
+        PlayerIdleState idle = new PlayerIdleState();
+        idle.AddTransition(Transition.FreeWalk, StateID.Walk);
+        idle.AddTransition(Transition.Dead, StateID.Dead);
+
         PlayerWalkState walk = new PlayerWalkState();
         walk.AddTransition(Transition.FreeWalk, StateID.Walk);
+        walk.AddTransition(Transition.Acct, StateID.Acct);
+        walk.AddTransition(Transition.Dead, StateID.Dead);
 
         LostPlayer lostPlayer = new LostPlayer();
         lostPlayer.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
+        lostPlayer.AddTransition(Transition.Dead, StateID.Dead);
+
 
         ChasePlayerState chase = new ChasePlayerState();
         chase.AddTransition(Transition.LostPlayer, StateID.LostPlayer);
+        chase.AddTransition(Transition.Dead, StateID.Dead);
+
 
         PlayerAcceState acce = new PlayerAcceState();
         acce.AddTransition(Transition.Acct, StateID.Acct);
+        acce.AddTransition(Transition.FreeWalk, StateID.Walk);
+        acce.AddTransition(Transition.Dead, StateID.Dead);
 
         PlayerSkillState skill = new PlayerSkillState();
         skill.AddTransition(Transition.Skill, StateID.Skill);
+        skill.AddTransition(Transition.Dead, StateID.Dead);
 
         fsm = new FSMSystem();
         fsm.AddState(walk);

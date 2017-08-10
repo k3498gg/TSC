@@ -5,6 +5,8 @@ using UnityEngine;
 public class NetEntity : IEntity
 {
     private int id;
+    private NPCControl m_npcControl;
+    private float flee_dis = 10; //逃离距离
     //角色属性
     private EntityAttribute attribute;
     private Transform cacheAccelParticleTran; //加速特效
@@ -14,6 +16,11 @@ public class NetEntity : IEntity
     private Transform roleModel;
     //当前节点模型Entity
     private Transform cacheModel;
+
+    private SkillInfo skill1;
+    private EffectInfo effect1;
+    private SkillInfo skill2;
+    private EffectInfo effect2;
 
     private ARPGAnimatorController m_arpgAnimatContorller;
     private CharacterController m_characterController;
@@ -162,7 +169,7 @@ public class NetEntity : IEntity
     {
         get
         {
-            if(null == m_arpgAnimatContorller)
+            if (null == m_arpgAnimatContorller)
             {
                 m_arpgAnimatContorller = CacheModel.GetComponent<ARPGAnimatorController>();
             }
@@ -175,11 +182,11 @@ public class NetEntity : IEntity
         }
     }
 
-    public CharacterController CharacterController
+    public CharacterController CharaController
     {
         get
         {
-            if(null == m_characterController)
+            if (null == m_characterController)
             {
                 m_characterController = CacheModel.GetComponent<CharacterController>();
             }
@@ -213,12 +220,38 @@ public class NetEntity : IEntity
         }
     }
 
+    public NPCControl NpcControl
+    {
+        get
+        {
+            if (null == m_npcControl)
+            {
+                m_npcControl = Util.AddComponent<NPCControl>(gameObject);
+            }
+            return m_npcControl;
+        }
+
+        set
+        {
+            m_npcControl = value;
+        }
+    }
+
     public void InitEntity(OccpType occp, int heroId)
     {
         ChangeOccp(occp, heroId);
         HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
         InitEntityAttribute(heroInfo);
+        InitSkill();
         init = true;
+    }
+
+    void InitSkill()
+    {
+        skill1 = InfoMgr<SkillInfo>.Instance.GetInfo(1);
+        effect1 = InfoMgr<EffectInfo>.Instance.GetInfo(skill1.effectID);
+        skill2 = InfoMgr<SkillInfo>.Instance.GetInfo(2);
+        effect2 = InfoMgr<EffectInfo>.Instance.GetInfo(skill2.effectID);
     }
 
     GameObject SpawnerGO(int heroId, Vector3 v)
@@ -336,7 +369,7 @@ public class NetEntity : IEntity
     public void EnergyUpdate(ItemEffectInfo effect)
     {
         Attribute.Score = Attribute.Score + effect.param1;
-        Attribute.CurPhy = Attribute.CurPhy+ effect.param2;
+        Attribute.CurPhy = Attribute.CurPhy + effect.param2;
         if (Attribute.CurPhy > Attribute.MaxPhy)
         {
             Attribute.CurPhy = Attribute.MaxPhy;
@@ -350,17 +383,18 @@ public class NetEntity : IEntity
         LevelInfo info = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
         Dictionary<int, LevelInfo> level = InfoMgr<LevelInfo>.Instance.Dict;
         int lev = 0;
-        foreach (KeyValuePair<int,LevelInfo> kv in level)
+        foreach (KeyValuePair<int, LevelInfo> kv in level)
         {
-           if(Attribute.Score >= kv.Value.score)
+            if (Attribute.Score >= kv.Value.score)
             {
                 lev = Mathf.Max(lev, kv.Value.id);
-            }else
+            }
+            else
             {
                 break;
             }
         }
-        Debuger.LogError("Level:"+ lev);
+        Debuger.LogError("Level:" + lev);
         return lev;
     }
 
@@ -465,17 +499,19 @@ public class NetEntity : IEntity
 
     void DetectObstacle()
     {
-        if (null != ArpgAnimatContorller)
+        foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
         {
-            if (ArpgAnimatContorller.Skill == 1)
+            if (Util.PtInRectArea(CacheModel, kv.Value.Cache, kv.Value.Width + Attribute.Atkdis, kv.Value.Height + Attribute.Atkdis))
             {
-                foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
+                if (null != ArpgAnimatContorller)
                 {
-                    if (Util.PtInRectArea(CacheModel, kv.Value.Cache, kv.Value.Width + Attribute.Atkdis, kv.Value.Height + Attribute.Atkdis))
+                    if (ArpgAnimatContorller.Skill == 1)
                     {
                         StopSkill(CollisionType.Collision_OBSTACLE);
                     }
                 }
+                Vector3 dir =  CacheModel.position - kv.Value.Cache.position;
+                CacheModel.forward = dir;//CacheModel.forward * -1;
             }
         }
     }
@@ -522,26 +558,116 @@ public class NetEntity : IEntity
     }
 
     //加速
-    public void Accelerate(SkillInfo skill, EffectInfo effectInfo)
+    public void Accelerate()
     {
+        if (null == skill1 || null == effect1)
+        {
+            return;
+        }
         //加速停止恢复能量条
-        Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
-        SpawnerParticle(skill.particleID, EffectType.ACCELERATE, CacheParticleParent.position, CacheParticleParent);
+        Attribute.Speed = Attribute.BaseSpeed * effect1.param / AppConst.factor;
+        SpawnerParticle(skill1.particleID, EffectType.ACCELERATE, CacheParticleParent.position, CacheParticleParent);
     }
 
     //冲锋
-    public void Walkinstant(SkillInfo skill, EffectInfo effectInfo)
+    public void Walkinstant()
     {
+        if (null == skill2 || null == effect2)
+        {
+            return;
+        }
+
         ArpgAnimatContorller.Skill = 1;
-        Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
-        SpawnerParticle(skill.particleID, EffectType.WALKINSTANT, CacheParticleParent.position, CacheParticleParent);
-        Timer.Instance.AddTimer((float)effectInfo.keeptime / AppConst.factor, 1, true, TimerWalkInstantHandler);
+        Attribute.Speed = Attribute.BaseSpeed * effect2.param / AppConst.factor;
+        SpawnerParticle(skill2.particleID, EffectType.WALKINSTANT, CacheParticleParent.position, CacheParticleParent);
+        Timer.Instance.AddTimer((float)effect2.keeptime / AppConst.factor, 1, true, TimerWalkInstantHandler);
     }
 
-    public void BeHit()
+    public void BeKilled()
+    {
+        Debug.LogError("BeKilled...");
+        NpcControl.SetTransition(Transition.Dead, this);
+    }
+
+    public void Dead()
     {
         Attribute.Hp = 0;
+        StopAccelerate();
+        StopSkill(CollisionType.Collision_NOTHING);
+        ArpgAnimatContorller.Reset();
+        ArpgAnimatContorller.Die = true;
     }
+
+
+    //停止逃跑到walk
+    void EndFleeStateToWalk(Timer.TimerData data)
+    {
+        NpcControl.SetTransition(Transition.FreeWalk, this);
+    }
+
+    //加速技能使用间隔10S
+    private float lastAcceTime = 10;
+    private float acctTimeInterval = 10;
+    private float m_judgeTime = 0;
+    private float m_judgeInter = 2;
+    private void JudgeEntity()
+    {
+        m_judgeTime += Time.deltaTime;
+        lastAcceTime += Time.deltaTime;
+        if (m_judgeTime < m_judgeInter)
+        {
+            return;
+        }
+
+        m_judgeTime = 0;
+        //判断主角是否能KILL AI
+        bool kill = Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation);
+        if (kill)
+        {
+            if (Util.GetEntityDistance(GameMgr.Instance.MainEntity.CacheModel, CacheModel) < flee_dis)
+            {
+                //能被主角杀死，逃离
+                Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
+                CacheModel.forward = dir;
+
+                if (lastAcceTime > acctTimeInterval)
+                {
+                    Debug.LogError("逃离");
+                    lastAcceTime = 0;
+                    NpcControl.SetTransition(Transition.Acct, this);
+                    int accTime = Random.Range(3, 8);
+                    Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                }
+            }
+        }
+        else
+        {
+            foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
+            {
+                bool k = Util.CanKillBody(kv.Value.Occupation, Occupation);
+                if (k)
+                {
+                    if (Util.GetEntityDistance(kv.Value.CacheModel, CacheModel) < flee_dis)
+                    {
+                        //能被主角杀死，逃离
+                        Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
+                        CacheModel.forward = dir;
+                        if (lastAcceTime > acctTimeInterval)
+                        {
+                            Debug.LogError("逃离");
+                            lastAcceTime = 0;
+                            NpcControl.SetTransition(Transition.Acct, this);
+                            int accTime = Random.Range(3, 8);
+                            Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+
+    }
+
 
     //先用物理引擎去检测碰撞,效率低再优化
     float mTotalTime = 0;
@@ -551,6 +677,14 @@ public class NetEntity : IEntity
         {
             return;
         }
+
+        if(!IsAlive)
+        {
+            return;
+        }
+
+        JudgeEntity();
+
         mTotalTime += Time.deltaTime;
         if (mTotalTime <= 0.2f)
         {
@@ -562,5 +696,6 @@ public class NetEntity : IEntity
         DetectItem();
 
         DetectObstacle();
+
     }
 }

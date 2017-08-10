@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.IO;
-using UnityEditor;
+
 
 public class Test : MonoBehaviour
 {
@@ -36,9 +36,9 @@ public class Test : MonoBehaviour
     {
         //animStateInfo = animator.GetCurrentAnimatorStateInfo(0);
         //Debug.LogError(animStateInfo.normalizedTime);
-        ProfilerSample.BeginSample("TimerUpdate");
-        Timer.Instance.Update(Time.deltaTime);
-        ProfilerSample.EndSample();
+        //ProfilerSample.BeginSample("TimerUpdate");
+        //Timer.Instance.Update(Time.deltaTime);
+        //ProfilerSample.EndSample();
     }
 
     void CreateTimer()

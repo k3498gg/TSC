@@ -19,19 +19,20 @@ public class BaseCameraController : MonoBehaviour
     public float zoomSpeed = 20f;
     public float camXAngle = 45.0f;
     public bool fadeObjects = false;
+    [SerializeField]
     public List<int> layersToTransparent = new List<int>();
     public float alpha = 0.3f;
     public float targetHeight = 2.0f;
     public float rotationDamping = 3.0f;
 
-#if UNITY_EDITOR
+//#if UNITY_EDITOR
     public float camRotationSpeed = 70;
     public float minCameraAngle = 0.0f;
     public float maxCameraAngle = 90.0f;
-#elif UNITY_ANDROID || UNITY_IPHONE
-    public bool pinchZoom = true;  // 用于控制某些状态是否允许缩放镜头
-    public float prevDistance = 0.0f; 
-#endif
+//#elif UNITY_ANDROID || UNITY_IPHONE
+    //public bool pinchZoom = true;  // 用于控制某些状态是否允许缩放镜头
+    //public float prevDistance = 0.0f; 
+//#endif
 
     private Camera m_camera;
     public Camera Camera
