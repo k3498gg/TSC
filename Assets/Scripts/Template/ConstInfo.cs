@@ -25,6 +25,7 @@ public enum ConstType
     CONST_FLEE_INTERVAL = 15,  //AI逃跑周期
     CONST_ACC_MINTIME = 16,  //AI加速持续最小时间
     CONST_ACC_MAXTIME = 17,  //AI加速持续最大时间
+    CONST_SKILL_INTERVAL = 18,  //AI逃跑周期
 };
 
 // 碰撞停止类型
