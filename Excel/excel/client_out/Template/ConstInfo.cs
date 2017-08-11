@@ -16,6 +16,15 @@ public enum ConstType
     CONST_ENERGY_MAXCOUNT = 6,  //普通能量点最大数量
     CONST_SUGAR_RADIO = 7,  //糖果掉落半径
     CONST_ITEM_COUNT = 8,  //道具刷新数量上线
+    CONST_MAX_HP = 9,  //最大血量
+    CONST_ATK_ANGLE = 10,  //攻击角度
+    CONST_FLEE_DIS = 11,  //逃跑距离
+    CONST_CHASE_DIS = 12,  //追逐距离
+    CONST_ACC_INTERVAL = 13,  //AI加速时间间隔
+    CONST_SKILL_INTERVAL = 14,  //AI技能时间间隔
+    CONST_FLEE_INTERVAL = 15,  //AI逃跑周期
+    CONST_ACC_MINTIME = 16,  //AI加速持续最小时间
+    CONST_ACC_MAXTIME = 17,  //AI加速持续最大时间
 };
 
 // 碰撞停止类型

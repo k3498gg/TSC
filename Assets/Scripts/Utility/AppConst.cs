@@ -67,6 +67,21 @@ public class AppConst
         }
     }
 
+
+
+
+    public static float BaseSpeed;
+    public static int RebornTime;
+    public static float Basedis;
+    public static int MaxPhy;
+    public static int AtkAngle;
+    public static int CostPhySpeed;
+    public static int MaxHp;
+    public static float FleeDis;
+    public static float ChaseDis;
+    public static float AcctInterval;
+    public static float SkillInterval;
+
     public static void InitConstData()
     {
         ConstInfo areaConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ENERGY_MAXCOUNT);
@@ -75,5 +90,30 @@ public class AppConst
         ItemAreaCount = int.Parse(areaConstInfo.data) /(int) AppConst.factor;
         ItemFreshCount = int.Parse(freshConstInfo.data) / (int)AppConst.factor;
         ItemSugarDistance = float.Parse(sugarConstInfo.data) / AppConst.factor;
+
+        ConstInfo speedConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SPEED);
+        BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor;
+        ConstInfo rebornconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_REBORN);
+        RebornTime = int.Parse(rebornconstInfo.data) / AppConst.factor;
+        ConstInfo atkDisconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ATK_RADIO);
+        Basedis = float.Parse(atkDisconstInfo.data) / AppConst.factor;
+        ConstInfo maxPhyconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_MAX_PHY);
+        MaxPhy = int.Parse(maxPhyconstInfo.data) / AppConst.factor;
+        ConstInfo perSpeedInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_COST_PHY_SPEED);
+        CostPhySpeed = int.Parse(perSpeedInfo.data) / AppConst.factor;
+        ConstInfo maxHpInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_MAX_HP);
+        MaxHp = int.Parse(maxHpInfo.data) / AppConst.factor;
+        ConstInfo atkAngleInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ATK_ANGLE);
+        AtkAngle = int.Parse(atkAngleInfo.data) / AppConst.factor;
+
+        ConstInfo Flee = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_FLEE_DIS);
+        FleeDis = float.Parse(Flee.data) / AppConst.factor;
+        ConstInfo Chase = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_CHASE_DIS);
+        ChaseDis = float.Parse(Chase.data) / AppConst.factor;
+
+        ConstInfo AcctInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_INTERVAL);
+        AcctInterval = float.Parse(AcctInfo.data) / AppConst.factor;
+        ConstInfo SkillInter= InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SKILL_INTERVAL);
+        SkillInterval = float.Parse(SkillInter.data) / AppConst.factor;
     }
 } 

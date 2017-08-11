@@ -302,7 +302,6 @@ public class PlayerSkillState : FSMState
 
     public override void OnEnter(NetEntity entity)
     {
-        
         if(null != entity)
         {
             entity.Walkinstant();
@@ -316,13 +315,11 @@ public class PlayerSkillState : FSMState
 
     public override void OnUpdate(NetEntity entity)
     {
-        Debug.Log("PlayerSkillState OnUpdate---------");
 
     }
 
     public override void OnExcute(NetEntity entity)
     {
-        Debug.Log("PlayerSkillState OnExcute---------");
     }
 
 }

@@ -352,7 +352,7 @@ public class Util
         return false;
     }
 
-    public static int GetHeroIdByOccp(OccpType occp,int heroId)
+    public static int GetHeroIdByOccp(OccpType occp)
     {
         int id = 1;
         switch (occp)

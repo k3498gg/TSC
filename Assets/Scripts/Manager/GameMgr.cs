@@ -10,6 +10,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     private Transform m_itemRoot;
     private Transform m_entityRoot;
     private Transform m_obstacleRoot;
+    private Transform m_particleRoot;
     private int mapId;
 
     private Entity m_MainEntity; //主角
@@ -249,6 +250,23 @@ public class GameMgr : UnitySingleton<GameMgr>
         }
     }
 
+    public Transform ParticleRoot
+    {
+        get
+        {
+            if (null == m_particleRoot)
+            {
+                m_particleRoot = transform.Find("ParticleRoot");
+            }
+            return m_particleRoot;
+        }
+
+        set
+        {
+            m_particleRoot = value;
+        }
+    }
+
     IEnumerator DownFiles(string from, string dest)
     {
         yield return StartCoroutine(DownBinFileInfo(from + AppConst.FileBin));
@@ -289,7 +307,7 @@ public class GameMgr : UnitySingleton<GameMgr>
             }
             else
             {
-                Debuger.LogError(www.error);
+                Debuger.LogError(www.error +" "+ path);
             }
         }
     }
@@ -359,7 +377,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     void CreateEntity()
     {
         int occp = Random.Range(1, (int)OccpType.Occp_MAZ);
-        MainEntity.InitEntity((OccpType)occp, 1);
+        MainEntity.InitEntity((OccpType)occp, Util.GetHeroIdByOccp((OccpType)occp));
         Vector3 location = RandomLocation();
         MainEntity.transform.position = location;
     }
@@ -377,7 +395,7 @@ public class GameMgr : UnitySingleton<GameMgr>
             e.Id = (i+1);
             int occp = i % 3;
             OccpType oc = (OccpType)(occp + 1);
-            e.InitEntity(oc, Util.GetHeroIdByOccp(oc,1));
+            e.InitEntity(oc, Util.GetHeroIdByOccp(oc));
             
             Vector3 location = RandomLocation();
             go.transform.position = location;

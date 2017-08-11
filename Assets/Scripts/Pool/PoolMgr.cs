@@ -46,8 +46,8 @@ public class PoolMgr : UnitySingleton<PoolMgr>
             PrefabPool prefabPool = new PrefabPool(prefab);
             prefabPool.preloadAmount = 0;
             prefabPool.cullDespawned = true;
-            prefabPool.cullAbove = 1;
-            prefabPool.cullDelay = 1;
+            prefabPool.cullAbove = 5;
+            prefabPool.cullDelay = 10;
             pool.CreatePrefabPool(prefabPool);
             pool.prefabPools[aName] = prefabPool;
         }

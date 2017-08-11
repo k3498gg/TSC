@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ParticleMgr : Singleton<ParticleMgr>
 {
-    public GameObject Spawner(string name, Vector3 v, Transform parent)
+    GameObject Spawner(string name, Vector3 v, Transform parent)
     {
         Transform inst = PoolMgr.Instance.SpawnerEntity(name, v, ResourceType.RESOURCE_PARTICLE, parent);
         if (null != inst)

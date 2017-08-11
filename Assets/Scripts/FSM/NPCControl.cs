@@ -46,7 +46,15 @@ public class NPCControl : MonoBehaviour
         {
             return;
         }
+        if(null== NEntity)
+        {
+            return;
+        }
 
+        if(!NEntity.IsAlive)
+        {
+            return;
+        }
         fsm.CurrentState.OnUpdate(NEntity);
         fsm.CurrentState.OnExcute(NEntity);
     }
@@ -66,6 +74,9 @@ public class NPCControl : MonoBehaviour
         walk.AddTransition(Transition.FreeWalk, StateID.Walk);
         walk.AddTransition(Transition.Acct, StateID.Acct);
         walk.AddTransition(Transition.Dead, StateID.Dead);
+
+        PlayerDeadState dead = new PlayerDeadState();
+        dead.AddTransition(Transition.Dead, StateID.Dead);
 
         LostPlayer lostPlayer = new LostPlayer();
         lostPlayer.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
@@ -92,6 +103,7 @@ public class NPCControl : MonoBehaviour
         fsm.AddState(chase);
         fsm.AddState(acce);
         fsm.AddState(skill);
+        fsm.AddState(dead);
     }
 }
 

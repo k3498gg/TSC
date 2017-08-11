@@ -22,7 +22,7 @@ public class Entity : IEntity
 
     private bool init = false;
 
-    private OccpType occupation = OccpType.NONE;
+    public OccpType occupation = OccpType.NONE;
 
     private StateType m_state = StateType.NONE;
 
@@ -244,25 +244,21 @@ public class Entity : IEntity
 
     void InitEntityAttribute(HeroInfo info)
     {
-        ConstInfo speedConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SPEED);
-        Attribute.BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor;
+        Attribute.BaseSpeed = AppConst.BaseSpeed;
         Attribute.Speed = Attribute.BaseSpeed;
-        ConstInfo rebornconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_REBORN);
-        Attribute.RebornTime = int.Parse(rebornconstInfo.data) / AppConst.factor;
-        ConstInfo atkDisconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ATK_RADIO);
-        Attribute.Basedis = int.Parse(atkDisconstInfo.data) / AppConst.factor;
+        Attribute.RebornTime = AppConst.RebornTime;
+        Attribute.Basedis = AppConst.Basedis;
         Attribute.Atkdis = Attribute.Basedis;
-        ConstInfo maxPhyconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_MAX_PHY);
-        Attribute.MaxPhy = int.Parse(maxPhyconstInfo.data) / AppConst.factor;
+        Attribute.MaxPhy = AppConst.MaxPhy;
         Attribute.CurPhy = Attribute.MaxPhy;
-        ConstInfo perPhyconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_COST_PHY_SPEED);
-        Attribute.CostPhySpeed = int.Parse(perPhyconstInfo.data) / AppConst.factor;
+        Attribute.CostPhySpeed = AppConst.CostPhySpeed;
+        Attribute.MaxHp = AppConst.MaxHp;
+        Attribute.Hp = Attribute.MaxHp;
+
         OccupationInfo occpInfo = InfoMgr<OccupationInfo>.Instance.GetInfo(info.occupationId);
         Attribute.Skills = occpInfo.skillId;
         Attribute.Score = 0;
         Attribute.Level = 0;
-        Attribute.Hp = 100;
-        Attribute.MaxHp = 100;
     }
 
     public void DespawnerParticle(EffectType type)
@@ -302,6 +298,7 @@ public class Entity : IEntity
         if (null != CacheSkillParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheSkillParticleTran);
+            CacheSkillParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheSkillParticleTran = null;
         }
     }
@@ -311,6 +308,7 @@ public class Entity : IEntity
         if (null != CacheAccelParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheAccelParticleTran);
+            CacheAccelParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheAccelParticleTran = null;
         }
     }
@@ -499,6 +497,7 @@ public class Entity : IEntity
 
             if (!kv.Value.IsAlive)
             {
+                Debug.LogError("对方已经死亡");
                 continue;
             }
 
@@ -511,7 +510,7 @@ public class Entity : IEntity
             {
                 Vector3 dir = kv.Value.CacheModel.position - CacheModel.position;
                 //角度小于45范围内的才被认为撞击到了
-                if (Vector3.Angle(CacheModel.forward, dir) > 45)
+                if (Vector3.Angle(CacheModel.forward, dir) > AppConst.AtkAngle)
                 {
                     //Debug.LogError("角度过大"+ Vector3.Angle(CacheModel.forward, dir));
                     continue;
@@ -565,7 +564,7 @@ public class Entity : IEntity
             case CollisionType.NONE:
                 Debuger.LogError("自己停止了");
                 OccpType occp = Util.GetNextOccp(occupation);
-                int id = Util.GetHeroIdByOccp(occp, HeroId);
+                int id = Util.GetHeroIdByOccp(occp);
                 ChangeOccp(occp, id);
                 break;
         }
@@ -610,8 +609,14 @@ public class Entity : IEntity
         {
             return;
         }
+
+        if(!IsAlive)
+        {
+            return;
+        }
+
         mTotalTime += Time.deltaTime;
-        if (mTotalTime <= 0.2f)
+        if (mTotalTime <= 0.1f)
         {
             return;
         }

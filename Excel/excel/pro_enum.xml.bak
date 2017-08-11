@@ -66,7 +66,17 @@
 		<filed name="CONST_ENERGY_MAXCOUNT" value="6"   desc="普通能量点最大数量" />
 		<filed name="CONST_SUGAR_RADIO"		value="7"   desc="糖果掉落半径" />
 		<filed name="CONST_ITEM_COUNT"      value="8"   desc="道具刷新数量上线" />
+		<filed name="CONST_MAX_HP"			value="9"   desc="最大血量" />
+		<filed name="CONST_ATK_ANGLE"		value="10"   desc="攻击角度" />
+		<filed name="CONST_FLEE_DIS"		value="11"   desc="逃跑距离" />
+		<filed name="CONST_CHASE_DIS"		value="12"   desc="追逐距离" />
+		<filed name="CONST_ACC_INTERVAL"	value="13"   desc="AI加速时间间隔" />
+		<filed name="CONST_SKILL_INTERVAL"	value="14"   desc="AI技能时间间隔" />
+		<filed name="CONST_FLEE_INTERVAL"		value="15"   desc="AI逃跑周期" />
+		<filed name="CONST_ACC_MINTIME"	value="16"   desc="AI加速持续最小时间" />
+		<filed name="CONST_ACC_MAXTIME"	value="17"   desc="AI加速持续最大时间" />
     </enum>
+
 
 	<enum name="ResourceType"		target_name="HeroInfo" desc="资源类型UI,角色,特效,动画,道具" >
 		<field name="NONE"						value="0"   desc="" />
@@ -76,7 +86,7 @@
 		<field name="RESOURCE_ANIMATOR"     	value="4"   desc="动作文件" />
 		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
 		<field name="RESOURCE_OBSTACLE"     	value="6"   desc="障碍物模型" />
-		<field name="RESOURCE_NET"     			value="7"   desc="障碍物模型" />
+		<field name="RESOURCE_NET"     			value="7"   desc="网络角色" />
     </enum>
 
 	<enum name="ItemType"			target_name="ItemInfo" desc="效果类型" >
