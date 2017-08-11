@@ -81,6 +81,10 @@ public class AppConst
     public static float ChaseDis;
     public static float AcctInterval;
     public static float SkillInterval;
+    public static float FleeInterval;
+    public static float AcctMinTime;
+    public static float AcctMaxTime;
+
 
     public static void InitConstData()
     {
@@ -115,5 +119,13 @@ public class AppConst
         AcctInterval = float.Parse(AcctInfo.data) / AppConst.factor;
         ConstInfo SkillInter= InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SKILL_INTERVAL);
         SkillInterval = float.Parse(SkillInter.data) / AppConst.factor;
+
+        ConstInfo FleeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_FLEE_INTERVAL);
+        FleeInterval = float.Parse(FleeInfo.data) / AppConst.factor;
+        ConstInfo AcctMinInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_MINTIME);
+        AcctMinTime = float.Parse(AcctMinInfo.data) / AppConst.factor; 
+        ConstInfo AcctMaxInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_MAXTIME);
+        AcctMaxTime = float.Parse(AcctMaxInfo.data) / AppConst.factor;
+
     }
 } 

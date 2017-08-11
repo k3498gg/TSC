@@ -614,100 +614,156 @@ public class NetEntity : IEntity
         }
     }
 
-    //加速技能使用间隔10S
+    private float lastFleeTime = 10;
     private float lastAcceTime = 10;
     private float lastSkillTime = 10;
-    private float m_judgeTime = 0;
-    private float m_judgeInter = 2;
+    //private float m_judgeTime = 0;
+    //private float m_judgeInter = 2;
     private void JudgeEntity()
     {
-        m_judgeTime += Time.deltaTime;
+        //m_judgeTime += Time.deltaTime;
+        lastFleeTime += Time.deltaTime;
         lastAcceTime += Time.deltaTime;
-        if (m_judgeTime < m_judgeInter)
+        //if (m_judgeTime < m_judgeInter)
+        //{
+        //    return;
+        //}
+
+        //m_judgeTime = 0;
+
+        if (!GameMgr.Instance.MainEntity.IsAlive)
         {
             return;
         }
 
-        m_judgeTime = 0;
 
-        if(!GameMgr.Instance.MainEntity.IsAlive)
+        AIFleeBehaviour();
+
+
+
+    }
+
+    void AIFleeBehaviour()
+    {
+        //逃跑时间间隔
+        if (lastFleeTime > AppConst.FleeInterval)
         {
-            return;
-        }
-
-
-        //判断主角是否能KILL AI
-        bool kill = Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation);
-        if (kill)
-        {
-            if (Util.GetEntityDistance(GameMgr.Instance.MainEntity.CacheModel, CacheModel) < AppConst.FleeDis)
+            //判断主角是否能KILL AI
+            bool kill = Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation);
+            if (kill)
             {
-                Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
-                CacheModel.forward = dir;
-
-                if (lastAcceTime > AppConst.AcctInterval)
+                if (Util.GetEntityDistance(GameMgr.Instance.MainEntity.CacheModel, CacheModel) < AppConst.FleeDis)
                 {
-                    Debug.LogError(Id +"逃离");
-                    lastAcceTime = 0;
-                    NpcControl.SetTransition(Transition.Acct, this);
-                    int accTime = Random.Range(3, 8);
-                    Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                    Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
+                    CacheModel.forward = dir;
+                    lastFleeTime = 0;
+                    if (lastAcceTime > AppConst.AcctInterval)
+                    {
+                        Debug.LogError(Id + "逃离");
+                        lastAcceTime = 0;
+                        NpcControl.SetTransition(Transition.Acct, this);
+                        float accTime = Random.Range(AppConst.AcctMinTime, AppConst.AcctMaxTime);
+                        Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                    }
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
+                {
+                    if (kv.Value.Id == Id)
+                    {
+                        continue;
+                    }
+
+                    if (!kv.Value.IsAlive)
+                    {
+                        continue;
+                    }
+
+                    bool k = Util.CanKillBody(kv.Value.Occupation, Occupation);
+                    if (k)
+                    {
+                        if (Util.GetEntityDistance(kv.Value.CacheModel, CacheModel) < AppConst.FleeDis)
+                        {
+                            //能被主角杀死，逃离
+                            Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
+                            CacheModel.forward = dir;
+                            lastFleeTime = 0;
+                            if (lastAcceTime > AppConst.AcctInterval)
+                            {
+                                Debug.LogError("逃离");
+                                lastAcceTime = 0;
+                                NpcControl.SetTransition(Transition.Acct, this);
+                                float accTime = Random.Range(AppConst.AcctMinTime, AppConst.AcctMaxTime);
+                                Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                            }
+                            break;
+                        }
+                    }
                 }
             }
         }
-        else
+    }
+
+
+    void AIKillBehaviour()
+    {
+        //逃跑时间间隔
+        if (lastSkillTime > AppConst.SkillInterval)
         {
-            //if(Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
-            //{
-            //    if (Util.GetEntityDistance(GameMgr.Instance.MainEntity.CacheModel, CacheModel) < AppConst.ChaseDis)
-            //    {
-            //        //能被主角杀死，逃离
-            //        Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
-            //        CacheModel.forward = dir;
-
-            //        if (lastAcceTime > AppConst.AcctInterval)
-            //        {
-            //            lastAcceTime = 0;
-            //            NpcControl.SetTransition(Transition.Acct, this);
-            //            int accTime = Random.Range(3, 8);
-            //            Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
-            //        }
-            //    }
-            //}else
-            //{
-
-            //}
-
-
-            foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
+            //判断主角是否能KILL AI
+            bool kill = Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation);
+            if (kill)
             {
-                if(kv.Value.Id == Id)
+                if (Util.GetEntityDistance(GameMgr.Instance.MainEntity.CacheModel, CacheModel) < AppConst.FleeDis)
                 {
-                    continue;
-                }
-
-                if(!kv.Value.IsAlive)
-                {
-                    continue;
-                }
-
-                bool k = Util.CanKillBody(kv.Value.Occupation, Occupation);
-                if (k)
-                {
-                    if (Util.GetEntityDistance(kv.Value.CacheModel, CacheModel) < AppConst.FleeDis)
+                    Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
+                    CacheModel.forward = dir;
+                    lastFleeTime = 0;
+                    if (lastAcceTime > AppConst.AcctInterval)
                     {
-                        //能被主角杀死，逃离
-                        Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
-                        CacheModel.forward = dir;
-                        if (lastAcceTime > AppConst.AcctInterval)
+                        Debug.LogError(Id + "逃离");
+                        lastAcceTime = 0;
+                        NpcControl.SetTransition(Transition.Acct, this);
+                        float accTime = Random.Range(AppConst.AcctMinTime, AppConst.AcctMaxTime);
+                        Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                    }
+                }
+            }
+            else
+            {
+                foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
+                {
+                    if (kv.Value.Id == Id)
+                    {
+                        continue;
+                    }
+
+                    if (!kv.Value.IsAlive)
+                    {
+                        continue;
+                    }
+
+                    bool k = Util.CanKillBody(kv.Value.Occupation, Occupation);
+                    if (k)
+                    {
+                        if (Util.GetEntityDistance(kv.Value.CacheModel, CacheModel) < AppConst.FleeDis)
                         {
-                            Debug.LogError("逃离");
-                            lastAcceTime = 0;
-                            NpcControl.SetTransition(Transition.Acct, this);
-                            int accTime = Random.Range(3, 8);
-                            Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                            //能被主角杀死，逃离
+                            Vector3 dir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
+                            CacheModel.forward = dir;
+                            lastFleeTime = 0;
+                            if (lastAcceTime > AppConst.AcctInterval)
+                            {
+                                Debug.LogError("逃离");
+                                lastAcceTime = 0;
+                                NpcControl.SetTransition(Transition.Acct, this);
+                                float accTime = Random.Range(AppConst.AcctMinTime, AppConst.AcctMaxTime);
+                                Timer.Instance.AddTimer(accTime, 1, true, EndFleeStateToWalk);
+                            }
+                            break;
                         }
-                        break;
                     }
                 }
             }

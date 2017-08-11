@@ -72,9 +72,10 @@
 		<filed name="CONST_CHASE_DIS"		value="12"   desc="追逐距离" />
 		<filed name="CONST_ACC_INTERVAL"	value="13"   desc="AI加速时间间隔" />
 		<filed name="CONST_SKILL_INTERVAL"	value="14"   desc="AI技能时间间隔" />
-		<filed name="CONST_FLEE_INTERVAL"		value="15"   desc="AI逃跑周期" />
-		<filed name="CONST_ACC_MINTIME"	value="16"   desc="AI加速持续最小时间" />
-		<filed name="CONST_ACC_MAXTIME"	value="17"   desc="AI加速持续最大时间" />
+		<filed name="CONST_FLEE_INTERVAL"	value="15"   desc="AI逃跑周期" />
+		<filed name="CONST_ACC_MINTIME"		value="16"   desc="AI加速持续最小时间" />
+		<filed name="CONST_ACC_MAXTIME"		value="17"   desc="AI加速持续最大时间" />
+		<filed name="CONST_SKILL_INTERVAL"	value="15"   desc="AI逃跑周期" />
     </enum>
 
 
