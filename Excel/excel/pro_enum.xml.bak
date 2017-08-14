@@ -75,7 +75,13 @@
 		<filed name="CONST_FLEE_INTERVAL"	value="15"   desc="AI逃跑周期" />
 		<filed name="CONST_ACC_MINTIME"		value="16"   desc="AI加速持续最小时间" />
 		<filed name="CONST_ACC_MAXTIME"		value="17"   desc="AI加速持续最大时间" />
-		<filed name="CONST_SKILL_INTERVAL"	value="15"   desc="AI逃跑周期" />
+		<filed name="CONST_KILL_INTERVAL"	value="18"   desc="AI技能周期" />
+		<filed name="CONST_SKILL_MINTIME"	value="19"   desc="AI技能持续最小时间" />
+		<filed name="CONST_SKILL_MAXTIME"	value="20"   desc="AI技能持续最大时间" />
+		<filed name="CONST_CHASE_TIME"		value="21"   desc="AI追逐持续时间（正常走路情况追踪目标）" />
+
+		<filed name="CONST_ACCT_SPEED"			value="22"   desc="加速速度比例" />
+		<filed name="CONST_INSTANT_SPEED"		value="23"   desc="冲刺速度比例" />
     </enum>
 
 

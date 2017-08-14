@@ -164,6 +164,12 @@ public class MainUIWindow : UIBaseWindow
         {
             return;
         }
+
+        if(!GameMgr.Instance.MainEntity.IsAlive)
+        {
+            return;
+        }
+
         if (EffType == EffectType.WALKINSTANT)
         {
             return;
@@ -223,7 +229,7 @@ public class MainUIWindow : UIBaseWindow
     //加速技能
     void AccelerateSkill()
     {
-        if (GameMgr.Instance.MainEntity.Attribute.CurPhy <= 0)
+        if (!GameMgr.Instance.MainEntity.IsAlive)
         {
             CancelSkill(m_skills[0].gameObject);
             return;

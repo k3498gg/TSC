@@ -256,8 +256,7 @@ public class PlayerAcceState : FSMState
     {
         if (null != entity)
         {
-            //entity.CacheModel.Translate(entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed);
-            entity.CharaController.SimpleMove(entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed);
+            entity.CharaController.SimpleMove(entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed * AppConst.AIAcceSpeed);
         }
     }
 
@@ -310,18 +309,29 @@ public class PlayerSkillState : FSMState
 
     public override void OnExit(NetEntity entity)
     {
-      
+        if (null != entity)
+        {
+            entity.StopSkill(CollisionType.NONE);
+            entity.ArpgAnimatContorller.Walk = false;
+        }
     }
 
     public override void OnUpdate(NetEntity entity)
     {
-
+        SimpleMove(entity);
     }
 
     public override void OnExcute(NetEntity entity)
     {
     }
 
+    private void SimpleMove(NetEntity entity)
+    {
+        if (null != entity)
+        {
+            entity.CharaController.SimpleMove(entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed * AppConst.AISkillSpeed);
+        }
+    }
 }
 
 
@@ -353,7 +363,10 @@ public class PlayerDeadState : FSMState
 
     public override void OnExcute(NetEntity entity)
     {
-  
+        if(null != entity)
+        {
+            entity.Relive();
+        }
     }
 }
 

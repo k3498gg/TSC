@@ -12,6 +12,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     private Transform m_obstacleRoot;
     private Transform m_particleRoot;
     private int mapId;
+    private bool isEnterGame = true;
 
     private Entity m_MainEntity; //主角
     private Dictionary<string, int> downBinInfoDic;
@@ -267,6 +268,19 @@ public class GameMgr : UnitySingleton<GameMgr>
         }
     }
 
+    public bool IsEnterGame
+    {
+        get
+        {
+            return isEnterGame;
+        }
+
+        set
+        {
+            isEnterGame = value;
+        }
+    }
+
     IEnumerator DownFiles(string from, string dest)
     {
         yield return StartCoroutine(DownBinFileInfo(from + AppConst.FileBin));
@@ -386,7 +400,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     IEnumerator CreateNetEntity()
     {
         yield return null;
-        int count = Random.Range(1, 2);
+        int count = Random.Range(1, 20);
         TSCData.Instance.EntityDic.Clear();
         for (int i = 0; i < count;i++)
         {

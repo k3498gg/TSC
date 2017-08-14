@@ -34,7 +34,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
     }
 
 
-    void CreatePoolPrefab(SpawnPool pool, string aName, Transform prefab)
+    void CreatePoolPrefab(SpawnPool pool, string aName, Transform prefab,ResourceType t)
     {
         if (null == prefab)
         {
@@ -47,15 +47,27 @@ public class PoolMgr : UnitySingleton<PoolMgr>
             prefabPool.preloadAmount = 0;
             prefabPool.cullDespawned = true;
             prefabPool.cullAbove = 5;
-            prefabPool.cullDelay = 10;
+            prefabPool.cullDelay = Util.GetDespawnTime(t);
             pool.CreatePrefabPool(prefabPool);
             pool.prefabPools[aName] = prefabPool;
         }
     }
 
+    public Transform GetPoolRoot(ResourceType t)
+    {
+        string poolName = Util.GetPoolName(t);
+        if (PoolManager.Pools.ContainsKey(poolName))
+        {
+            SpawnPool pool = PoolManager.Pools[poolName];
+            return pool.group;
+        }
+        Debuger.LogError("Error...pool group");
+        return null;
+    }
 
 
-    public Transform SpawnerEntity(SpawnPool pool, Transform prefab, Transform parent, Vector3 v)
+
+    Transform SpawnerEntity(SpawnPool pool, Transform prefab, Transform parent, Vector3 v)
     {
         if (null != prefab && null != parent)
         {
@@ -82,7 +94,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
                 Debuger.LogError(avatarName + " is NULL!");
                 return null;
             }
-            CreatePoolPrefab(pool, avatarName, prefab.transform);
+            CreatePoolPrefab(pool, avatarName, prefab.transform,rType);
         }
         if (pool.prefabPools.ContainsKey(avatarName))
         {
@@ -97,8 +109,13 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         string poolName = Util.GetPoolName(type);
         if (PoolManager.Pools.ContainsKey(poolName))
         {
+            Transform t = GetPoolRoot(type);
             SpawnPool pool = PoolManager.Pools[poolName];
-            pool.DespawnAll();
+            foreach(Transform inst in pool._spawned)
+            {
+                pool.Despawn(inst);
+                inst.parent = t;
+            }
         }
     }
 
@@ -112,26 +129,34 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         }
     }
 
-    public void Despawner(SpawnPool pool, Transform inst)
+    void Despawner(SpawnPool pool, Transform inst)
     {
         if (null != pool && null != inst)
         {
             if (pool.IsSpawned(inst))
             {
                 pool.Despawn(inst);
+                inst.parent = pool.group;
             }
         }
     }
 
+    //按顺序回收资源
     public void DespawnerAll()
     {
-       
-        foreach(KeyValuePair<string, SpawnPool> kv in PoolManager.Pools)
-        {
-            if (null != kv.Value)
-            {
-                kv.Value.DespawnAll();
-            }
-        }
+        Despawner(ResourceType.RESOURCE_PARTICLE);
+        Despawner(ResourceType.RESOURCE_ANIMATOR);
+        Despawner(ResourceType.RESOURCE_OBSTACLE);
+        Despawner(ResourceType.RESOURCE_ITEM);
+        Despawner(ResourceType.RESOURCE_ENTITY);
+        Despawner(ResourceType.RESOURCE_NET);
+
+        //foreach (KeyValuePair<string, SpawnPool> kv in PoolManager.Pools)
+        //{
+        //    if (null != kv.Value)
+        //    {
+        //        kv.Value.DespawnAll();
+        //    }
+        //}
     }
 }

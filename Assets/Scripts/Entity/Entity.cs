@@ -488,6 +488,10 @@ public class Entity : IEntity
 
     void DetectNetEntity()
     {
+        if (State == StateType.STATE_PROTECT)
+        {
+            return;
+        }
         foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
         {
             if (kv.Value.State == StateType.STATE_PROTECT)
@@ -497,22 +501,15 @@ public class Entity : IEntity
 
             if (!kv.Value.IsAlive)
             {
-                Debug.LogError("对方已经死亡");
                 continue;
             }
-
-            //if (!Util.CanKillBody(Occupation, kv.Value.Occupation))
-            //{
-            //    continue;
-            //}
 
             if (Util.PtInCircleArea(CacheModel, kv.Value.CacheModel, Attribute.Atkdis + kv.Value.Attribute.Atkdis))
             {
                 Vector3 dir = kv.Value.CacheModel.position - CacheModel.position;
-                //角度小于45范围内的才被认为撞击到了
+
                 if (Vector3.Angle(CacheModel.forward, dir) > AppConst.AtkAngle)
                 {
-                    //Debug.LogError("角度过大"+ Vector3.Angle(CacheModel.forward, dir));
                     continue;
                 }
 
@@ -572,7 +569,12 @@ public class Entity : IEntity
 
     public void BeKilled()
     {
-
+        Debug.LogError("主角被杀死了");
+        Attribute.Hp = 0;
+        StopAccelerate();
+        StopSkill(CollisionType.Collision_NOTHING);
+        ArpgAnimatContorller.Reset();
+        ArpgAnimatContorller.Die = true;
     }
 
     public void StopAccelerate()
@@ -606,6 +608,11 @@ public class Entity : IEntity
     void Update()
     {
         if (!init)
+        {
+            return;
+        }
+
+        if(!GameMgr.Instance.IsEnterGame)
         {
             return;
         }

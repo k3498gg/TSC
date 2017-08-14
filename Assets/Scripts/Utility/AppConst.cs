@@ -84,6 +84,14 @@ public class AppConst
     public static float FleeInterval;
     public static float AcctMinTime;
     public static float AcctMaxTime;
+    public static float KillInterval;
+
+    public static float SkillMinTime;
+    public static float SkillMaxTime;
+    public static float ChaseTime;
+
+    public static float AIAcceSpeed;
+    public static float AISkillSpeed;
 
 
     public static void InitConstData()
@@ -122,10 +130,25 @@ public class AppConst
 
         ConstInfo FleeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_FLEE_INTERVAL);
         FleeInterval = float.Parse(FleeInfo.data) / AppConst.factor;
+        
+        ConstInfo KillInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_KILL_INTERVAL);
+        KillInterval = float.Parse(KillInfo.data) / AppConst.factor;
+
         ConstInfo AcctMinInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_MINTIME);
         AcctMinTime = float.Parse(AcctMinInfo.data) / AppConst.factor; 
         ConstInfo AcctMaxInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_MAXTIME);
         AcctMaxTime = float.Parse(AcctMaxInfo.data) / AppConst.factor;
 
+        ConstInfo SkillMinTimeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SKILL_MINTIME);
+        SkillMinTime = float.Parse(SkillMinTimeInfo.data) / AppConst.factor;
+        ConstInfo SkillMaxTimeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SKILL_MAXTIME);
+        SkillMaxTime = float.Parse(SkillMaxTimeInfo.data) / AppConst.factor;
+        ConstInfo ChaseTimeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_CHASE_TIME);
+        ChaseTime = float.Parse(ChaseTimeInfo.data) / AppConst.factor;
+
+        ConstInfo AcceSpeedInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACCT_SPEED);
+        AIAcceSpeed = float.Parse(AcceSpeedInfo.data) / AppConst.factor;
+        ConstInfo AISkillSpeedInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_INSTANT_SPEED);
+        AISkillSpeed = float.Parse(AISkillSpeedInfo.data) / AppConst.factor;
     }
 } 

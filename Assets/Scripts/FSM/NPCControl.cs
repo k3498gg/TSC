@@ -73,34 +73,35 @@ public class NPCControl : MonoBehaviour
         PlayerWalkState walk = new PlayerWalkState();
         walk.AddTransition(Transition.FreeWalk, StateID.Walk);
         walk.AddTransition(Transition.Acct, StateID.Acct);
+        walk.AddTransition(Transition.Skill, StateID.Skill);
         walk.AddTransition(Transition.Dead, StateID.Dead);
 
         PlayerDeadState dead = new PlayerDeadState();
         dead.AddTransition(Transition.Dead, StateID.Dead);
+        dead.AddTransition(Transition.Idle, StateID.Idle);
 
-        LostPlayer lostPlayer = new LostPlayer();
-        lostPlayer.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
-        lostPlayer.AddTransition(Transition.Dead, StateID.Dead);
+        //LostPlayer lostPlayer = new LostPlayer();
+        //lostPlayer.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
+        //lostPlayer.AddTransition(Transition.Dead, StateID.Dead);
 
-
-        ChasePlayerState chase = new ChasePlayerState();
-        chase.AddTransition(Transition.LostPlayer, StateID.LostPlayer);
-        chase.AddTransition(Transition.Dead, StateID.Dead);
-
+        //ChasePlayerState chase = new ChasePlayerState();
+        //chase.AddTransition(Transition.LostPlayer, StateID.LostPlayer);
+        //chase.AddTransition(Transition.Dead, StateID.Dead);
 
         PlayerAcceState acce = new PlayerAcceState();
         acce.AddTransition(Transition.Acct, StateID.Acct);
+        acce.AddTransition(Transition.Skill, StateID.Skill);
         acce.AddTransition(Transition.FreeWalk, StateID.Walk);
         acce.AddTransition(Transition.Dead, StateID.Dead);
 
         PlayerSkillState skill = new PlayerSkillState();
         skill.AddTransition(Transition.Skill, StateID.Skill);
+        skill.AddTransition(Transition.Acct, StateID.Acct);
+        skill.AddTransition(Transition.FreeWalk, StateID.Walk);
         skill.AddTransition(Transition.Dead, StateID.Dead);
 
         fsm = new FSMSystem();
         fsm.AddState(walk);
-        fsm.AddState(lostPlayer);
-        fsm.AddState(chase);
         fsm.AddState(acce);
         fsm.AddState(skill);
         fsm.AddState(dead);

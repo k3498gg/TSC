@@ -167,6 +167,36 @@ public class Util
         return Vector2.Distance(v1, v2);
     }
 
+    public static int GetDespawnTime(ResourceType type)
+    {
+        int time = 0;
+        switch (type)
+        {
+            case ResourceType.RESOURCE_UI:
+                time = 10;
+                break;
+            case ResourceType.RESOURCE_ENTITY:
+                time = 10;
+                break;
+            case ResourceType.RESOURCE_PARTICLE:
+                time = 5;
+                break;
+            case ResourceType.RESOURCE_ANIMATOR:
+                time = 5;
+                break;
+            case ResourceType.RESOURCE_ITEM:
+                time = 10;
+                break;
+            case ResourceType.RESOURCE_OBSTACLE:
+                time = 5;
+                break;
+            case ResourceType.RESOURCE_NET:
+                time = 20;
+                break;
+        }
+        return time;
+    }
+
     public static string GetPoolName(ResourceType type)
     {
         string name = string.Empty;
