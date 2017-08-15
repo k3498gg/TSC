@@ -400,7 +400,7 @@ public class GameMgr : UnitySingleton<GameMgr>
     IEnumerator CreateNetEntity()
     {
         yield return null;
-        int count = Random.Range(1, 20);
+        int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
         for (int i = 0; i < count;i++)
         {

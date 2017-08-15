@@ -79,9 +79,10 @@
 		<filed name="CONST_SKILL_MINTIME"	value="19"   desc="AI技能持续最小时间" />
 		<filed name="CONST_SKILL_MAXTIME"	value="20"   desc="AI技能持续最大时间" />
 		<filed name="CONST_CHASE_TIME"		value="21"   desc="AI追逐持续时间（正常走路情况追踪目标）" />
-
 		<filed name="CONST_ACCT_SPEED"			value="22"   desc="加速速度比例" />
 		<filed name="CONST_INSTANT_SPEED"		value="23"   desc="冲刺速度比例" />
+		<filed name="CONST_AI_MINCOUNT"		value="24"   desc="AI最小在线数量" />
+		<filed name="CONST_AI_MAXCOUNT"		value="25"   desc="AI最大在线数量" />
     </enum>
 
 

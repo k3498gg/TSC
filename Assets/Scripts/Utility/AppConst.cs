@@ -92,6 +92,8 @@ public class AppConst
 
     public static float AIAcceSpeed;
     public static float AISkillSpeed;
+    public static int MaxCount;
+    public static int MinCount;
 
 
     public static void InitConstData()
@@ -150,5 +152,10 @@ public class AppConst
         AIAcceSpeed = float.Parse(AcceSpeedInfo.data) / AppConst.factor;
         ConstInfo AISkillSpeedInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_INSTANT_SPEED);
         AISkillSpeed = float.Parse(AISkillSpeedInfo.data) / AppConst.factor;
+
+        ConstInfo MinCountInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_MINCOUNT);
+        MinCount = int.Parse(MinCountInfo.data) / AppConst.factor;
+        ConstInfo MaxCountInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_MAXCOUNT);
+        MaxCount = int.Parse(MaxCountInfo.data) / AppConst.factor;
     }
 } 

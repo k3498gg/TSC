@@ -31,6 +31,8 @@ public enum ConstType
     CONST_CHASE_TIME = 21,  //AI追逐持续时间（正常走路情况追踪目标）
     CONST_ACCT_SPEED = 22,  //加速速度比例
     CONST_INSTANT_SPEED = 23,  //冲刺速度比例
+    CONST_AI_MINCOUNT = 24,  //AI最小在线数量
+    CONST_AI_MAXCOUNT = 25,  //AI最大在线数量
 };
 
 // 碰撞停止类型
