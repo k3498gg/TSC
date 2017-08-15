@@ -80,14 +80,6 @@ public class NPCControl : MonoBehaviour
         dead.AddTransition(Transition.Dead, StateID.Dead);
         dead.AddTransition(Transition.Idle, StateID.Idle);
 
-        //LostPlayer lostPlayer = new LostPlayer();
-        //lostPlayer.AddTransition(Transition.SawPlayer, StateID.ChasingPlayer);
-        //lostPlayer.AddTransition(Transition.Dead, StateID.Dead);
-
-        //ChasePlayerState chase = new ChasePlayerState();
-        //chase.AddTransition(Transition.LostPlayer, StateID.LostPlayer);
-        //chase.AddTransition(Transition.Dead, StateID.Dead);
-
         PlayerAcceState acce = new PlayerAcceState();
         acce.AddTransition(Transition.Acct, StateID.Acct);
         acce.AddTransition(Transition.Skill, StateID.Skill);

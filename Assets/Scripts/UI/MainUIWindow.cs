@@ -181,7 +181,7 @@ public class MainUIWindow : UIBaseWindow
         //{
             GameMgr.Instance.ARPGAnimatController.Walk = true;
         //}
-        GameMgr.Instance.CharacController.SimpleMove(GameMgr.Instance.MainEntity.CacheModel.forward * Time.deltaTime * GameMgr.Instance.MainEntity.Attribute.Speed);
+        GameMgr.Instance.MainEntity.SimpleMove();
     }
 
     private void UpEvent(float x, float y)

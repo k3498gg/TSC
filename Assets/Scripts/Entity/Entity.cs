@@ -261,6 +261,12 @@ public class Entity : IEntity
         Attribute.Level = 0;
     }
 
+    public void SimpleMove()
+    {
+        GameMgr.Instance.CharacController.SimpleMove(CacheModel.forward * Time.deltaTime * Attribute.Speed);
+        //CacheModel.Translate(Vector3.forward * Time.deltaTime * GameMgr.Instance.MainEntity.Attribute.Speed * 0.01f);
+    }
+
     public void DespawnerParticle(EffectType type)
     {
         switch (type)
@@ -525,7 +531,7 @@ public class Entity : IEntity
 
     public void StopSkill(CollisionType type)
     {
-        if(ArpgAnimatContorller.Skill > 0)
+        if (ArpgAnimatContorller.Skill > 0)
         {
             collision = type;
             Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
@@ -612,12 +618,12 @@ public class Entity : IEntity
             return;
         }
 
-        if(!GameMgr.Instance.IsEnterGame)
+        if (!GameMgr.Instance.IsEnterGame)
         {
             return;
         }
 
-        if(!IsAlive)
+        if (!IsAlive)
         {
             return;
         }

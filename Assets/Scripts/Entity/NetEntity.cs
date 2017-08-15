@@ -525,7 +525,17 @@ public class NetEntity : IEntity
                 }
                 Vector3 dir = GameMgr.Instance.RandomLocation() - CacheModel.position;
                 CacheModel.forward = dir;//CacheModel.forward * -1;
+                NpcControl.SetTransition(Transition.FreeWalk, this);
+                break;
             }
+        }
+    }
+
+    public void SimpleMove(float speedfactor)
+    {
+        if(null != CharaController)
+        {
+            CharaController.SimpleMove(CacheModel.forward * Time.deltaTime * Attribute.Speed * speedfactor);
         }
     }
 
