@@ -12,7 +12,7 @@ public class Timer : Singleton<Timer>
         public int invokeTimes = 1;         // 0 = over , > 0 = times, < 0 = forever
         public TimerHandler handler = null;
         private string id = string.Empty;
-        private bool isInitialized = false;
+        public bool isInitialized = false;
         private float intervalTime;
         public int data = 0;
 
@@ -101,6 +101,7 @@ public class Timer : Singleton<Timer>
             Debuger.LogError("TimerData≥ı ºªØ ß∞‹");
             return;
         }
+        data.isInitialized = false;
         data.data = 0;
         data.handler = null;
         mList.Remove(data);

@@ -33,6 +33,10 @@ public enum ConstType
     CONST_INSTANT_SPEED = 23,  //冲刺速度比例
     CONST_AI_MINCOUNT = 24,  //AI最小在线数量
     CONST_AI_MAXCOUNT = 25,  //AI最大在线数量
+    CONST_CHASE_LEV = 26,  //AI追击职业等级差
+    CONST_AI_DETECT_RANGE_INTERVAL = 27,  //AI追击检测可击杀对象是否在范围内的时间间隔
+    CONST_AI_RANDOM_DIR_INTERVAL = 28,  //AI随机切换方向时间间隔
+    CONST_AI_RANDOM_ITEM_RADIO = 29,  //AI随机指定半径内的道具
 };
 
 // 碰撞停止类型

@@ -39,22 +39,22 @@ public class ARPGAnimatorController : BaseAnimatorController
         }
     }
 
-    public void Update()
-    {
-        if (null == animator)
-        {
-            return;
-        }
+    //public void Update()
+    //{
+    //    if (null == animator)
+    //    {
+    //        return;
+    //    }
 
 
-        if (Skill > 0)
-        {
-            CurrentStateInfo = animator.GetCurrentAnimatorStateInfo(layer);
+    //    if (Skill > 0)
+    //    {
+    //        CurrentStateInfo = animator.GetCurrentAnimatorStateInfo(layer);
 
-            if (CurrentStateInfo.fullPathHash == skill1_NameHash && CurrentStateInfo.normalizedTime > 0.95f)
-            {
-                Skill = 0;
-            }
-        }
-    }
+    //        if (CurrentStateInfo.fullPathHash == skill1_NameHash && CurrentStateInfo.normalizedTime > 0.95f)
+    //        {
+    //            Skill = 0;
+    //        }
+    //    }
+    //}
 }

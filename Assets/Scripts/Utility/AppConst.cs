@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class AppConst
 {
+    public static string First = "first";
     public static bool DebugMode = true;                       //调试模式
     public static string AppName = "Self";                       //应用程序名称
     public static string ExtName = ".unity3d";                   //素材扩展名
@@ -28,8 +29,18 @@ public class AppConst
     public static int ItemAreaCount = 0; //区域普通能量点最大数量
     public static int ItemFreshCount = 0; //道具刷新上限
     public static float ItemSugarDistance = 0; //糖果的掉落半径
-    public static string TAG_Obstacle = "Obstacle";
+    public static string TAG_OBSTACLE = "Obstacle";
+    public static string TAG_NETENTITY = "NetEntity";
+    public static string TAG_PLAYER = "Player";
+    public static string TAG_ITEM_MARK = "ItemMark";
+    public static string TAG_ITEM_MAGNET = "ItemMagnet";
+    public static string TAG_ITEM_TRANSFERGATE = "ItemTransfergate";
+    public static string TAG_ITEM_SPEED = "ItemSpeed";
+    public static string TAG_ITEM_PROTECT = "ItemProtect";
+    public static string TAG_ITEM_ENERGY = "ItemEnergy";
     public static string NET_Entity = "NetEntity";
+
+ 
 
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {
@@ -67,9 +78,6 @@ public class AppConst
         }
     }
 
-
-
-
     public static float BaseSpeed;
     public static int RebornTime;
     public static float Basedis;
@@ -94,6 +102,11 @@ public class AppConst
     public static float AISkillSpeed;
     public static int MaxCount;
     public static int MinCount;
+    public static int ChaseLev;
+
+    public static float AIDetectInterval;
+    public static float AIRandomDirInterval;
+    public static float AIRandomItemRadio;
 
 
     public static void InitConstData()
@@ -157,5 +170,15 @@ public class AppConst
         MinCount = int.Parse(MinCountInfo.data) / AppConst.factor;
         ConstInfo MaxCountInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_MAXCOUNT);
         MaxCount = int.Parse(MaxCountInfo.data) / AppConst.factor;
+        ConstInfo ChaseLevInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_CHASE_LEV);
+        ChaseLev = int.Parse(ChaseLevInfo.data) / AppConst.factor;
+
+        ConstInfo AIDetectIntervalInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_DETECT_RANGE_INTERVAL);
+        AIDetectInterval = int.Parse(AIDetectIntervalInfo.data) / AppConst.factor;
+        ConstInfo AIRandomDirIntervalInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_RANDOM_DIR_INTERVAL);
+        AIRandomDirInterval = int.Parse(AIRandomDirIntervalInfo.data) / AppConst.factor;
+
+        ConstInfo AIRandomItemRadioInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_RANDOM_ITEM_RADIO);
+        AIRandomItemRadio = float.Parse(AIRandomItemRadioInfo.data) / AppConst.factor;
     }
 } 

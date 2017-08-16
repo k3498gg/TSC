@@ -160,6 +160,11 @@ public class Util
         return false;
     }
 
+    public static int GetEntityLevelGap(int lev1,int lev2)
+    {
+        return lev1 - lev2;
+    }
+
     public static float GetEntityDistance(Transform cache1,Transform cache2)
     {
         Vector2 v1 = new Vector2(cache1.position.x, cache1.position.z);

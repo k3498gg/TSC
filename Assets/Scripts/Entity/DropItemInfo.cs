@@ -188,7 +188,8 @@ public class DropItemInfo : IEntity
         if ((int)type < (int)ItemType.ITEM_ENERGY)
         {
             //碰到状态道具 停止技能
-            entity.StopSkill(CollisionType.Collision_ITEM);
+            //entity.StopSkill(CollisionType.Collision_ITEM);
+            entity.EndCurrentStateToWalk();
         }
 
         //如果是积分道具(积分发生变化)

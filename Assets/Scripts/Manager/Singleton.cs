@@ -41,4 +41,5 @@ public class UnitySingleton<T> : MonoBehaviour
             return _instance;
         }
     }
+
 }

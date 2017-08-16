@@ -377,7 +377,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         {
             foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
             {
-                if (Util.PtInRectArea(kv.Value.transform, v, kv.Value.Width, kv.Value.Height))
+                if (Util.PtInRectArea(kv.Value.transform, v, kv.Value.Width+0.5f, kv.Value.Height+0.5f))
                 {
                     continue;
                 }
@@ -402,7 +402,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         yield return null;
         int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
-        for (int i = 0; i < count;i++)
+        for (int i = 0; i < 10;i++)
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
             NetEntity e = Util.AddComponent<NetEntity>(go);

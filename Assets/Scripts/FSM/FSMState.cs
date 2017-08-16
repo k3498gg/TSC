@@ -10,13 +10,14 @@ using UnityEngine;
 public enum Transition
 {
     NullTransition = 0,  //用这个过度来代表你的系统中不存在的状态
-    SawPlayer,//这里配合NPCControl添加两个NPC的过渡(搜寻目标，丢失目标)
+    ChasePlayer,//这里配合NPCControl添加两个NPC的过渡(搜寻目标，丢失目标)
     LostPlayer,
     FreeWalk,
     Acct,
     Skill,
     Dead,
-    Idle
+    Idle,
+    Switch
 }
 
 /// <summary>
@@ -26,13 +27,14 @@ public enum Transition
 public enum StateID
 {
     NullStateID = 0,//使用这个ID来代表你系统中不存在的状态ID    
-    ChasingPlayer,//这里配合NPCControl添加两个状态
+    ChasePlayer,//这里配合NPCControl添加两个状态
     LostPlayer,
     Walk,
     Acct,
     Skill,
     Dead,
-    Idle
+    Idle,
+    Switch
 }
 
 /// <summary>
@@ -259,6 +261,11 @@ public class FSMSystem
             return;
         }
 
+        if(id == CurrentStateID)
+        {
+            //Debug.LogError("FSM ERROR:Current State is same state " + CurrentStateID.ToString());
+            return;
+        }
      
         //更新当前的状态个和状态编号
         CurrentStateID = id;

@@ -111,11 +111,16 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         {
             Transform t = GetPoolRoot(type);
             SpawnPool pool = PoolManager.Pools[poolName];
-            foreach(Transform inst in pool._spawned)
+            while(pool._spawned.Count > 0)
             {
-                pool.Despawn(inst);
-                inst.parent = t;
+                pool._spawned[0].parent = t;
+                pool.Despawn(pool._spawned[0]);
             }
+            //foreach(Transform inst in pool._spawned)
+            //{
+            //    pool.Despawn(inst);
+            //    inst.parent = t;
+            //}
         }
     }
 

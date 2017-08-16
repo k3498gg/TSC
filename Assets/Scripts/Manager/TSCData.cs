@@ -148,4 +148,13 @@ public class TSCData : Singleton<TSCData>
         return null;
     }
 
+
+    public void Clear()
+    {
+        EntityDic.Clear();
+        ObstacleDic.Clear();
+        DropItemDic.Clear();
+        BackItemMapDic.Clear();
+        TotalAreaItemMapDic.Clear();
+    }
 }

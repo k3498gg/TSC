@@ -77,13 +77,17 @@ public class MainUIWindow : UIBaseWindow
             {
                 m_Renders[i].cull = true;
             }
-            //UGUIEventListener.Get(m_skills[i].gameObject).onClick = TriggerSkill;
             UGUIEventListener.Get(m_skills[i].gameObject).onPress = OnPress;
         }
     }
 
     void OnPress(GameObject go, bool press)
     {
+        if (!GameMgr.Instance.MainEntity.IsAlive)
+        {
+            return;
+        }
+
         if (press)
         {
             TriggerSkill(go);
@@ -177,10 +181,7 @@ public class MainUIWindow : UIBaseWindow
 
         float angle = Mathf.Rad2Deg * (Mathf.Atan2(x, y));
         GameMgr.Instance.MainEntity.CacheModel.rotation = Quaternion.Euler(0, angle + GameMgr.Instance.CameraController.EulerY, 0);
-        //if (EffType != EffectType.ACCELERATE)
-        //{
-            GameMgr.Instance.ARPGAnimatController.Walk = true;
-        //}
+        GameMgr.Instance.ARPGAnimatController.Walk = true;
         GameMgr.Instance.MainEntity.SimpleMove();
     }
 
@@ -194,7 +195,7 @@ public class MainUIWindow : UIBaseWindow
         InitWindowData();
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (null == GameMgr.Instance.MainEntity)
         {
@@ -241,7 +242,7 @@ public class MainUIWindow : UIBaseWindow
 
     void WalkInstant()
     {
-        GameMgr.Instance.CharacController.SimpleMove(GameMgr.Instance.MainEntity.CacheModel.forward * Time.deltaTime * GameMgr.Instance.MainEntity.Attribute.Speed);
+        GameMgr.Instance.MainEntity.SimpleMove();
     }
 
     void CancelAccelerate()
@@ -317,6 +318,4 @@ public class MainUIWindow : UIBaseWindow
             Debug.LogError("技能没有CD。。。,有能量消耗");
         }
     }
-
-
 }

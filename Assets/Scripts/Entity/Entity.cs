@@ -352,7 +352,7 @@ public class Entity : IEntity
     //等级变化
     public int GetCurrentLevel()
     {
-        LevelInfo info = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
+        //LevelInfo info = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
         Dictionary<int, LevelInfo> level = InfoMgr<LevelInfo>.Instance.Dict;
         int lev = 0;
         foreach (KeyValuePair<int, LevelInfo> kv in level)
@@ -467,26 +467,44 @@ public class Entity : IEntity
             }
             if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis))
             {
-                Debug.LogError("Eat:" + kv.Key + " " + kv.Value.ItemId + " " + (ItemType)kv.Value.InfoId);
                 kv.Value.FlyToEntity(this);
             }
         }
     }
 
-    void DetectObstacle()
+    //void DetectObstacle()
+    //{
+    //    if (null != ArpgAnimatContorller)
+    //    {
+    //        if (ArpgAnimatContorller.Skill == 1)
+    //        {
+    //            foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
+    //            {
+    //                if (Util.PtInRectArea(CacheModel, kv.Value.Cache, kv.Value.Width + Attribute.Atkdis, kv.Value.Height + Attribute.Atkdis))
+    //                {
+    //                    Debug.LogError("Collision:" + kv.Key + " " + kv.Value.Index + " " + kv.Value.Cache.name);
+    //                    StopSkill(CollisionType.Collision_OBSTACLE);
+    //                }
+    //            }
+    //        }
+    //    }
+    //}
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
     {
-        if (null != ArpgAnimatContorller)
+        if (!IsAlive)
         {
-            if (ArpgAnimatContorller.Skill == 1)
+            return;
+        }
+
+        Transform temp = hit.transform;
+        if (temp.CompareTag(AppConst.TAG_OBSTACLE))
+        {
+            if (null != ArpgAnimatContorller)
             {
-                foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
+                if (ArpgAnimatContorller.Skill > 0)
                 {
-                    if (Util.PtInRectArea(CacheModel, kv.Value.Cache, kv.Value.Width + Attribute.Atkdis, kv.Value.Height + Attribute.Atkdis))
-                    {
-                        Debug.LogError("Collision:" + kv.Key + " " + kv.Value.Index + " " + kv.Value.Cache.name);
-                        //EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
-                        StopSkill(CollisionType.Collision_OBSTACLE);
-                    }
+                    StopSkill(CollisionType.Collision_OBSTACLE);
                 }
             }
         }
@@ -531,13 +549,14 @@ public class Entity : IEntity
 
     public void StopSkill(CollisionType type)
     {
-        if (ArpgAnimatContorller.Skill > 0)
-        {
-            collision = type;
-            Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
-            TimerWalkInstantHandler(null);
-            collision = CollisionType.NONE;
-        }
+        //if (ArpgAnimatContorller.Skill > 0)
+        //{
+        ArpgAnimatContorller.Skill = 0;
+        collision = type;
+        Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
+        TimerWalkInstantHandler(null);
+        collision = CollisionType.NONE;
+        //}
     }
 
 
@@ -565,7 +584,7 @@ public class Entity : IEntity
                 Debuger.LogError("碰到障碍物了");
                 break;
             case CollisionType.NONE:
-                Debuger.LogError("自己停止了");
+                Debuger.LogError("未碰到任何东西，变身");
                 OccpType occp = Util.GetNextOccp(occupation);
                 int id = Util.GetHeroIdByOccp(occp);
                 ChangeOccp(occp, id);
@@ -609,8 +628,8 @@ public class Entity : IEntity
         Timer.Instance.AddTimer((float)effectInfo.keeptime / AppConst.factor, 1, true, TimerWalkInstantHandler);
     }
 
-    //先用物理引擎去检测碰撞,效率低再优化
     float mTotalTime = 0;
+    float mInterval = 0.05f;
     void Update()
     {
         if (!init)
@@ -629,7 +648,7 @@ public class Entity : IEntity
         }
 
         mTotalTime += Time.deltaTime;
-        if (mTotalTime <= 0.1f)
+        if (mTotalTime <= mInterval)
         {
             return;
         }
@@ -638,8 +657,6 @@ public class Entity : IEntity
 
         DetectItem();
 
-        DetectObstacle();
-
-        DetectNetEntity();
+        //DetectNetEntity();
     }
 }
