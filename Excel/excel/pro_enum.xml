@@ -99,6 +99,7 @@
 		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
 		<field name="RESOURCE_OBSTACLE"     	value="6"   desc="障碍物模型" />
 		<field name="RESOURCE_NET"     			value="7"   desc="网络角色" />
+		<field name="RESOURCE_MGR"     			value="8"   desc="角色管理器" />
     </enum>
 
 	<enum name="ItemType"			target_name="ItemInfo" desc="效果类型" >

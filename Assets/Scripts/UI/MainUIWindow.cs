@@ -16,6 +16,7 @@ public class MainUIWindow : UIBaseWindow
     private UISkill[] m_skillInfos;
     private bool isInit = false;
     private EffectType m_EffectType = EffectType.NONE;
+    private UIDead m_UIDead;
 
     public EffectType EffType
     {
@@ -49,6 +50,7 @@ public class MainUIWindow : UIBaseWindow
         isInit = true;
         Transform cache = transform;
         m_Joystick = cache.Find("Joystick").GetComponent<TCKJoystick>();
+        m_UIDead = cache.Find("Dead").GetComponent<UIDead>();
 
         m_skills = new Transform[2];
         m_btnImage = new Image[2];
@@ -103,6 +105,7 @@ public class MainUIWindow : UIBaseWindow
         EventCenter.Instance.Register<Event_StopSkill>(StopSkill);
         EventCenter.Instance.Register<Event_StopAcct>(StopAcct);
         EventCenter.Instance.Register<Event_OpenAcct>(OpenAcct);
+        EventCenter.Instance.Register<Event_RoleDead>(RoleDead);
         BindStickEvt();
     }
 
@@ -111,7 +114,16 @@ public class MainUIWindow : UIBaseWindow
         EventCenter.Instance.Unregister<Event_StopSkill>(StopSkill);
         EventCenter.Instance.Unregister<Event_StopAcct>(StopAcct);
         EventCenter.Instance.Unregister<Event_OpenAcct>(OpenAcct);
+        EventCenter.Instance.Unregister<Event_RoleDead>(RoleDead);
         UnBindStickEvt();
+    }
+
+    void RoleDead(object o,Event_RoleDead evt)
+    {
+        if(null != m_UIDead)
+        {
+            m_UIDead.ShowDeadUI();
+        }
     }
 
     void StopSkill(object o,Event_StopSkill evt)
@@ -150,6 +162,11 @@ public class MainUIWindow : UIBaseWindow
     private void DownEvent(float x, float y)
     {
         if (x == 0 && y == 0)
+        {
+            return;
+        }
+
+        if(null == GameMgr.Instance)
         {
             return;
         }
@@ -205,7 +222,7 @@ public class MainUIWindow : UIBaseWindow
         switch (EffType)
         {
             case EffectType.ACCELERATE:
-                AccelerateSkill();
+                Accelerate();
                 break;
             case EffectType.WALKINSTANT:
                 WalkInstant();
@@ -228,7 +245,7 @@ public class MainUIWindow : UIBaseWindow
     }
 
     //加速技能
-    void AccelerateSkill()
+    void Accelerate()
     {
         if (!GameMgr.Instance.MainEntity.IsAlive)
         {

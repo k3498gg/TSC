@@ -140,31 +140,5 @@ public class UIManager : UIBaseManager
         return baseWindow;
     }
 
-    //private void AdjustBaseWindowDepth(UIBaseWindow baseWindow)
-    //{
-
-    //}
-
-
-    //private void AddColliderBgForWindow(UIBaseWindow baseWindow)
-    //{
-    //    UIWindowColliderMode colliderMode = baseWindow.windowData.colliderMode;
-    // }
-
-    //public void RefreshBackSequenceData(UIBaseWindow baseWindow)
-    //{
-    //    WindowData windowData = baseWindow.windowData;
-
-    //}
-
-    //private void CheckBackSequenceData(UIBaseWindow baseWindow)
-    //{
-    //    WindowData windowData = baseWindow.windowData;
-
-    //}
-
-
-
-
 }
 

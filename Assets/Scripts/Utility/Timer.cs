@@ -85,6 +85,7 @@ public class Timer : Singleton<Timer>
         {
             int idx = mUnused.Count - 1;
             TimerData data = mUnused[idx];
+            data.isInitialized = false;
             mUnused.RemoveAt(idx);
             mList.Add(data);
             return data;

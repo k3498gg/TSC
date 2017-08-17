@@ -343,6 +343,11 @@ public class Util
         return oc;
     }
 
+    public static bool IsSameOccp(OccpType occ1,OccpType occ2)
+    {
+        return occ1 == occ2;
+    }
+
     public static OccpType GetNextOccp(OccpType curType)
     {
         OccpType oc = OccpType.NONE;

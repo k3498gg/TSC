@@ -29,6 +29,7 @@ public class ObstacleMgr : Singleton<ObstacleMgr>
         entity.Index = obstacle.Id;
         entity.Width = obstacle.Width;
         entity.Height = obstacle.Height;
+        entity.Obs_type = obstacle.ObsType;
         TSCData.Instance.ObstacleDic[entity.Index] = entity;
     }
 

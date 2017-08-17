@@ -79,10 +79,14 @@
 		<filed name="CONST_SKILL_MINTIME"	value="19"   desc="AI技能持续最小时间" />
 		<filed name="CONST_SKILL_MAXTIME"	value="20"   desc="AI技能持续最大时间" />
 		<filed name="CONST_CHASE_TIME"		value="21"   desc="AI追逐持续时间（正常走路情况追踪目标）" />
-		<filed name="CONST_ACCT_SPEED"			value="22"   desc="加速速度比例" />
-		<filed name="CONST_INSTANT_SPEED"		value="23"   desc="冲刺速度比例" />
+		<filed name="CONST_ACCT_SPEED"		value="22"   desc="加速速度比例" />
+		<filed name="CONST_INSTANT_SPEED"	value="23"   desc="冲刺速度比例" />
 		<filed name="CONST_AI_MINCOUNT"		value="24"   desc="AI最小在线数量" />
 		<filed name="CONST_AI_MAXCOUNT"		value="25"   desc="AI最大在线数量" />
+		<filed name="CONST_CHASE_LEV"		value="26"   desc="AI追击职业等级差" />
+		<filed name="CONST_AI_DETECT_RANGE_INTERVAL"		value="27"   desc="AI追击检测可击杀对象是否在范围内的时间间隔" />
+		<filed name="CONST_AI_RANDOM_DIR_INTERVAL"		value="28"   desc="AI随机切换方向时间间隔" />
+		<filed name="CONST_AI_RANDOM_ITEM_RADIO"		value="29"   desc="AI随机指定半径内的道具" />
     </enum>
 
 
@@ -95,6 +99,7 @@
 		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
 		<field name="RESOURCE_OBSTACLE"     	value="6"   desc="障碍物模型" />
 		<field name="RESOURCE_NET"     			value="7"   desc="网络角色" />
+		<field name="RESOURCE_MGR"     			value="8"   desc="网络角色" />
     </enum>
 
 	<enum name="ItemType"			target_name="ItemInfo" desc="效果类型" >

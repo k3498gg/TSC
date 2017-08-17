@@ -347,7 +347,7 @@ public class NetEntity : IEntity
         if (null != CacheSkillParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheSkillParticleTran);
-            CacheSkillParticleTran.parent = GameMgr.Instance.ParticleRoot;
+            //CacheSkillParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheSkillParticleTran = null;
         }
     }
@@ -357,7 +357,7 @@ public class NetEntity : IEntity
         if (null != CacheAccelParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheAccelParticleTran);
-            CacheAccelParticleTran.parent = GameMgr.Instance.ParticleRoot;
+            //CacheAccelParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheAccelParticleTran = null;
         }
     }
@@ -521,26 +521,6 @@ public class NetEntity : IEntity
         }
     }
 
-    //public void OnCollisionEnterThing(CollisionType collision)
-    //{
-    //    switch (collision)
-    //    {
-    //        case CollisionType.Collision_NET:
-    //            Debug.LogError("碰到玩家了");
-    //            break;
-    //        case CollisionType.Collision_ITEM:
-    //            Debug.LogError("碰到道具了");
-    //            break;
-    //        case CollisionType.Collision_OBSTACLE:
-    //            Debug.LogError("碰到障碍物了");
-    //            break;
-    //        case CollisionType.NONE:
-    //            Debug.LogError("自己停止了");
-    //            SwitchOccp();
-    //            break;
-    //    }
-    //}
-
     public void SwitchOccp()
     {
         if (IsAlive)
@@ -607,10 +587,10 @@ public class NetEntity : IEntity
     }
 
 
-    public void BeKilled()
-    {
-        NpcControl.SetTransition(Transition.Dead, this);
-    }
+    //public void BeKilled()
+    //{
+    //    NpcControl.SetTransition(Transition.Dead, this);
+    //}
 
     public void EnterIdle()
     {
@@ -788,7 +768,6 @@ public class NetEntity : IEntity
 
         if (null != LockCache)
         {
-            Debug.LogError("身邊最近的玩家" + LockCache.name);
             TransferAIState(LockCache);
         }
     }
@@ -819,6 +798,11 @@ public class NetEntity : IEntity
         }
     }
 
+    public bool IsProtect()
+    {
+        return State == StateType.STATE_PROTECT;
+    }
+
     public bool IsOutOfRange()
     {
         if (null == LockCache)
@@ -845,8 +829,21 @@ public class NetEntity : IEntity
 
         if (temp.CompareTag(AppConst.TAG_OBSTACLE))
         {
-            Vector3 dir = CacheModel.position - temp.position;
-            UpdateDir(dir);
+            ObstacleEntity entity = temp.GetComponent<ObstacleEntity>();
+            if (null != entity)
+            {
+                Vector3 dir = CacheModel.forward;
+                switch (entity.Obs_type)
+                {
+                    case ObstType.ObsType_TA:
+                        UpdateDir(Vector3.zero - CacheModel.position);
+                        break;
+                    case ObstType.ObsType_TB:
+                    case ObstType.ObsType_TC:
+                        UpdateDir(CacheModel.position - temp.position);
+                        break;
+                }
+            }
             NpcControl.SetTransition(Transition.FreeWalk, this);
         }
         else if (temp.CompareTag(AppConst.TAG_NETENTITY))
@@ -854,26 +851,82 @@ public class NetEntity : IEntity
             NetEntity entity = temp.GetComponent<NetEntity>();
             Vector3 dir = CacheModel.position - temp.position;
             UpdateDir(dir);
-            if (Util.CanKillBody(entity.Occupation, Occupation))
+            if (Util.IsSameOccp(entity.Occupation, Occupation))
             {
-                NpcControl.SetTransition(Transition.Dead, this);
+                
             }
             else
             {
-                NpcControl.SetTransition(Transition.FreeWalk, this);
+                if (Util.CanKillBody(entity.Occupation, Occupation))
+                {
+                    if (!IsProtect())
+                    {
+                        if (entity.IsAlive)
+                        {
+                            NpcControl.SetTransition(Transition.Dead, this);
+                        }
+                    }else
+                    {
+                        NpcControl.SetTransition(Transition.FreeWalk, this);
+                    }
+                }
+                else if (Util.CanKillBody(Occupation, entity.Occupation))
+                {
+                    if (!entity.IsProtect())
+                    {
+                        if (entity.IsAlive)
+                        {
+                            entity.NpcControl.SetTransition(Transition.Dead, entity);
+                        }
+                    }else
+                    {
+                        entity.NpcControl.SetTransition(Transition.FreeWalk, entity);
+                    }
+                }
+                else
+                {
+                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                }
             }
         }
         else if (temp.CompareTag(AppConst.TAG_PLAYER))
         {
             Vector3 dir = CacheModel.position - temp.position;
             UpdateDir(dir);
-            if (Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation))
+            if (Util.IsSameOccp(GameMgr.Instance.MainEntity.Occupation, Occupation))
             {
-                NpcControl.SetTransition(Transition.Dead, this);
+
             }
             else
             {
-                NpcControl.SetTransition(Transition.FreeWalk, this);
+                if (Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation))
+                {
+                    if (GameMgr.Instance.MainEntity.IsAlive)
+                    { 
+                        if(!IsProtect())
+                        {
+                            NpcControl.SetTransition(Transition.Dead, this);
+                        }else
+                        {
+                            NpcControl.SetTransition(Transition.FreeWalk, this);
+                        }
+                    }
+                }
+                else if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
+                {
+                    if (GameMgr.Instance.MainEntity.IsAlive)
+                    {
+                        if (!GameMgr.Instance.MainEntity.IsProtect())
+                        {
+                            GameMgr.Instance.MainEntity.Dead();
+                        }
+                    }
+                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                }
+                else
+                {
+                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                }
             }
         }
     }

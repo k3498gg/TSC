@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameMgr : UnitySingleton<GameMgr>
+public class GameMgr : MonoBehaviour
 {
     private bool init = false;
     private Transform m_cameraRoot;
@@ -13,12 +13,22 @@ public class GameMgr : UnitySingleton<GameMgr>
     private Transform m_particleRoot;
     private int mapId;
     private bool isEnterGame = true;
+    private static GameMgr instance;
 
     private Entity m_MainEntity; //主角
     private Dictionary<string, int> downBinInfoDic;
     private CharacterController m_characController; //主角控制器
     private ARPGCameraController m_cameraController; //相机跟随控制
     private ARPGAnimatorController m_animController; //主角动作控制器
+
+    public static GameMgr Instance
+    {
+        get
+        {
+           return instance;
+        }
+    }
+
 
     public ARPGAnimatorController ARPGAnimatController
     {
@@ -112,7 +122,9 @@ public class GameMgr : UnitySingleton<GameMgr>
         {
             return;
         }
+        DontDestroyOnLoad(gameObject);
         init = true;
+        instance = this;
         Transform m_self = transform;
         m_cameraRoot = m_self.Find("Camera");
         m_playerRoot = m_self.Find("Player");
@@ -402,7 +414,7 @@ public class GameMgr : UnitySingleton<GameMgr>
         yield return null;
         int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
-        for (int i = 0; i < 10;i++)
+        for (int i = 0; i < 5;i++)
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
             NetEntity e = Util.AddComponent<NetEntity>(go);
@@ -412,6 +424,7 @@ public class GameMgr : UnitySingleton<GameMgr>
             e.InitEntity(oc, Util.GetHeroIdByOccp(oc));
             
             Vector3 location = RandomLocation();
+            go.transform.localRotation = Quaternion.Euler(0,Random.Range(0,360), 0);
             go.transform.position = location;
             TSCData.Instance.EntityDic[e.Id] = e;
         }

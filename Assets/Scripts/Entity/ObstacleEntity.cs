@@ -8,6 +8,7 @@ public class ObstacleEntity : IEntity
     private Transform cache;
     private float height;
     private float width;
+    private ObstType obs_type;
 
     public int Index
     {
@@ -62,6 +63,19 @@ public class ObstacleEntity : IEntity
         set
         {
             width = value;
+        }
+    }
+
+    public ObstType Obs_type
+    {
+        get
+        {
+            return obs_type;
+        }
+
+        set
+        {
+            obs_type = value;
         }
     }
 }

@@ -221,7 +221,6 @@ public class PlayerSkillState : FSMState
         {
             m_enter_time = 0;
             entity.SkillEvent();
-            Debug.LogWarning(entity.GetSkillTime() + " Enter Skill " + Time.realtimeSinceStartup);
         }
     }
 
@@ -231,7 +230,6 @@ public class PlayerSkillState : FSMState
         {
             m_enter_time = 0;
             entity.StopSkill();
-            Debug.LogWarning(entity.GetSkillTime() + " exit Skill " + Time.realtimeSinceStartup);
         }
     }
 

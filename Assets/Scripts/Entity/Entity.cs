@@ -215,6 +215,7 @@ public class Entity : IEntity
     {
         Occupation = occp;
         HeroId = heroId;
+        State = StateType.STATE_PROTECT;
         HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
         GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, CacheModel);// ResourcesMgr.Instance.Instantiate(prefab);
         if (null == go)
@@ -264,7 +265,6 @@ public class Entity : IEntity
     public void SimpleMove()
     {
         GameMgr.Instance.CharacController.SimpleMove(CacheModel.forward * Time.deltaTime * Attribute.Speed);
-        //CacheModel.Translate(Vector3.forward * Time.deltaTime * GameMgr.Instance.MainEntity.Attribute.Speed * 0.01f);
     }
 
     public void DespawnerParticle(EffectType type)
@@ -304,7 +304,6 @@ public class Entity : IEntity
         if (null != CacheSkillParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheSkillParticleTran);
-            CacheSkillParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheSkillParticleTran = null;
         }
     }
@@ -314,7 +313,6 @@ public class Entity : IEntity
         if (null != CacheAccelParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheAccelParticleTran);
-            CacheAccelParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheAccelParticleTran = null;
         }
     }
@@ -472,24 +470,6 @@ public class Entity : IEntity
         }
     }
 
-    //void DetectObstacle()
-    //{
-    //    if (null != ArpgAnimatContorller)
-    //    {
-    //        if (ArpgAnimatContorller.Skill == 1)
-    //        {
-    //            foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
-    //            {
-    //                if (Util.PtInRectArea(CacheModel, kv.Value.Cache, kv.Value.Width + Attribute.Atkdis, kv.Value.Height + Attribute.Atkdis))
-    //                {
-    //                    Debug.LogError("Collision:" + kv.Key + " " + kv.Value.Index + " " + kv.Value.Cache.name);
-    //                    StopSkill(CollisionType.Collision_OBSTACLE);
-    //                }
-    //            }
-    //        }
-    //    }
-    //}
-
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (!IsAlive)
@@ -507,56 +487,34 @@ public class Entity : IEntity
                     StopSkill(CollisionType.Collision_OBSTACLE);
                 }
             }
-        }
-    }
-
-    void DetectNetEntity()
-    {
-        if (State == StateType.STATE_PROTECT)
+        }else if(temp.CompareTag(AppConst.TAG_NETENTITY))
         {
-            return;
-        }
-        foreach (KeyValuePair<int, NetEntity> kv in TSCData.Instance.EntityDic)
-        {
-            if (kv.Value.State == StateType.STATE_PROTECT)
+            NetEntity entity = temp.GetComponent<NetEntity>();
+            if(null != entity)
             {
-                continue;
-            }
-
-            if (!kv.Value.IsAlive)
-            {
-                continue;
-            }
-
-            if (Util.PtInCircleArea(CacheModel, kv.Value.CacheModel, Attribute.Atkdis + kv.Value.Attribute.Atkdis))
-            {
-                Vector3 dir = kv.Value.CacheModel.position - CacheModel.position;
-
-                if (Vector3.Angle(CacheModel.forward, dir) > AppConst.AtkAngle)
+                if (Util.CanKillBody(entity.Occupation, Occupation))
                 {
-                    continue;
+                    if(!IsProtect())
+                    {
+                        Debug.LogError("主角被殺死了");
+                        Dead();
+                    }
                 }
-
-                if (Util.CanKillBody(Occupation, kv.Value.Occupation))
+                else if(Util.IsSameOccp(entity.Occupation, Occupation))
                 {
-                    kv.Value.BeKilled();
+                    
                 }
-
-                StopSkill(CollisionType.Collision_NET);
             }
         }
     }
 
     public void StopSkill(CollisionType type)
     {
-        //if (ArpgAnimatContorller.Skill > 0)
-        //{
         ArpgAnimatContorller.Skill = 0;
         collision = type;
         Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
         TimerWalkInstantHandler(null);
         collision = CollisionType.NONE;
-        //}
     }
 
 
@@ -567,6 +525,7 @@ public class Entity : IEntity
 
     void TimerWalkInstantHandler(Timer.TimerData data)
     {
+        Debug.LogError("主角停止衝鋒"+ Time.realtimeSinceStartup);
         EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
         Attribute.Speed = Attribute.BaseSpeed;
         ArpgAnimatContorller.Skill = 0;
@@ -592,14 +551,20 @@ public class Entity : IEntity
         }
     }
 
-    public void BeKilled()
+    public bool IsProtect()
     {
-        Debug.LogError("主角被杀死了");
+        return State == StateType.STATE_PROTECT;
+    }
+
+    public void Dead()
+    {
+        Debug.LogError("Dead");
         Attribute.Hp = 0;
         StopAccelerate();
         StopSkill(CollisionType.Collision_NOTHING);
         ArpgAnimatContorller.Reset();
         ArpgAnimatContorller.Die = true;
+        EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead());
     }
 
     public void StopAccelerate()
@@ -622,6 +587,7 @@ public class Entity : IEntity
     //冲锋
     public void Walkinstant(SkillInfo skill, EffectInfo effectInfo)
     {
+        Debug.LogError("主角衝鋒" + Time.realtimeSinceStartup +" "+ (float)effectInfo.keeptime / AppConst.factor);
         ArpgAnimatContorller.Skill = 1;
         Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
         SpawnerParticle(skill.particleID, EffectType.WALKINSTANT, CacheParticleParent.position, CacheParticleParent);
@@ -629,7 +595,7 @@ public class Entity : IEntity
     }
 
     float mTotalTime = 0;
-    float mInterval = 0.05f;
+    float mInterval = 0.1f;
     void Update()
     {
         if (!init)
@@ -656,7 +622,5 @@ public class Entity : IEntity
         mTotalTime = 0;
 
         DetectItem();
-
-        //DetectNetEntity();
     }
 }
