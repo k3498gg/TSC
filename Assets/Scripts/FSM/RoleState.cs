@@ -45,7 +45,7 @@ public class RoleWalkState : RoleFSMState
     {
         if (null != entity)
         {
-            entity.ArpgAnimatContorller.Walk = true;
+            entity.EnterWalk();
         }
     }
 
@@ -53,7 +53,7 @@ public class RoleWalkState : RoleFSMState
     {
         if (null != entity)
         {
-            entity.ArpgAnimatContorller.Walk = false;
+            entity.ExitWalk();
         }
     }
 
@@ -101,12 +101,13 @@ public class RoleAcctState : RoleFSMState
         {
             if (entity.Attribute.CurPhy > 0)
             {
+                entity.SimpleMove();
                 entity.Attribute.CurPhy = entity.Attribute.CurPhy - entity.Attribute.CostPhySpeed * Time.deltaTime;
             }
             else
             {
                 entity.Attribute.CurPhy = 0;
-                entity.RoleEntityControl.SetTransition(RoleTransition.FreeWalk, entity);
+                entity.EndCurrentStateToOtherState(RoleStateID.Idle);
             }
         }
     }

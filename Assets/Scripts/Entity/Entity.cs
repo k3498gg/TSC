@@ -595,6 +595,16 @@ public class Entity : IEntity
         EndCurrentStateToOtherState(RoleStateID.Switch);
     }
 
+    public void EnterWalk()
+    {
+        ArpgAnimatContorller.Walk = true;
+    }
+
+    public void ExitWalk()
+    {
+        ArpgAnimatContorller.Walk = false;
+    }
+
     public bool IsProtect()
     {
         return State == StateType.STATE_PROTECT;
@@ -616,8 +626,8 @@ public class Entity : IEntity
 
     public void StopAccelerate()
     {
-        Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
         ArpgAnimatContorller.Walk = false;
+        Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
         Attribute.Speed = Attribute.BaseSpeed;
         DespawnerParticle(EffectType.ACCELERATE);
     }

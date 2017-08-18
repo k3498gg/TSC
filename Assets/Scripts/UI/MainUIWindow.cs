@@ -15,21 +15,21 @@ public class MainUIWindow : UIBaseWindow
     private CanvasRenderer[] m_Renders;
     private UISkill[] m_skillInfos;
     private bool isInit = false;
-    //private EffectType m_EffectType = EffectType.NONE;
+    private EffectType m_EffectType = EffectType.NONE;
     private UIDead m_UIDead;
 
-    //public EffectType EffType
-    //{
-    //    get
-    //    {
-    //        return m_EffectType;
-    //    }
+    public EffectType EffType
+    {
+        get
+        {
+            return m_EffectType;
+        }
 
-    //    set
-    //    {
-    //        m_EffectType = value;
-    //    }
-    //}
+        set
+        {
+            m_EffectType = value;
+        }
+    }
 
     public override void InitWindowData()
     {
@@ -198,7 +198,14 @@ public class MainUIWindow : UIBaseWindow
 
         float angle = Mathf.Rad2Deg * (Mathf.Atan2(x, y));
         GameMgr.Instance.MainEntity.UpdateRotation(angle);
-        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
+        if (EffType == EffectType.ACCELERATE)
+        {
+            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+        }
+        else
+        {
+            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
+        }
     }
 
     private void UpEvent(float x, float y)
@@ -231,17 +238,27 @@ public class MainUIWindow : UIBaseWindow
             float val = GameMgr.Instance.MainEntity.Attribute.CurPhy / GameMgr.Instance.MainEntity.Attribute.MaxPhy;
             m_timerImage[0].fillAmount = val;
         }
+        else
+        {
+            if (EffType == EffectType.ACCELERATE)
+            {
+                float val = GameMgr.Instance.MainEntity.Attribute.CurPhy / GameMgr.Instance.MainEntity.Attribute.MaxPhy;
+                m_timerImage[0].fillAmount = val;
+            }
+        }
     }
 
     void CancelSkill(GameObject go)
     {
+        EffType = EffectType.NONE;
         int idx = System.Array.IndexOf(m_skills, go.transform);
         if (idx != -1)
         {
             switch (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID)
             {
                 case RoleStateID.Acct:
-                    GameMgr.Instance.MainEntity.RoleEntityControl.SetTransition(RoleTransition.FreeWalk, GameMgr.Instance.MainEntity);
+                    //GameMgr.Instance.MainEntity.RoleEntityControl.SetTransition(RoleTransition.FreeWalk, GameMgr.Instance.MainEntity);
+                    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
                     break;
                 case RoleStateID.Skill:
 
@@ -252,7 +269,7 @@ public class MainUIWindow : UIBaseWindow
 
     void TriggerSkill(GameObject go)
     {
-        if(GameMgr.Instance.MainEntity.IsUsingAcctOrSkill())
+        if (GameMgr.Instance.MainEntity.IsUsingAcctOrSkill())
         {
             return;
         }
@@ -266,10 +283,11 @@ public class MainUIWindow : UIBaseWindow
 
     void SkillEvent(int idx)
     {
-        switch ((EffectType)(idx + 1))
+        EffType = (EffectType)(idx + 1);
+        switch (EffType)
         {
             case EffectType.ACCELERATE:
-                GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+                //GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
                 break;
             case EffectType.WALKINSTANT:
                 GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Skill);
