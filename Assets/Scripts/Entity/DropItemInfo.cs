@@ -136,8 +136,8 @@ public class DropItemInfo : IEntity
         {
             //碰到状态道具 停止技能
             Debuger.LogError("碰到状态道具，停止技能");
-            //EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
-            entity.StopSkill(CollisionType.Collision_ITEM);
+            //entity.StopSkill(CollisionType.Collision_ITEM);
+            entity.EndSkillStateToIdle();
         }
 
         //如果是积分道具(积分发生变化)
@@ -188,8 +188,7 @@ public class DropItemInfo : IEntity
         if ((int)type < (int)ItemType.ITEM_ENERGY)
         {
             //碰到状态道具 停止技能
-            //entity.StopSkill(CollisionType.Collision_ITEM);
-            entity.EndCurrentStateToWalk();
+            entity.EndCurrentStateToOtherState(StateID.Walk);
         }
 
         //如果是积分道具(积分发生变化)

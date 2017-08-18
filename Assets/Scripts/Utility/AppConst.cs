@@ -11,7 +11,7 @@ public class AppConst
     public static string ExtName = ".unity3d";                   //素材扩展名
     public static string WWWDir = "StreamingAssets";           //素材目录 
     public static string ExtFbx = ".fbx";                        //fbx后缀名
-    public static string AssetPath = "Assets";                                   
+    public static string AssetPath = "Assets";
     public static string TextDir = "client";                     //文本文件目录
     public static string FileBin = "file.txt";                   //配置文件信息汇总
     public static char Separate = '|';
@@ -40,7 +40,7 @@ public class AppConst
     public static string TAG_ITEM_ENERGY = "ItemEnergy";
     public static string NET_Entity = "NetEntity";
 
- 
+
 
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {
@@ -108,13 +108,17 @@ public class AppConst
     public static float AIRandomDirInterval;
     public static float AIRandomItemRadio;
 
+    public static float PhyRecoverSpeed;
+    public static float CrashSpeed;
+    public static float CrashTime;
+
 
     public static void InitConstData()
     {
         ConstInfo areaConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ENERGY_MAXCOUNT);
         ConstInfo sugarConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SUGAR_RADIO);
         ConstInfo freshConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ITEM_COUNT);
-        ItemAreaCount = int.Parse(areaConstInfo.data) /(int) AppConst.factor;
+        ItemAreaCount = int.Parse(areaConstInfo.data) / (int)AppConst.factor;
         ItemFreshCount = int.Parse(freshConstInfo.data) / (int)AppConst.factor;
         ItemSugarDistance = float.Parse(sugarConstInfo.data) / AppConst.factor;
 
@@ -140,17 +144,17 @@ public class AppConst
 
         ConstInfo AcctInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_INTERVAL);
         AcctInterval = float.Parse(AcctInfo.data) / AppConst.factor;
-        ConstInfo SkillInter= InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SKILL_INTERVAL);
+        ConstInfo SkillInter = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SKILL_INTERVAL);
         SkillInterval = float.Parse(SkillInter.data) / AppConst.factor;
 
         ConstInfo FleeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_FLEE_INTERVAL);
         FleeInterval = float.Parse(FleeInfo.data) / AppConst.factor;
-        
+
         ConstInfo KillInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_KILL_INTERVAL);
         KillInterval = float.Parse(KillInfo.data) / AppConst.factor;
 
         ConstInfo AcctMinInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_MINTIME);
-        AcctMinTime = float.Parse(AcctMinInfo.data) / AppConst.factor; 
+        AcctMinTime = float.Parse(AcctMinInfo.data) / AppConst.factor;
         ConstInfo AcctMaxInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ACC_MAXTIME);
         AcctMaxTime = float.Parse(AcctMaxInfo.data) / AppConst.factor;
 
@@ -180,5 +184,12 @@ public class AppConst
 
         ConstInfo AIRandomItemRadioInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_AI_RANDOM_ITEM_RADIO);
         AIRandomItemRadio = float.Parse(AIRandomItemRadioInfo.data) / AppConst.factor;
+
+        ConstInfo PhyRecoverSpeednfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_PHY_RECOVER_SPEED);
+        PhyRecoverSpeed = float.Parse(PhyRecoverSpeednfo.data) / AppConst.factor;
+        ConstInfo CrashSpeedInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_CRASH_SPEED);
+        CrashSpeed = float.Parse(CrashSpeedInfo.data) / AppConst.factor;
+        ConstInfo CrashTimeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_CRASH_TIME);
+        CrashTime = float.Parse(CrashTimeInfo.data) / AppConst.factor;
     }
-} 
+}

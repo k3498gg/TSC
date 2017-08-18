@@ -9,6 +9,8 @@ public class PlayerIdleState : FSMState
         stateID = StateID.Idle;
     }
 
+    private float enter_time = 0;
+    private float m_total_time = 0.5f;
     public override void OnEnter(NetEntity entity)
     {
         if (null != entity)
@@ -19,12 +21,25 @@ public class PlayerIdleState : FSMState
 
     public override void OnExit(NetEntity entity)
     {
-
+        if (null != entity)
+        {
+            entity.ExitIdle();
+        }
     }
 
     public override void OnUpdate(NetEntity entity)
     {
+        if (null != entity)
+        {
+            enter_time += Time.deltaTime;
+            if (enter_time < m_total_time)
+            {
+                return;
+            }
 
+            enter_time = 0;
+            entity.EndCurrentStateToOtherState(StateID.Walk);
+        }
     }
 
     public override void OnExcute(NetEntity entity)
@@ -69,7 +84,7 @@ public class PlayerWalkState : FSMState
         m_totalTime += Time.deltaTime;
         m_detectTime += Time.deltaTime;
 
-        if(m_detectTime < AppConst.AIDetectInterval)
+        if (m_detectTime < AppConst.AIDetectInterval)
         {
             return;
         }
@@ -94,11 +109,11 @@ public class PlayerWalkState : FSMState
         if (TSCData.Instance.DropItemDic.Count > 0)
         {
             bool force = false;
-            foreach(KeyValuePair<int,DropItemInfo> kv in TSCData.Instance.DropItemDic)
+            foreach (KeyValuePair<int, DropItemInfo> kv in TSCData.Instance.DropItemDic)
             {
-                if(!kv.Value.IsLock)
+                if (!kv.Value.IsLock)
                 {
-                    if(Util.GetEntityDistance(entity.CacheModel, kv.Value.Cache) < AppConst.AIRandomItemRadio)
+                    if (Util.GetEntityDistance(entity.CacheModel, kv.Value.Cache) < AppConst.AIRandomItemRadio)
                     {
                         Vector3 dir = kv.Value.Cache.position - entity.CacheModel.position;
                         entity.UpdateDir(dir);
@@ -108,7 +123,7 @@ public class PlayerWalkState : FSMState
                 }
             }
 
-            if(!force)
+            if (!force)
             {
                 int idx = Random.Range(0, TSCData.Instance.DropItemDic.Count);
                 Transform t = GameMgr.Instance.ItemRoot.GetChild(idx);
@@ -196,10 +211,10 @@ public class PlayerAcceState : FSMState
     public override void OnExcute(NetEntity entity)
     {
         m_enter_time += Time.deltaTime;
-        if(m_enter_time > m_end_time)
+        if (m_enter_time > m_end_time)
         {
             m_enter_time = 0;
-            entity.EndCurrentStateToWalk();
+            entity.EndCurrentStateToOtherState(StateID.Walk);
         }
     }
 }
@@ -240,14 +255,13 @@ public class PlayerSkillState : FSMState
 
     public override void OnExcute(NetEntity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
             m_enter_time += Time.deltaTime;
             if (m_enter_time > entity.GetSkillTime())
             {
                 m_enter_time = 0;
-                entity.EndCurrentStateToWalk();
-                Debug.LogError("沒碰到東西 切換職業");
+                entity.EndCurrentStateToOtherState(StateID.Walk);
             }
         }
     }
@@ -271,7 +285,7 @@ public class PlayerDeadState : FSMState
 
     public override void OnExit(NetEntity entity)
     {
-        Debug.LogError("離開死亡狀態");
+
     }
 
     public override void OnUpdate(NetEntity entity)
@@ -321,58 +335,43 @@ public class PlayerSwitchState : FSMState
 }
 
 
-public class PlayerChaseState : FSMState
+public class PlayerCrashState : FSMState
 {
-    public PlayerChaseState()
+    public PlayerCrashState()
     {
-        stateID = StateID.ChasePlayer;
+        stateID = StateID.CrashPlayer;
     }
 
+    private float enter_time = 0;
     public override void OnEnter(NetEntity entity)
     {
         if (null != entity)
         {
+            Debug.LogError("被撞開了");
+            enter_time = 0;
+            entity.Attribute.Speed = entity.Attribute.BaseSpeed * AppConst.CrashSpeed;
         }
     }
 
     public override void OnExit(NetEntity entity)
     {
-
-    }
-
-    public override void OnUpdate(NetEntity entity)
-    {
-
-    }
-
-    public override void OnExcute(NetEntity entity)
-    {
-
-    }
-}
-
-public class PlayerLostState : FSMState
-{
-    public PlayerLostState()
-    {
-        stateID = StateID.LostPlayer;
-    }
-
-    public override void OnEnter(NetEntity entity)
-    {
         if (null != entity)
         {
+            entity.Attribute.Speed = entity.Attribute.BaseSpeed;
         }
     }
 
-    public override void OnExit(NetEntity entity)
-    {
-
-    }
-
     public override void OnUpdate(NetEntity entity)
     {
-
+        if (null != entity)
+        {
+            enter_time += Time.deltaTime;
+            if (enter_time >= AppConst.CrashTime)
+            {
+                enter_time = 0;
+                entity.EndCurrentStateToOtherState(StateID.Walk);
+            }
+        }
     }
 
     public override void OnExcute(NetEntity entity)

@@ -1,7 +1,7 @@
 animatorinfo.bin|625
 animatortransfer.bin|228
 animatortransinfo.bin|738
-constinfo.bin|393
+constinfo.bin|431
 effectinfo.bin|52
 heroinfo.bin|918
 itemeffectinfo.bin|132

@@ -15,21 +15,21 @@ public class MainUIWindow : UIBaseWindow
     private CanvasRenderer[] m_Renders;
     private UISkill[] m_skillInfos;
     private bool isInit = false;
-    private EffectType m_EffectType = EffectType.NONE;
+    //private EffectType m_EffectType = EffectType.NONE;
     private UIDead m_UIDead;
 
-    public EffectType EffType
-    {
-        get
-        {
-            return m_EffectType;
-        }
+    //public EffectType EffType
+    //{
+    //    get
+    //    {
+    //        return m_EffectType;
+    //    }
 
-        set
-        {
-            m_EffectType = value;
-        }
-    }
+    //    set
+    //    {
+    //        m_EffectType = value;
+    //    }
+    //}
 
     public override void InitWindowData()
     {
@@ -102,44 +102,44 @@ public class MainUIWindow : UIBaseWindow
 
     private void OnEnable()
     {
-        EventCenter.Instance.Register<Event_StopSkill>(StopSkill);
-        EventCenter.Instance.Register<Event_StopAcct>(StopAcct);
-        EventCenter.Instance.Register<Event_OpenAcct>(OpenAcct);
+        //EventCenter.Instance.Register<Event_StopSkill>(StopSkill);
+        //EventCenter.Instance.Register<Event_StopAcct>(StopAcct);
+        //EventCenter.Instance.Register<Event_OpenAcct>(OpenAcct);
         EventCenter.Instance.Register<Event_RoleDead>(RoleDead);
         BindStickEvt();
     }
 
     private void OnDisable()
     {
-        EventCenter.Instance.Unregister<Event_StopSkill>(StopSkill);
-        EventCenter.Instance.Unregister<Event_StopAcct>(StopAcct);
-        EventCenter.Instance.Unregister<Event_OpenAcct>(OpenAcct);
+        //EventCenter.Instance.Unregister<Event_StopSkill>(StopSkill);
+        //EventCenter.Instance.Unregister<Event_StopAcct>(StopAcct);
+        //EventCenter.Instance.Unregister<Event_OpenAcct>(OpenAcct);
         EventCenter.Instance.Unregister<Event_RoleDead>(RoleDead);
         UnBindStickEvt();
     }
 
-    void RoleDead(object o,Event_RoleDead evt)
+    void RoleDead(object o, Event_RoleDead evt)
     {
-        if(null != m_UIDead)
+        if (null != m_UIDead)
         {
             m_UIDead.ShowDeadUI();
         }
     }
 
-    void StopSkill(object o,Event_StopSkill evt)
-    {
-        EffType = EffectType.NONE;
-    }
+    //void StopSkill(object o, Event_StopSkill evt)
+    //{
+    //    EffType = EffectType.NONE;
+    //}
 
-    void StopAcct(object o,Event_StopAcct evt)
-    {
-        Debug.LogError("停止使用加速技能");
-    }
+    //void StopAcct(object o, Event_StopAcct evt)
+    //{
+    //    Debug.LogError("停止使用加速技能");
+    //}
 
-    void OpenAcct(object o,Event_OpenAcct evt)
-    {
-        Debug.LogError("可以使用加速技能");
-    }
+    //void OpenAcct(object o, Event_OpenAcct evt)
+    //{
+    //    Debug.LogError("可以使用加速技能");
+    //}
 
     void BindStickEvt()
     {
@@ -166,7 +166,7 @@ public class MainUIWindow : UIBaseWindow
             return;
         }
 
-        if(null == GameMgr.Instance)
+        if (null == GameMgr.Instance)
         {
             return;
         }
@@ -186,25 +186,24 @@ public class MainUIWindow : UIBaseWindow
             return;
         }
 
-        if(!GameMgr.Instance.MainEntity.IsAlive)
+        if (!GameMgr.Instance.MainEntity.IsAlive)
         {
             return;
         }
 
-        if (EffType == EffectType.WALKINSTANT)
+        if (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill || GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.CrashPlayer)
         {
             return;
         }
 
         float angle = Mathf.Rad2Deg * (Mathf.Atan2(x, y));
-        GameMgr.Instance.MainEntity.CacheModel.rotation = Quaternion.Euler(0, angle + GameMgr.Instance.CameraController.EulerY, 0);
-        GameMgr.Instance.ARPGAnimatController.Walk = true;
-        GameMgr.Instance.MainEntity.SimpleMove();
+        GameMgr.Instance.MainEntity.UpdateRotation(angle);
+        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
     }
 
     private void UpEvent(float x, float y)
     {
-        GameMgr.Instance.ARPGAnimatController.Walk = false;
+        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
     }
 
     private void Awake()
@@ -219,21 +218,11 @@ public class MainUIWindow : UIBaseWindow
             return;
         }
 
-        switch (EffType)
-        {
-            case EffectType.ACCELERATE:
-                Accelerate();
-                break;
-            case EffectType.WALKINSTANT:
-                WalkInstant();
-                break;
-        }
-
         if (GameMgr.Instance.MainEntity.IsRecoverEnergy)
         {
             if (GameMgr.Instance.MainEntity.Attribute.CurPhy < GameMgr.Instance.MainEntity.Attribute.MaxPhy)
             {
-                GameMgr.Instance.MainEntity.Attribute.CurPhy += GameMgr.Instance.MainEntity.Attribute.CostPhySpeed * Time.deltaTime;
+                GameMgr.Instance.MainEntity.Attribute.CurPhy += AppConst.PhyRecoverSpeed * Time.deltaTime;
             }
             else
             {
@@ -244,45 +233,17 @@ public class MainUIWindow : UIBaseWindow
         }
     }
 
-    //加速技能
-    void Accelerate()
-    {
-        if (!GameMgr.Instance.MainEntity.IsAlive)
-        {
-            CancelSkill(m_skills[0].gameObject);
-            return;
-        }
-        GameMgr.Instance.MainEntity.Attribute.CurPhy = GameMgr.Instance.MainEntity.Attribute.CurPhy - GameMgr.Instance.MainEntity.Attribute.CostPhySpeed * Time.deltaTime;
-        float val = GameMgr.Instance.MainEntity.Attribute.CurPhy / GameMgr.Instance.MainEntity.Attribute.MaxPhy;
-        m_timerImage[0].fillAmount = val;
-    }
-
-    void WalkInstant()
-    {
-        GameMgr.Instance.MainEntity.SimpleMove();
-    }
-
-    void CancelAccelerate()
-    {
-        EffType = EffectType.NONE;
-        GameMgr.Instance.MainEntity.StopAccelerate();
-    }
-
     void CancelSkill(GameObject go)
     {
-        if (EffType == EffectType.NONE)
-        {
-            return;
-        }
         int idx = System.Array.IndexOf(m_skills, go.transform);
         if (idx != -1)
         {
-            switch (EffType)
+            switch (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID)
             {
-                case EffectType.ACCELERATE:
-                    CancelAccelerate();
+                case RoleStateID.Acct:
+                    GameMgr.Instance.MainEntity.RoleEntityControl.SetTransition(RoleTransition.FreeWalk, GameMgr.Instance.MainEntity);
                     break;
-                case EffectType.WALKINSTANT:
+                case RoleStateID.Skill:
 
                     break;
             }
@@ -291,7 +252,7 @@ public class MainUIWindow : UIBaseWindow
 
     void TriggerSkill(GameObject go)
     {
-        if (EffType != EffectType.NONE)
+        if(GameMgr.Instance.MainEntity.IsUsingAcctOrSkill())
         {
             return;
         }
@@ -299,25 +260,24 @@ public class MainUIWindow : UIBaseWindow
         int idx = System.Array.IndexOf(m_skills, go.transform);
         if (idx != -1)
         {
-            Debuger.LogError(go.name + ": 您选择技能" + m_skillInfos[idx].SkillId);
-            SkillEffect(idx);
+            SkillEvent(idx);
         }
     }
 
-    void SkillEffect(int idx)
+    void SkillEvent(int idx)
     {
-        SkillInfo skillInfo = InfoMgr<SkillInfo>.Instance.GetInfo(m_skillInfos[idx].SkillId);
-        EffectInfo effectInfo = InfoMgr<EffectInfo>.Instance.GetInfo(skillInfo.effectID);
-        EffType = (EffectType)effectInfo.id;
-        if (EffType == EffectType.ACCELERATE)//加速
+        switch ((EffectType)(idx + 1))
         {
-            GameMgr.Instance.MainEntity.Accelerate(skillInfo,effectInfo);
-        }
-        else if (EffType == EffectType.WALKINSTANT) //冲锋
-        {
-            GameMgr.Instance.MainEntity.Walkinstant(skillInfo,effectInfo);
+            case EffectType.ACCELERATE:
+                GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+                break;
+            case EffectType.WALKINSTANT:
+                GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Skill);
+                break;
         }
 
+        SkillInfo skillInfo = InfoMgr<SkillInfo>.Instance.GetInfo(m_skillInfos[idx].SkillId);
+        EffectInfo effectInfo = InfoMgr<EffectInfo>.Instance.GetInfo(skillInfo.effectID);
         if (effectInfo.cd > 0)
         {
             m_btnImage[idx].raycastTarget = false;

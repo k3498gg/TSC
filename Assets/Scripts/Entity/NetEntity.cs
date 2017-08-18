@@ -31,7 +31,7 @@ public class NetEntity : IEntity
 
     private StateType m_state = StateType.NONE;
 
-    private CollisionType collision = CollisionType.NONE;
+    //private CollisionType collision = CollisionType.NONE;
 
     public EntityAttribute Attribute
     {
@@ -487,7 +487,6 @@ public class NetEntity : IEntity
     void RemoveProtect()
     {
         State = StateType.NONE;
-        Timer.Instance.RemoveTimer(ProtectTimerOut);
     }
 
     void DetectItem()
@@ -503,6 +502,11 @@ public class NetEntity : IEntity
                 kv.Value.FlyToEntity(this);
             }
         }
+    }
+
+    public bool IsUsingSkill()
+    {
+        return NpcControl.Fsm.CurrentStateID == StateID.Skill;
     }
 
     public void UpdateDir(Vector3 dir)
@@ -534,7 +538,7 @@ public class NetEntity : IEntity
 
     void SwitchStateToWalkState(Timer.TimerData data)
     {
-        NpcControl.SetTransition(Transition.FreeWalk, this);
+        EndCurrentStateToOtherState(StateID.Walk);
     }
 
     public void StopAccelerate()
@@ -586,15 +590,14 @@ public class NetEntity : IEntity
         return AppConst.SkillMinTime;
     }
 
-
-    //public void BeKilled()
-    //{
-    //    NpcControl.SetTransition(Transition.Dead, this);
-    //}
-
     public void EnterIdle()
     {
         ArpgAnimatContorller.Reset();
+    }
+
+    public void ExitIdle()
+    {
+        Debuger.Log("离开IDLE状态");
     }
 
     public void Dead()
@@ -618,16 +621,39 @@ public class NetEntity : IEntity
     }
 
 
-    //停止逃跑到walk
-    public void EndCurrentStateToWalk()
+    public void EndCurrentStateToOtherState(StateID id)
     {
-        if (IsAlive)
+        if (!IsAlive)
         {
-            NpcControl.SetTransition(Transition.FreeWalk, this);
+            return;
         }
-        else
+
+        if (NpcControl.Fsm.CurrentStateID != id)
         {
-            Debug.LogError("角色已經死亡");
+            switch (id)
+            {
+                case StateID.Idle:
+                    NpcControl.SetTransition(Transition.Idle, this);
+                    break;
+                case StateID.Walk:
+                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                    break;
+                case StateID.Acct:
+                    NpcControl.SetTransition(Transition.Acct, this);
+                    break;
+                case StateID.Skill:
+                    NpcControl.SetTransition(Transition.Skill, this);
+                    break;
+                case StateID.Switch:
+                    NpcControl.SetTransition(Transition.Switch, this);
+                    break;
+                case StateID.CrashPlayer:
+                    NpcControl.SetTransition(Transition.CrashPlayer, this);
+                    break;
+                case StateID.Dead:
+                    NpcControl.SetTransition(Transition.Dead, this);
+                    break;
+            }
         }
     }
 
@@ -688,8 +714,6 @@ public class NetEntity : IEntity
         mTotalTime = 0;
 
         DetectItem();
-
-        //DetectObstacle();
     }
 
 
@@ -780,20 +804,17 @@ public class NetEntity : IEntity
             Vector3 dir = target.position - CacheModel.position;
             UpdateDir(dir);
 
-            if ((lastSkillTime > AppConst.SkillInterval) || (lastAcceTime > AppConst.AcctInterval))
+            if (lastSkillTime > AppConst.SkillInterval)
             {
-                if (lastSkillTime > AppConst.SkillInterval)
-                {
-                    lastSkillTime = 0;
-                    lastKillTime = 0;
-                    NpcControl.SetTransition(Transition.Skill, this);
-                }
-                else if (lastAcceTime > AppConst.AcctInterval)
-                {
-                    lastAcceTime = 0;
-                    lastKillTime = 0;
-                    NpcControl.SetTransition(Transition.Acct, this);
-                }
+                lastSkillTime = 0;
+                lastKillTime = 0;
+                EndCurrentStateToOtherState(StateID.Skill);
+            }
+            else if (lastAcceTime > AppConst.AcctInterval)
+            {
+                lastAcceTime = 0;
+                lastKillTime = 0;
+                EndCurrentStateToOtherState(StateID.Acct);
             }
         }
     }
@@ -844,48 +865,78 @@ public class NetEntity : IEntity
                         break;
                 }
             }
-            NpcControl.SetTransition(Transition.FreeWalk, this);
+            EndCurrentStateToOtherState(StateID.Walk);
         }
         else if (temp.CompareTag(AppConst.TAG_NETENTITY))
         {
             NetEntity entity = temp.GetComponent<NetEntity>();
-            Vector3 dir = CacheModel.position - temp.position;
-            UpdateDir(dir);
-            if (Util.IsSameOccp(entity.Occupation, Occupation))
+            if (null != entity)
             {
-                
-            }
-            else
-            {
+                if (!entity.IsAlive)
+                    return;
+
+                Vector3 dir = CacheModel.position - temp.position;
+                UpdateDir(dir);
+
                 if (Util.CanKillBody(entity.Occupation, Occupation))
                 {
-                    if (!IsProtect())
+                    entity.EndCurrentStateToOtherState(StateID.Walk);
+
+                    if (IsProtect())
                     {
-                        if (entity.IsAlive)
+                        if (entity.IsUsingSkill())
                         {
-                            NpcControl.SetTransition(Transition.Dead, this);
+                            EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
-                    }else
+                        else
+                        {
+                            EndCurrentStateToOtherState(StateID.Walk);
+                        }
+                    }
+                    else
                     {
-                        NpcControl.SetTransition(Transition.FreeWalk, this);
+                        EndCurrentStateToOtherState(StateID.Dead);
                     }
                 }
                 else if (Util.CanKillBody(Occupation, entity.Occupation))
                 {
-                    if (!entity.IsProtect())
+                    EndCurrentStateToOtherState(StateID.Walk);
+
+                    if (entity.IsProtect())
                     {
-                        if (entity.IsAlive)
+                        if (IsUsingSkill())
                         {
-                            entity.NpcControl.SetTransition(Transition.Dead, entity);
+                            entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
-                    }else
+                        else
+                        {
+                            entity.EndCurrentStateToOtherState(StateID.Walk);
+                        }
+                    }
+                    else
                     {
-                        entity.NpcControl.SetTransition(Transition.FreeWalk, entity);
+                        entity.EndCurrentStateToOtherState(StateID.Dead);
                     }
                 }
                 else
                 {
-                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                    if (entity.IsUsingSkill())
+                    {
+                        EndCurrentStateToOtherState(StateID.CrashPlayer);
+                    }
+                    else
+                    {
+                        EndCurrentStateToOtherState(StateID.Walk);
+                    }
+
+                    if (IsUsingSkill())
+                    {
+                        entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
+                    }
+                    else
+                    {
+                        entity.EndCurrentStateToOtherState(StateID.Walk);
+                    }
                 }
             }
         }
@@ -893,39 +944,69 @@ public class NetEntity : IEntity
         {
             Vector3 dir = CacheModel.position - temp.position;
             UpdateDir(dir);
-            if (Util.IsSameOccp(GameMgr.Instance.MainEntity.Occupation, Occupation))
+            if (!GameMgr.Instance.MainEntity.IsAlive)
             {
-
+                return;
             }
-            else
+
+            if (Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation))
             {
-                if (Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation))
+                GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+
+                if (IsProtect())
                 {
-                    if (GameMgr.Instance.MainEntity.IsAlive)
-                    { 
-                        if(!IsProtect())
-                        {
-                            NpcControl.SetTransition(Transition.Dead, this);
-                        }else
-                        {
-                            NpcControl.SetTransition(Transition.FreeWalk, this);
-                        }
-                    }
-                }
-                else if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
-                {
-                    if (GameMgr.Instance.MainEntity.IsAlive)
+                    if (GameMgr.Instance.MainEntity.IsUsingSkill())
                     {
-                        if (!GameMgr.Instance.MainEntity.IsProtect())
-                        {
-                            GameMgr.Instance.MainEntity.Dead();
-                        }
+                        EndCurrentStateToOtherState(StateID.CrashPlayer);
                     }
-                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                    else
+                    {
+                        EndCurrentStateToOtherState(StateID.Walk);
+                    }
                 }
                 else
                 {
-                    NpcControl.SetTransition(Transition.FreeWalk, this);
+                    EndCurrentStateToOtherState(StateID.Dead);
+                }
+            }
+            else if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
+            {
+                EndCurrentStateToOtherState(StateID.Walk);
+
+                if (GameMgr.Instance.MainEntity.IsProtect())
+                {
+                    if (IsUsingSkill())
+                    {
+                        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
+                    }
+                    else
+                    {
+                        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                    }
+                }
+                else
+                {
+                    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Dead);
+                }
+            }
+            else
+            {
+                if (GameMgr.Instance.MainEntity.IsUsingSkill())
+                {
+                    EndCurrentStateToOtherState(StateID.CrashPlayer);
+                }
+                else
+                {
+                    EndCurrentStateToOtherState(StateID.Walk);
+                }
+
+                if (IsUsingSkill())
+                {
+                    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
+                }
+                else
+                {
+                    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
                 }
             }
         }

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class Entity : IEntity
 {
+    private RoleControl m_RoleEntiytControl;
+    private SkillInfo skillinfo1 = null;
+    private EffectInfo effectinfo1 = null;
+    private SkillInfo skillinfo2 = null;
+    private EffectInfo effectinfo2 = null;
     //角色属性
     private EntityAttribute attribute;
     private Transform cacheAccelParticleTran; //加速特效
@@ -22,11 +27,13 @@ public class Entity : IEntity
 
     private bool init = false;
 
+    //private bool isWalking = false;
+
     public OccpType occupation = OccpType.NONE;
 
     private StateType m_state = StateType.NONE;
 
-    private CollisionType collision = CollisionType.NONE;
+    //private CollisionType collision = CollisionType.NONE;
 
     public EntityAttribute Attribute
     {
@@ -196,11 +203,39 @@ public class Entity : IEntity
         }
     }
 
+    public RoleControl RoleEntityControl
+    {
+        get
+        {
+            if (null == m_RoleEntiytControl)
+            {
+                m_RoleEntiytControl = Util.AddComponent<RoleControl>(gameObject);
+            }
+            return m_RoleEntiytControl;
+        }
+
+        set
+        {
+            m_RoleEntiytControl = value;
+        }
+    }
+
+    //public bool IsWalking
+    //{
+    //    get
+    //    {
+    //        return isWalking;
+    //    }
+
+    //    set
+    //    {
+    //        isWalking = value;
+    //    }
+    //}
+
     public void InitEntity(OccpType occp, int heroId)
     {
         ChangeOccp(occp, heroId);
-        HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        InitEntityAttribute(heroInfo);
         init = true;
     }
 
@@ -222,8 +257,25 @@ public class Entity : IEntity
         {
             return;
         }
+        InitAttribute(heroInfo);
+        InitSkill();
         ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_ENTITY, RoleModel);
         InitCharactor(go);
+    }
+
+
+    //进入换职业状态
+    public void SwitchOtherOccp()
+    {
+        OccpType occp = Util.GetNextOccp(occupation);
+        int id = Util.GetHeroIdByOccp(occp);
+        ChangeOccp(occp, id);
+    }
+
+
+    public void ExitSwitchState()
+    {
+
     }
 
     //初始化主角
@@ -243,7 +295,7 @@ public class Entity : IEntity
 
     }
 
-    void InitEntityAttribute(HeroInfo info)
+    void InitAttribute(HeroInfo info)
     {
         Attribute.BaseSpeed = AppConst.BaseSpeed;
         Attribute.Speed = Attribute.BaseSpeed;
@@ -261,6 +313,42 @@ public class Entity : IEntity
         Attribute.Score = 0;
         Attribute.Level = 0;
     }
+
+    void InitSkill()
+    {
+        if (Attribute.Skills.Length > 1)
+        {
+            skillinfo1 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[0]);
+            effectinfo1 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo1.effectID);
+            skillinfo2 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[1]);
+            effectinfo2 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo2.effectID);
+        }
+    }
+
+    public void UpdateRotation(float angle)
+    {
+        CacheModel.rotation = Quaternion.Euler(0, angle + GameMgr.Instance.CameraController.EulerY, 0);
+    }
+
+
+    //public void BeginWalk()
+    //{
+    //    if (!IsWalking)
+    //    {
+    //        IsWalking = true;
+    //        EndCurrentStateToOtherState(RoleStateID.Walk);
+    //    }
+    //}
+
+    //public void StopWalk()
+    //{
+    //    if (IsWalking)
+    //    {
+    //        IsWalking = false;
+    //        EndCurrentStateToOtherState(RoleStateID.Idle);
+    //    }
+    //}
+
 
     public void SimpleMove()
     {
@@ -317,24 +405,6 @@ public class Entity : IEntity
         }
     }
 
-    //取消上一次的道具状态
-    void CancelLastState(StateType lastStaty)
-    {
-        switch (lastStaty)
-        {
-            case StateType.STATE_MARK:
-                break;
-            case StateType.STATE_MAGNET:
-                break;
-            case StateType.STATE_TRANSFERGATE:
-                break;
-            case StateType.STATE_SPEED:
-                break;
-            case StateType.STATE_PROTECT:
-                break;
-        }
-    }
-
     //积分变换，体力变换
     public void EnergyUpdate(ItemEffectInfo effect)
     {
@@ -370,7 +440,6 @@ public class Entity : IEntity
 
     public void UpdateState(StateType stateType, ItemInfo item, ItemEffectInfo effect)
     {
-        CancelLastState(State);
         this.State = stateType;
         switch (stateType)
         {
@@ -463,92 +532,67 @@ public class Entity : IEntity
             {
                 continue;
             }
-            if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis))
+            if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis + 0.5f))
             {
                 kv.Value.FlyToEntity(this);
             }
         }
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+
+
+    public void EndSkillStateToIdle()
+    {
+        if (RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill)
+        {
+            RoleEntityControl.SetTransition(RoleTransition.Idle, this);
+        }
+    }
+
+    public void EndCurrentStateToOtherState(RoleStateID id)
     {
         if (!IsAlive)
         {
             return;
         }
 
-        Transform temp = hit.transform;
-        if (temp.CompareTag(AppConst.TAG_OBSTACLE))
+        if (RoleEntityControl.Fsm.CurrentStateID != id)
         {
-            if (null != ArpgAnimatContorller)
+            switch (id)
             {
-                if (ArpgAnimatContorller.Skill > 0)
-                {
-                    StopSkill(CollisionType.Collision_OBSTACLE);
-                }
-            }
-        }else if(temp.CompareTag(AppConst.TAG_NETENTITY))
-        {
-            NetEntity entity = temp.GetComponent<NetEntity>();
-            if(null != entity)
-            {
-                if (Util.CanKillBody(entity.Occupation, Occupation))
-                {
-                    if(!IsProtect())
-                    {
-                        Debug.LogError("主角被殺死了");
-                        Dead();
-                    }
-                }
-                else if(Util.IsSameOccp(entity.Occupation, Occupation))
-                {
-                    
-                }
+                case RoleStateID.Idle:
+                    RoleEntityControl.SetTransition(RoleTransition.Idle, this);
+                    break;
+                case RoleStateID.Walk:
+                    RoleEntityControl.SetTransition(RoleTransition.FreeWalk, this);
+                    break;
+                case RoleStateID.Acct:
+                    RoleEntityControl.SetTransition(RoleTransition.Acct, this);
+                    break;
+                case RoleStateID.Skill:
+                    RoleEntityControl.SetTransition(RoleTransition.Skill, this);
+                    break;
+                case RoleStateID.Switch:
+                    RoleEntityControl.SetTransition(RoleTransition.Switch, this);
+                    break;
+                case RoleStateID.CrashPlayer:
+                    RoleEntityControl.SetTransition(RoleTransition.CrashPlayer, this);
+                    break;
+                case RoleStateID.Dead:
+                    RoleEntityControl.SetTransition(RoleTransition.Dead, this);
+                    break;
             }
         }
     }
 
-    public void StopSkill(CollisionType type)
+    void TimerEndWalkInstant(Timer.TimerData data)
     {
-        ArpgAnimatContorller.Skill = 0;
-        collision = type;
-        Timer.Instance.RemoveTimer(TimerWalkInstantHandler);
-        TimerWalkInstantHandler(null);
-        collision = CollisionType.NONE;
-    }
-
-
-    void TimerAccelerateHandler(Timer.TimerData data)
-    {
-        IsRecoverEnergy = true;
-    }
-
-    void TimerWalkInstantHandler(Timer.TimerData data)
-    {
-        Debug.LogError("主角停止衝鋒"+ Time.realtimeSinceStartup);
+        if (RoleEntityControl.Fsm.CurrentStateID != RoleStateID.Skill)
+        {
+            return;
+        }
         EventCenter.Instance.Publish<Event_StopSkill>(null, new Event_StopSkill());
-        Attribute.Speed = Attribute.BaseSpeed;
-        ArpgAnimatContorller.Skill = 0;
-        DespawnerParticle(EffectType.WALKINSTANT);
-
-        switch (collision)
-        {
-            case CollisionType.Collision_NET:
-                Debuger.LogError("碰到玩家了");
-                break;
-            case CollisionType.Collision_ITEM:
-                Debuger.LogError("碰到道具了");
-                break;
-            case CollisionType.Collision_OBSTACLE:
-                Debuger.LogError("碰到障碍物了");
-                break;
-            case CollisionType.NONE:
-                Debuger.LogError("未碰到任何东西，变身");
-                OccpType occp = Util.GetNextOccp(occupation);
-                int id = Util.GetHeroIdByOccp(occp);
-                ChangeOccp(occp, id);
-                break;
-        }
+        EndCurrentStateToOtherState(RoleStateID.Switch);
     }
 
     public bool IsProtect()
@@ -558,40 +602,81 @@ public class Entity : IEntity
 
     public void Dead()
     {
-        Debug.LogError("Dead");
         Attribute.Hp = 0;
-        StopAccelerate();
-        StopSkill(CollisionType.Collision_NOTHING);
         ArpgAnimatContorller.Reset();
         ArpgAnimatContorller.Die = true;
+        //发送事件显示UI界面
         EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead());
+    }
+
+    void TimerAccelerateHandler(Timer.TimerData data)
+    {
+        IsRecoverEnergy = true;
     }
 
     public void StopAccelerate()
     {
-        Attribute.Speed = GameMgr.Instance.MainEntity.Attribute.BaseSpeed;
-        DespawnerParticle(EffectType.ACCELERATE);
         Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
+        ArpgAnimatContorller.Walk = false;
+        Attribute.Speed = Attribute.BaseSpeed;
+        DespawnerParticle(EffectType.ACCELERATE);
     }
 
-    //加速
-    public void Accelerate(SkillInfo skill, EffectInfo effectInfo)
+    public void EnterAccelerate()
     {
-        //加速停止恢复能量条
-        Timer.Instance.RemoveTimer(TimerAccelerateHandler);
         IsRecoverEnergy = false;
-        Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
-        SpawnerParticle(skill.particleID, EffectType.ACCELERATE, CacheParticleParent.position, CacheParticleParent);
+        ArpgAnimatContorller.Walk = true;
+        if (null == skillinfo1)
+        {
+            skillinfo1 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[0]);
+            effectinfo1 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo1.effectID);
+        }
+        else if (!InfoMgr<SkillInfo>.Instance.Dict.ContainsKey(skillinfo1.id))
+        {
+            skillinfo1 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[0]);
+            effectinfo1 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo1.effectID);
+        }
+        float factor = effectinfo1.param * 1.0f / AppConst.factor;
+        SpawnerParticle(skillinfo1.particleID, EffectType.ACCELERATE, CacheParticleParent.position, CacheParticleParent);
+        Attribute.Speed = Attribute.BaseSpeed * factor;
     }
 
-    //冲锋
-    public void Walkinstant(SkillInfo skill, EffectInfo effectInfo)
+    public void StopWalkInstant()
     {
-        Debug.LogError("主角衝鋒" + Time.realtimeSinceStartup +" "+ (float)effectInfo.keeptime / AppConst.factor);
+        ArpgAnimatContorller.Skill = 0;
+        Attribute.Speed = Attribute.BaseSpeed;
+        DespawnerParticle(EffectType.WALKINSTANT);
+    }
+
+    public void EnterWalkInstant()
+    {
         ArpgAnimatContorller.Skill = 1;
-        Attribute.Speed = Attribute.BaseSpeed * effectInfo.param / AppConst.factor;
-        SpawnerParticle(skill.particleID, EffectType.WALKINSTANT, CacheParticleParent.position, CacheParticleParent);
-        Timer.Instance.AddTimer((float)effectInfo.keeptime / AppConst.factor, 1, true, TimerWalkInstantHandler);
+
+        if(null == skillinfo2)
+        {
+            skillinfo2 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[1]);
+            effectinfo2 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo2.effectID);
+        }
+        else if(!InfoMgr<SkillInfo>.Instance.Dict.ContainsKey(skillinfo2.id))
+        {
+            skillinfo2 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[1]);
+            effectinfo2 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo2.effectID);
+        }
+
+        float factor = effectinfo2.param * 1.0f / AppConst.factor;
+        SpawnerParticle(skillinfo2.particleID, EffectType.WALKINSTANT, CacheParticleParent.position, CacheParticleParent);
+        Timer.Instance.AddTimer((float)effectinfo2.keeptime / AppConst.factor, 1, true, TimerEndWalkInstant);
+        Attribute.Speed = Attribute.BaseSpeed * factor;
+    }
+
+    public bool IsUsingAcctOrSkill()
+    {
+        return (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Acct || GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill);
+    }
+
+    public bool IsUsingSkill()
+    {
+        return (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill);
     }
 
     float mTotalTime = 0;
@@ -623,4 +708,90 @@ public class Entity : IEntity
 
         DetectItem();
     }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (!IsAlive)
+        {
+            return;
+        }
+
+        Transform temp = hit.transform;
+        if (temp.CompareTag(AppConst.TAG_OBSTACLE))
+        {
+            EndSkillStateToIdle();
+        }
+        else if (temp.CompareTag(AppConst.TAG_NETENTITY))
+        {
+            NetEntity entity = temp.GetComponent<NetEntity>();
+            if (null != entity)
+            {
+                if (!entity.IsAlive)
+                {
+                    return;
+                }
+
+                if (Util.CanKillBody(entity.Occupation, Occupation))
+                {
+                    entity.EndCurrentStateToOtherState(StateID.Walk);
+
+                    if (IsProtect())
+                    {
+                        if (entity.IsUsingSkill())
+                        {
+                            EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
+                        }
+                        else
+                        {
+                            EndCurrentStateToOtherState(RoleStateID.Idle);
+                        }
+                    }
+                    else
+                    {
+                        EndCurrentStateToOtherState(RoleStateID.Dead);
+                    }
+                }
+                else if (Util.CanKillBody(Occupation, entity.Occupation))
+                {
+                    EndSkillStateToIdle();
+                    if (entity.IsProtect())
+                    {
+                        if (IsUsingSkill())
+                        {
+                            entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
+                        }
+                        else
+                        {
+                            entity.EndCurrentStateToOtherState(StateID.Walk);
+                        }
+                    }
+                    else
+                    {
+                        entity.EndCurrentStateToOtherState(StateID.Dead);
+                    }
+                }
+                else
+                {
+                    if (entity.IsUsingSkill())
+                    {
+                        EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
+                    }
+                    else
+                    {
+                        EndCurrentStateToOtherState(RoleStateID.Idle);
+                    }
+
+                    if (IsUsingSkill())
+                    {
+                        entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
+                    }
+                    else
+                    {
+                        entity.EndCurrentStateToOtherState(StateID.Walk);
+                    }
+                }
+            }
+        }
+    }
+
 }

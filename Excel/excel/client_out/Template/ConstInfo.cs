@@ -37,6 +37,9 @@ public enum ConstType
     CONST_AI_DETECT_RANGE_INTERVAL = 27,  //AI追击检测可击杀对象是否在范围内的时间间隔
     CONST_AI_RANDOM_DIR_INTERVAL = 28,  //AI随机切换方向时间间隔
     CONST_AI_RANDOM_ITEM_RADIO = 29,  //AI随机指定半径内的道具
+    CONST_PHY_RECOVER_SPEED = 30,  //主角体力恢复速度
+    CONST_CRASH_TIME = 31,  //撞开持续时间
+    CONST_CRASH_SPEED = 32,  //撞开速度
 };
 
 // 碰撞停止类型
