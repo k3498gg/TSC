@@ -26,6 +26,10 @@ public class BaseAnimatorController : MonoBehaviour
     {
         if (null != cache)
         {
+            if (!cache.gameObject.activeSelf)
+            {
+                cache.gameObject.SetActive(true);
+            }
             animator = cache.GetComponent<Animator>();
         }
         Reset();
@@ -71,7 +75,10 @@ public class BaseAnimatorController : MonoBehaviour
             if(walk != value)
             {
                 walk = value;
-                animator.SetBool(walkKey, value);
+                if(null != animator)
+                {
+                    animator.SetBool(walkKey, value);
+                }
             }
         }
     }

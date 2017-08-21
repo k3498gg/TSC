@@ -90,6 +90,7 @@ public class Timer : Singleton<Timer>
             {
                 data = new TimerData();
             }
+
             mList.Add(data);
             return data;
         }

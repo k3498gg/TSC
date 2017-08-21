@@ -31,7 +31,7 @@ public class NetEntity : IEntity
 
     private StateType m_state = StateType.NONE;
 
-    //private CollisionType collision = CollisionType.NONE;
+    private float lastDeadTime;
 
     public EntityAttribute Attribute
     {
@@ -237,12 +237,21 @@ public class NetEntity : IEntity
 
     public void InitEntity(OccpType occp, int heroId)
     {
+        Vector3 location = GameMgr.Instance. RandomLocation();
+        CacheModel.localRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
+        CacheModel.position = location;
         ChangeOccp(occp, heroId);
+        UpdateCharacControllerActive(true);
         HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        InitEntityAttribute(heroInfo);
+        InitAttribute(heroInfo);
         InitSkill();
         Protect();
         init = true;
+    }
+
+    void UpdateCharacControllerActive(bool active)
+    {
+        CharaController.enabled = active;
     }
 
 
@@ -282,6 +291,10 @@ public class NetEntity : IEntity
         {
             return;
         }
+        //if(!go.activeSelf)
+        //{
+        //    go.SetActive(true);
+        //}
         RoleModel = go.transform;
         RoleModel.parent = CacheModel;
         RoleModel.localScale = Vector3.one;
@@ -291,11 +304,11 @@ public class NetEntity : IEntity
         ArpgAnimatContorller.Init(RoleModel);
     }
 
-    void InitEntityAttribute(HeroInfo info)
+    void InitAttribute(HeroInfo info)
     {
         Attribute.BaseSpeed = AppConst.BaseSpeed;
         Attribute.Speed = Attribute.BaseSpeed;
-        Attribute.RebornTime = AppConst.RebornTime;
+        //Attribute.RebornTime = AppConst.RebornTime;
         Attribute.Basedis = AppConst.Basedis;
         Attribute.Atkdis = Attribute.Basedis;
         Attribute.MaxPhy = AppConst.MaxPhy;
@@ -597,27 +610,37 @@ public class NetEntity : IEntity
 
     public void ExitIdle()
     {
-        Debuger.Log("离开IDLE状态");
+        //Debuger.Log("离开IDLE状态");
     }
 
     public void Dead()
     {
+        init = false;
+        UpdateCharacControllerActive(false);
+        LastDeadTime = Time.realtimeSinceStartup;
         Attribute.Hp = 0;
-        ArpgAnimatContorller.Reset();
         ArpgAnimatContorller.Die = true;
         Timer.Instance.AddTimer(2, 1, true, RemoveBody);
     }
 
     public void Relive()
     {
-        ArpgAnimatContorller.Reset();
         Protect();
+        CacheModel.gameObject.SetActive(true);
+        InitEntity(Occupation, HeroId);
+        ArpgAnimatContorller.Reset();
+        EndCurrentStateToOtherState(StateID.Idle);
     }
 
     void RemoveBody(Timer.TimerData data)
     {
-        ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_ENTITY, RoleModel);
-        ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_NET, CacheModel);
+        if(!IsAlive)
+        {
+            CacheModel.gameObject.SetActive(false);
+            ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_ENTITY, RoleModel);
+            RoleModel = null;
+            //ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_NET, CacheModel);
+        }
     }
 
 
@@ -660,14 +683,14 @@ public class NetEntity : IEntity
 
     void ResetTimeValue()
     {
-        //lastFleeTime = 10;
+        lastFleeTime = 10;
         lastAcceTime = 10;
         lastSkillTime = 10;
         lastKillTime = 10;
         //chaseTime = 10;
     }
 
-    //private float lastFleeTime = 10;
+    private float lastFleeTime = 10;
     private float lastAcceTime = 10;
     private float lastSkillTime = 10;
     private float chaseTime = 0; //追擊持續時間
@@ -704,6 +727,7 @@ public class NetEntity : IEntity
         lastAcceTime += Time.deltaTime;
         lastSkillTime += Time.deltaTime;
         lastKillTime += Time.deltaTime;
+        lastFleeTime += Time.deltaTime;
         chaseTime += Time.deltaTime;
         mTotalTime += Time.deltaTime;
         if (mTotalTime <= 0.1f)
@@ -731,6 +755,19 @@ public class NetEntity : IEntity
         }
     }
 
+    public float LastDeadTime
+    {
+        get
+        {
+            return lastDeadTime;
+        }
+
+        set
+        {
+            lastDeadTime = value;
+        }
+    }
+
 
     //查找身邊最近的玩家
     public void ChaseTarget()
@@ -748,14 +785,27 @@ public class NetEntity : IEntity
         float distance = 0;
         if (GameMgr.Instance.MainEntity.IsAlive)
         {
-            if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
+            if(!GameMgr.Instance.MainEntity.IsProtect())
             {
-                if (Util.GetEntityLevelGap(Attribute.Level, GameMgr.Instance.MainEntity.Attribute.Level) >= AppConst.ChaseLev)
+                if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
                 {
-                    distance = Util.GetEntityDistance(CacheModel, GameMgr.Instance.MainEntity.CacheModel);
-                    if (distance <= AppConst.ChaseDis)
+                    if (Util.GetEntityLevelGap(Attribute.Level, GameMgr.Instance.MainEntity.Attribute.Level) >= AppConst.ChaseLev)
                     {
-                        LockCache = GameMgr.Instance.MainEntity.CacheModel;
+                        distance = Util.GetEntityDistance(CacheModel, GameMgr.Instance.MainEntity.CacheModel);
+                        if (distance <= AppConst.ChaseDis)
+                        {
+                            LockCache = GameMgr.Instance.MainEntity.CacheModel;
+                        }
+                    }
+                }else if(Util.CanKillBody( GameMgr.Instance.MainEntity.Occupation, Occupation))
+                {
+                    if(lastFleeTime > AppConst.FleeInterval)
+                    {
+                        if (Util.GetEntityDistance(CacheModel, GameMgr.Instance.MainEntity.CacheModel) < AppConst.FleeDis)
+                        {
+                            lastFleeTime = 0;
+                            CacheModel.forward = -CacheModel.forward;
+                        }
                     }
                 }
             }

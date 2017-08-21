@@ -11,6 +11,7 @@ public class UIDead : MonoBehaviour
     private Transform btnLive;
     private Text timer;
     private bool init = false;
+    private string TimerDataId = string.Empty;
 
     void Init()
     {
@@ -36,32 +37,61 @@ public class UIDead : MonoBehaviour
             if (data.invokeTimes == 1)
             {
                 Debug.LogError("倒計時時間到,復活!");
+                HeroRelive(null);
             }
+        }
+    }
+
+    public void HideDeadUI()
+    {
+        if (gameObject.activeSelf)
+        {
+            Debug.LogError("Live HideUI!!!");
+            gameObject.SetActive(false);
         }
     }
 
     public void ShowDeadUI()
     {
+        Invoke("DelayToShowDeadUI", 1.0f);
+    }
+
+    void DelayToShowDeadUI()
+    {
+        Init();
+        timer.text = AppConst.RebornTime.ToString();
+        Debug.LogError("Die HideUI!!!");
         if (!gameObject.activeSelf)
         {
-            gameObject.SetActive(true);
-            Init();
+           gameObject.SetActive(true);
         }
         cache.localScale = Vector3.one;
-        Timer.Instance.AddTimer(1, 3, true, Handler);
+        Timer.TimerData data = Timer.Instance.AddTimer(1, AppConst.RebornTime, true, Handler);
+        TimerDataId = data.ID;
+    }
+
+    void RemoveReliveHandler()
+    {
+        if (!string.IsNullOrEmpty(TimerDataId))
+        {
+            Timer.Instance.RemoveTimer(TimerDataId);
+            TimerDataId = string.Empty;
+        }
     }
 
     void BackToMain(GameObject go)
     {
         GameMgr.Instance.IsEnterGame = false;
+        RemoveReliveHandler();
         TSCData.Instance.Clear();
         PoolMgr.Instance.DespawnerAll();
         SceneManager.LoadScene(AppConst.First);
-        cache.localScale = Vector3.zero;
+        //cache.localScale = Vector3.zero;
     }
 
     void HeroRelive(GameObject go)
     {
-        cache.localScale = Vector3.zero;
+        RemoveReliveHandler();
+        GameMgr.Instance.MainEntity.Relive();
     }
 }

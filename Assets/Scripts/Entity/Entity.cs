@@ -252,6 +252,7 @@ public class Entity : IEntity
     public void InitEntity(OccpType occp, int heroId)
     {
         ChangeOccp(occp, heroId);
+        UpdateCharacControllerActive(true);
         init = true;
     }
 
@@ -266,7 +267,6 @@ public class Entity : IEntity
     {
         Occupation = occp;
         HeroId = heroId;
-        State = StateType.STATE_PROTECT;
         HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
         GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, CacheModel);// ResourcesMgr.Instance.Instantiate(prefab);
         if (null == go)
@@ -315,7 +315,7 @@ public class Entity : IEntity
     {
         Attribute.BaseSpeed = AppConst.BaseSpeed;
         Attribute.Speed = Attribute.BaseSpeed;
-        Attribute.RebornTime = AppConst.RebornTime;
+        //Attribute.RebornTime = AppConst.RebornTime;
         Attribute.Basedis = AppConst.Basedis;
         Attribute.Atkdis = Attribute.Basedis;
         Attribute.MaxPhy = AppConst.MaxPhy;
@@ -535,10 +535,6 @@ public class Entity : IEntity
         this.Attribute.Speed = Attribute.BaseSpeed;
     }
 
-    void Protect()
-    {
-        Debug.LogError("保护时间");
-    }
 
     void DetectItem()
     {
@@ -626,31 +622,55 @@ public class Entity : IEntity
         return State == StateType.STATE_PROTECT;
     }
 
-    public void Dead()
+    void UpdateCharacControllerActive(bool active)
     {
-        Attribute.Hp = 0;
-        ArpgAnimatContorller.Reset();
-        ArpgAnimatContorller.Die = true;
-        //发送事件显示UI界面
-        EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead());
+        CharacController.enabled = active;
     }
 
-    //void TimerAccelerateHandler(Timer.TimerData data)
-    //{
-    //    IsRecoverEnergy = true;
-    //}
-    //Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
+    public void Dead()
+    {
+        init = false;
+        Attribute.Hp = 0;
+        UpdateCharacControllerActive(false);
+        ArpgAnimatContorller.Die = true;
+        //发送事件显示UI界面
+        EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead(true));
+    }
+
+    public void Relive()
+    {
+        if(!IsAlive)
+        {
+            Protect();
+            EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead(false));
+            InitEntity(Occupation, HeroId);
+            EndCurrentStateToOtherState(RoleStateID.Idle);
+        }
+    }
+
+    void Protect()
+    {
+        State = StateType.STATE_PROTECT;
+        Timer.Instance.AddTimer(3, 1, true, ProtectTimerOut);
+    }
+
+    void ProtectTimerOut(Timer.TimerData data)
+    {
+        if(State == StateType.STATE_PROTECT)
+        {
+            State = StateType.NONE;
+        }
+    }
+
     public void StopAccelerate()
     {
         ArpgAnimatContorller.Walk = false;
-        //Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
         Attribute.Speed = Attribute.BaseSpeed;
         DespawnerParticle(EffectType.ACCELERATE);
     }
 
     public void EnterAccelerate()
     {
-        //IsRecoverEnergy = false;
         ArpgAnimatContorller.Walk = true;
         if (null == skillinfo1)
         {

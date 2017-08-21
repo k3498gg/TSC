@@ -25,7 +25,7 @@ public class GameMgr : MonoBehaviour
     {
         get
         {
-           return instance;
+            return instance;
         }
     }
 
@@ -172,7 +172,15 @@ public class GameMgr : MonoBehaviour
         InitMap();
         CreateEntity();
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
+        StartCoroutine(CreateNetEntity());
+    }
 
+    public void BeginGame()
+    {
+        MapId = 2;
+        InitMap();
+        CreateEntity();
+        UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
         StartCoroutine(CreateNetEntity());
     }
 
@@ -333,7 +341,7 @@ public class GameMgr : MonoBehaviour
             }
             else
             {
-                Debuger.LogError(www.error +" "+ path);
+                Debuger.LogError(www.error + " " + path);
             }
         }
     }
@@ -387,10 +395,10 @@ public class GameMgr : MonoBehaviour
         {
             foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
             {
-                if (Util.PtInRectArea(kv.Value.transform, v, kv.Value.Width+0.5f, kv.Value.Height+0.5f))
+                if (Util.PtInRectArea(kv.Value.transform, v, kv.Value.Width + 0.5f, kv.Value.Height + 0.5f))
                 {
-                    v = new Vector3(Random.Range(1 - width, width - 1), 0, Random.Range(1 - height, height - 1));
-                    continue;
+                    //v = new Vector3(Random.Range(1 - width, width - 1), 0, Random.Range(1 - height, height - 1));
+                    return RandomLocation();
                 }
                 return v;
             }
@@ -407,24 +415,20 @@ public class GameMgr : MonoBehaviour
         MainEntity.transform.position = location;
     }
 
-
     IEnumerator CreateNetEntity()
     {
         yield return null;
         int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
-        for (int i = 0; i < 5;i++)
+        for (int i = 0; i < 15; i++)
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
             NetEntity e = Util.AddComponent<NetEntity>(go);
-            e.Id = (i+1);
+            e.Id = (i + 1);
             int occp = i % 3;
             OccpType oc = (OccpType)(occp + 1);
             e.InitEntity(oc, Util.GetHeroIdByOccp(oc));
-            
-            Vector3 location = RandomLocation();
-            go.transform.localRotation = Quaternion.Euler(0,Random.Range(0,360), 0);
-            go.transform.position = location;
+
             TSCData.Instance.EntityDic[e.Id] = e;
         }
     }

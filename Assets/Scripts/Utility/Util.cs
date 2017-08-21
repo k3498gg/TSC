@@ -172,6 +172,36 @@ public class Util
         return Vector2.Distance(v1, v2);
     }
 
+    public static bool GetDespawnFlag(ResourceType type)
+    {
+        bool despawn = false;
+        switch (type)
+        {
+            case ResourceType.RESOURCE_UI:
+                despawn = true;
+                break;
+            case ResourceType.RESOURCE_ENTITY:
+                despawn = false;
+                break;
+            case ResourceType.RESOURCE_PARTICLE:
+                despawn = true;
+                break;
+            case ResourceType.RESOURCE_ANIMATOR:
+                despawn = true;
+                break;
+            case ResourceType.RESOURCE_ITEM:
+                despawn = false;
+                break;
+            case ResourceType.RESOURCE_OBSTACLE:
+                despawn = true;
+                break;
+            case ResourceType.RESOURCE_NET:
+                despawn = false;
+                break;
+        }
+        return despawn;
+    }
+
     public static int GetDespawnTime(ResourceType type)
     {
         int time = 0;

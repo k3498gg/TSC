@@ -40,6 +40,7 @@ public enum ConstType
     CONST_PHY_RECOVER_SPEED = 30,  //主角体力恢复速度
     CONST_CRASH_TIME = 31,  //撞开持续时间
     CONST_CRASH_SPEED = 32,  //撞开速度
+    CONST_FRESH_INTERVAL = 33,  //角色刷新间隔
 };
 
 // 碰撞停止类型

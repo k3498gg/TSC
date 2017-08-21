@@ -34,7 +34,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
     }
 
 
-    void CreatePoolPrefab(SpawnPool pool, string aName, Transform prefab,ResourceType t)
+    void CreatePoolPrefab(SpawnPool pool, string aName, Transform prefab, ResourceType t)
     {
         if (null == prefab)
         {
@@ -45,7 +45,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         {
             PrefabPool prefabPool = new PrefabPool(prefab);
             prefabPool.preloadAmount = 0;
-            prefabPool.cullDespawned = true;
+            prefabPool.cullDespawned = Util.GetDespawnFlag(t);
             prefabPool.cullAbove = 5;
             prefabPool.cullDelay = Util.GetDespawnTime(t);
             pool.CreatePrefabPool(prefabPool);
@@ -65,7 +65,27 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         return null;
     }
 
+    SpawnPool GetSpawnPool(ResourceType t)
+    {
+        string poolName = Util.GetPoolName(t);
+        if (PoolManager.Pools.ContainsKey(poolName))
+        {
+            SpawnPool pool = PoolManager.Pools[poolName];
+            return pool;
+        }
+        Debuger.LogError("Error...pool group");
+        return null;
+    }
 
+    public Transform SpawnerEntity(ResourceType type, Transform prefab, Transform parent, Vector3 v)
+    {
+        SpawnPool pool = GetSpawnPool(type);
+        if (null != pool)
+        {
+            return SpawnerEntity(pool, prefab, parent, v);
+        }
+        return null;
+    }
 
     Transform SpawnerEntity(SpawnPool pool, Transform prefab, Transform parent, Vector3 v)
     {
@@ -94,7 +114,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
                 Debuger.LogError(avatarName + " is NULL!");
                 return null;
             }
-            CreatePoolPrefab(pool, avatarName, prefab.transform,rType);
+            CreatePoolPrefab(pool, avatarName, prefab.transform, rType);
         }
         if (pool.prefabPools.ContainsKey(avatarName))
         {
@@ -111,7 +131,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         {
             Transform t = GetPoolRoot(type);
             SpawnPool pool = PoolManager.Pools[poolName];
-            while(pool._spawned.Count > 0)
+            while (pool._spawned.Count > 0)
             {
                 pool._spawned[0].parent = t;
                 pool.Despawn(pool._spawned[0]);
@@ -124,7 +144,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         }
     }
 
-    public void Despawner(ResourceType type,Transform inst)
+    public void Despawner(ResourceType type, Transform inst)
     {
         string poolName = Util.GetPoolName(type);
         if (PoolManager.Pools.ContainsKey(poolName))
@@ -155,13 +175,5 @@ public class PoolMgr : UnitySingleton<PoolMgr>
         Despawner(ResourceType.RESOURCE_ITEM);
         Despawner(ResourceType.RESOURCE_ENTITY);
         Despawner(ResourceType.RESOURCE_NET);
-
-        //foreach (KeyValuePair<string, SpawnPool> kv in PoolManager.Pools)
-        //{
-        //    if (null != kv.Value)
-        //    {
-        //        kv.Value.DespawnAll();
-        //    }
-        //}
     }
 }

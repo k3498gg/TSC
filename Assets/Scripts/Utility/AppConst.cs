@@ -111,6 +111,7 @@ public class AppConst
     public static float PhyRecoverSpeed;
     public static float CrashSpeed;
     public static float CrashTime;
+    public static float FreshInterval;
 
 
     public static void InitConstData()
@@ -191,5 +192,9 @@ public class AppConst
         CrashSpeed = float.Parse(CrashSpeedInfo.data) / AppConst.factor;
         ConstInfo CrashTimeInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_CRASH_TIME);
         CrashTime = float.Parse(CrashTimeInfo.data) / AppConst.factor;
+
+        ConstInfo FreshIntervalInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_FRESH_INTERVAL);
+        FreshInterval = float.Parse(FreshIntervalInfo.data) / AppConst.factor;
+        
     }
 }

@@ -90,6 +90,7 @@
 		<filed name="CONST_PHY_RECOVER_SPEED"		value="30"   desc="主角体力恢复速度" />
 		<filed name="CONST_CRASH_TIME"				value="31"   desc="撞开持续时间" />
 		<filed name="CONST_CRASH_SPEED"				value="32"   desc="撞开速度" />
+		<filed name="CONST_FRESH_INTERVAL"			value="33"   desc="角色刷新间隔" />
     </enum>
 
 

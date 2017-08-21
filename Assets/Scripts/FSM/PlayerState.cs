@@ -153,8 +153,11 @@ public class PlayerWalkState : FSMState
     {
         if (null != entity)
         {
-            SimpleMove(entity);
-            RandomDir(entity);
+            if (entity.IsAlive)
+            {
+                SimpleMove(entity);
+                RandomDir(entity);
+            }
         }
     }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -39,7 +40,7 @@ public class TSCData : Singleton<TSCData>
     {
         get
         {
-            if(null == m_DropItemDic)
+            if (null == m_DropItemDic)
             {
                 m_DropItemDic = new Dictionary<int, DropItemInfo>();
             }
@@ -56,7 +57,7 @@ public class TSCData : Singleton<TSCData>
     {
         get
         {
-            if(null == backItemMapDic)
+            if (null == backItemMapDic)
             {
                 backItemMapDic = new Dictionary<MapArea, List<ItemDespawnerInfo>>(fastCompare);
             }
@@ -90,7 +91,7 @@ public class TSCData : Singleton<TSCData>
     {
         get
         {
-            if(null == totalAreaItemMapDic)
+            if (null == totalAreaItemMapDic)
             {
                 totalAreaItemMapDic = new Dictionary<MapArea, List<ItemMapInfo>>(fastCompare);
             }
@@ -107,7 +108,7 @@ public class TSCData : Singleton<TSCData>
     {
         get
         {
-            if(null == obstacleDic)
+            if (null == obstacleDic)
             {
                 obstacleDic = new Dictionary<int, ObstacleEntity>();
             }
@@ -157,4 +158,29 @@ public class TSCData : Singleton<TSCData>
         BackItemMapDic.Clear();
         TotalAreaItemMapDic.Clear();
     }
+
+    float fresh_time = 0;
+    internal void Update(float deltaTime)
+    {
+        if(fresh_time < AppConst.FreshInterval)
+        {
+            fresh_time += Time.deltaTime;
+            return;
+        }
+        fresh_time = 0;
+        foreach (KeyValuePair<int,NetEntity> kv in EntityDic)
+        {
+            if(kv.Value.IsAlive)
+            {
+                continue;
+            }
+
+            if(Time.realtimeSinceStartup - kv.Value.LastDeadTime > AppConst.FreshInterval)
+            {
+                kv.Value.Relive();
+                //ResourcesMgr.Instance.Spawner(ResourceType.RESOURCE_NET, kv.Value.CacheModel, GameMgr.Instance.EntityRoot, GameMgr.Instance.RandomLocation());
+            }
+        }
+    }
+
 }

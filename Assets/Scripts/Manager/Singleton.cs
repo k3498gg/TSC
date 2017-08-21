@@ -34,7 +34,6 @@ public class UnitySingleton<T> : MonoBehaviour
                 {
                     GameObject obj = new GameObject(typeof(T).ToString());
                     obj.hideFlags = HideFlags.DontSave;
-                    //obj.hideFlags = HideFlags.HideAndDontSave;
                     _instance = (T)obj.AddComponent(typeof(T));
                 }
             }

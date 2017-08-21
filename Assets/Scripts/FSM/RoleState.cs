@@ -225,6 +225,7 @@ public class RoleCrashState : RoleFSMState
     {
         if(null != entity)
         {
+            enter_time = 0;
             entity.Attribute.Speed = entity.Attribute.BaseSpeed;
         }
     }
@@ -241,13 +242,13 @@ public class RoleCrashState : RoleFSMState
     {
         if (null != entity)
         {
-            Crash(entity);
             enter_time += Time.deltaTime;
             if (enter_time >= AppConst.CrashTime)
             {
-                enter_time = 0;
                 entity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                return;
             }
+            Crash(entity);
         }
     }
 

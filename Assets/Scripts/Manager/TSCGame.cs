@@ -6,11 +6,19 @@ public class TSCGame : MonoBehaviour
 {
     void Update()
     {
-        ProfilerSample.BeginSample("TSCGame");
-        Timer.Instance.Update(Time.deltaTime);
-        //AnimatorMgr.Instance.Update();
-        ItemDropMgr.Instance.Update(Time.deltaTime);
-        ProfilerSample.BeginSample("TSCGame");
+        if(null == GameMgr.Instance)
+        {
+            return;
+        }
+
+        if(GameMgr.Instance.IsEnterGame)
+        {
+            ProfilerSample.BeginSample("TSCGame");
+            Timer.Instance.Update(Time.deltaTime);
+            TSCData.Instance.Update(Time.deltaTime);
+            ItemDropMgr.Instance.Update(Time.deltaTime);
+            ProfilerSample.BeginSample("TSCGame");
+        }
     }
 
 

@@ -122,7 +122,14 @@ public class MainUIWindow : UIBaseWindow
     {
         if (null != m_UIDead)
         {
-            m_UIDead.ShowDeadUI();
+            if(evt.IsDead)
+            {
+                m_UIDead.ShowDeadUI();
+            }
+            else
+            {
+                m_UIDead.HideDeadUI();
+            }
         }
     }
 
