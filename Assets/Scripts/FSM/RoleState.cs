@@ -102,7 +102,7 @@ public class RoleAcctState : RoleFSMState
             if (entity.Attribute.CurPhy > 0)
             {
                 entity.SimpleMove();
-                entity.Attribute.CurPhy = entity.Attribute.CurPhy - entity.Attribute.CostPhySpeed * Time.deltaTime;
+                //entity.Attribute.CurPhy = entity.Attribute.CurPhy - entity.Attribute.CostPhySpeed * Time.deltaTime;
             }
             else
             {
@@ -229,10 +229,19 @@ public class RoleCrashState : RoleFSMState
         }
     }
 
+    void Crash(Entity entity)
+    {
+        if(null != entity)
+        {
+            entity.CharacController.SimpleMove(-entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed);
+        }
+    }
+
     public override void OnUpdate(Entity entity)
     {
         if (null != entity)
         {
+            Crash(entity);
             enter_time += Time.deltaTime;
             if (enter_time >= AppConst.CrashTime)
             {

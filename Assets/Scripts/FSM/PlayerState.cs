@@ -347,7 +347,6 @@ public class PlayerCrashState : FSMState
     {
         if (null != entity)
         {
-            Debug.LogError("被撞開了");
             enter_time = 0;
             entity.Attribute.Speed = entity.Attribute.BaseSpeed * AppConst.CrashSpeed;
         }

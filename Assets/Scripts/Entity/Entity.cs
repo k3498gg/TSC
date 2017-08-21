@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Entity : IEntity
 {
+    //状态控制器
     private RoleControl m_RoleEntiytControl;
     private SkillInfo skillinfo1 = null;
     private EffectInfo effectinfo1 = null;
@@ -27,13 +28,28 @@ public class Entity : IEntity
 
     private bool init = false;
 
-    //private bool isWalking = false;
-
     public OccpType occupation = OccpType.NONE;
 
     private StateType m_state = StateType.NONE;
 
-    //private CollisionType collision = CollisionType.NONE;
+    private CharacterController m_characController;
+
+    public CharacterController CharacController
+    {
+        get
+        {
+            if (null == m_characController)
+            {
+                m_characController = CacheModel.GetComponent<CharacterController>();
+            }
+            return m_characController;
+        }
+        set
+        {
+            m_characController = value;
+        }
+    }
+
 
     public EntityAttribute Attribute
     {
@@ -619,22 +635,22 @@ public class Entity : IEntity
         EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead());
     }
 
-    void TimerAccelerateHandler(Timer.TimerData data)
-    {
-        IsRecoverEnergy = true;
-    }
-
+    //void TimerAccelerateHandler(Timer.TimerData data)
+    //{
+    //    IsRecoverEnergy = true;
+    //}
+    //Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
     public void StopAccelerate()
     {
         ArpgAnimatContorller.Walk = false;
-        Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
+        //Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
         Attribute.Speed = Attribute.BaseSpeed;
         DespawnerParticle(EffectType.ACCELERATE);
     }
 
     public void EnterAccelerate()
     {
-        IsRecoverEnergy = false;
+        //IsRecoverEnergy = false;
         ArpgAnimatContorller.Walk = true;
         if (null == skillinfo1)
         {
@@ -729,7 +745,10 @@ public class Entity : IEntity
         Transform temp = hit.transform;
         if (temp.CompareTag(AppConst.TAG_OBSTACLE))
         {
-            EndSkillStateToIdle();
+            if (IsUsingSkill())
+            {
+                EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
+            }
         }
         else if (temp.CompareTag(AppConst.TAG_NETENTITY))
         {

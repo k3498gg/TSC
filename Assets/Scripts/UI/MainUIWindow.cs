@@ -126,21 +126,6 @@ public class MainUIWindow : UIBaseWindow
         }
     }
 
-    //void StopSkill(object o, Event_StopSkill evt)
-    //{
-    //    EffType = EffectType.NONE;
-    //}
-
-    //void StopAcct(object o, Event_StopAcct evt)
-    //{
-    //    Debug.LogError("停止使用加速技能");
-    //}
-
-    //void OpenAcct(object o, Event_OpenAcct evt)
-    //{
-    //    Debug.LogError("可以使用加速技能");
-    //}
-
     void BindStickEvt()
     {
         if (null != m_Joystick)
@@ -200,7 +185,13 @@ public class MainUIWindow : UIBaseWindow
         GameMgr.Instance.MainEntity.UpdateRotation(angle);
         if (EffType == EffectType.ACCELERATE)
         {
-            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+            if(GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
+            {
+                GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+            }else
+            {
+                GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
+            }
         }
         else
         {
@@ -242,8 +233,16 @@ public class MainUIWindow : UIBaseWindow
         {
             if (EffType == EffectType.ACCELERATE)
             {
-                float val = GameMgr.Instance.MainEntity.Attribute.CurPhy / GameMgr.Instance.MainEntity.Attribute.MaxPhy;
-                m_timerImage[0].fillAmount = val;
+                if(GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
+                {
+                    GameMgr.Instance.MainEntity.Attribute.CurPhy = GameMgr.Instance.MainEntity.Attribute.CurPhy - GameMgr.Instance.MainEntity.Attribute.CostPhySpeed * Time.deltaTime;
+                    if(GameMgr.Instance.MainEntity.Attribute.CurPhy < 0)
+                    {
+                        GameMgr.Instance.MainEntity.Attribute.CurPhy = 0;
+                    }
+                    float val = GameMgr.Instance.MainEntity.Attribute.CurPhy / GameMgr.Instance.MainEntity.Attribute.MaxPhy;
+                    m_timerImage[0].fillAmount = val;
+                }
             }
         }
     }
@@ -254,10 +253,13 @@ public class MainUIWindow : UIBaseWindow
         int idx = System.Array.IndexOf(m_skills, go.transform);
         if (idx != -1)
         {
+            if((EffectType)(idx+1) == EffectType.ACCELERATE)
+            {
+                Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
+            }
             switch (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID)
             {
                 case RoleStateID.Acct:
-                    //GameMgr.Instance.MainEntity.RoleEntityControl.SetTransition(RoleTransition.FreeWalk, GameMgr.Instance.MainEntity);
                     GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
                     break;
                 case RoleStateID.Skill:
@@ -266,6 +268,15 @@ public class MainUIWindow : UIBaseWindow
             }
         }
     }
+
+    void TimerAccelerateHandler(Timer.TimerData data)
+    {
+        if(EffType != EffectType.ACCELERATE)
+        {
+            GameMgr.Instance.MainEntity.IsRecoverEnergy = true;
+        }
+    }
+
 
     void TriggerSkill(GameObject go)
     {
@@ -287,7 +298,11 @@ public class MainUIWindow : UIBaseWindow
         switch (EffType)
         {
             case EffectType.ACCELERATE:
-                //GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+                GameMgr.Instance.MainEntity.IsRecoverEnergy = false;
+                //if (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Walk)
+                //{
+                //    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
+                //}
                 break;
             case EffectType.WALKINSTANT:
                 GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Skill);
