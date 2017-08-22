@@ -225,6 +225,7 @@ public class NetEntity : IEntity
             if (null == m_npcControl)
             {
                 m_npcControl = Util.AddComponent<NPCControl>(gameObject);
+                m_npcControl.Start();
             }
             return m_npcControl;
         }
@@ -277,9 +278,11 @@ public class NetEntity : IEntity
         GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, CacheModel);// ResourcesMgr.Instance.Instantiate(prefab);
         if (null == go)
         {
+            Debug.LogError(heroInfo.model + " is null");
             return;
         }
         ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_ENTITY, RoleModel);
+        RoleModel = null;
         Occupation = occp;
         InitCharactor(go);
     }
@@ -360,7 +363,6 @@ public class NetEntity : IEntity
         if (null != CacheSkillParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheSkillParticleTran);
-            //CacheSkillParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheSkillParticleTran = null;
         }
     }
@@ -370,7 +372,6 @@ public class NetEntity : IEntity
         if (null != CacheAccelParticleTran)
         {
             ParticleMgr.Instance.Despawner(ResourceType.RESOURCE_PARTICLE, CacheAccelParticleTran);
-            //CacheAccelParticleTran.parent = GameMgr.Instance.ParticleRoot;
             CacheAccelParticleTran = null;
         }
     }
@@ -644,6 +645,16 @@ public class NetEntity : IEntity
         }
     }
 
+    public void EndDeadState()
+    {
+        if (NpcControl.Fsm.CurrentStateID != StateID.Dead)
+        {
+            if(NpcControl.Fsm.CurrentStateID != StateID.Idle)
+            {
+                NpcControl.SetTransition(Transition.Idle, this);
+            }
+        }
+    }
 
     public void EndCurrentStateToOtherState(StateID id)
     {
@@ -699,6 +710,7 @@ public class NetEntity : IEntity
 
     private void OnDisable()
     {
+        //Clear();
         ResetTimeValue();
         DespawnerAccelerateParticle();
         DespawnerWalkInstanceParticle();
@@ -1061,5 +1073,11 @@ public class NetEntity : IEntity
                 }
             }
         }
+    }
+
+    public void Clear()
+    {
+        RoleModel = null;
+        ArpgAnimatContorller.animator = null;
     }
 }

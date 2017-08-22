@@ -1,14 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class First : MonoBehaviour
+public class First : UIBaseWindow
 {
     private bool isInit = false;
+    private InputField m_InputField;
 
     void Awake()
     {
+        InitWindowData();
+    }
+
+    public override void InitWindowData()
+    {
+        base.InitWindowData();
+        windowData.showMode = UIWindowShowMode.DoNothing;
+        windowData.windowType = UIWindowType.Normal;
+        this.windowID = WindowID.WindowID_FirstUI;
+        this.preWindowID = WindowID.WindowID_Invaild; //初始化的界面前置界面为null
         Init();
     }
 
@@ -19,25 +31,40 @@ public class First : MonoBehaviour
             return;
         }
         isInit = true;
-        SetTargetFramRate();
+
         Transform cache = transform;
         Transform m_Btn = cache.Find("Button");
-
+        m_InputField = cache.Find("InputField").GetComponent<InputField>();
+        m_InputField.onValueChanged.AddListener(OnValueChanged);
         UGUIEventListener.Get(m_Btn.gameObject).onClick = EnterGame;
     }
 
 
     void EnterGame(GameObject go)
     {
-        SceneManager.LoadScene(1);
+        if (null != m_InputField)
+        {
+            string name = m_InputField.text.Trim();
+            if (!string.IsNullOrEmpty(name))
+            {
+                SceneManager.LoadScene(2);
+            }else
+            {
+                m_InputField.placeholder.color = Color.red;
+            }
+        }
     }
 
-    void SetTargetFramRate()
+    void OnValueChanged(string value)
     {
-#if UNITY_EDITOR
-        Application.targetFrameRate = 60;
-#elif UNITY_ANDROID || UNITY_IPHONE
-           Application.targetFrameRate = 30;
-#endif
+        if(string.IsNullOrEmpty(value))
+        {
+            m_InputField.placeholder.color = Color.red;
+        }else
+        {
+            m_InputField.text = m_InputField.text.Trim();
+        }
     }
+
+
 }

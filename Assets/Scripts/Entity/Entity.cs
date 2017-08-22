@@ -34,6 +34,8 @@ public class Entity : IEntity
 
     private CharacterController m_characController;
 
+    private string protectTimerID = string.Empty;
+
     public CharacterController CharacController
     {
         get
@@ -226,6 +228,7 @@ public class Entity : IEntity
             if (null == m_RoleEntiytControl)
             {
                 m_RoleEntiytControl = Util.AddComponent<RoleControl>(gameObject);
+                m_RoleEntiytControl.Start();
             }
             return m_RoleEntiytControl;
         }
@@ -268,14 +271,15 @@ public class Entity : IEntity
         Occupation = occp;
         HeroId = heroId;
         HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, CacheModel);// ResourcesMgr.Instance.Instantiate(prefab);
-        if (null == go)
-        {
-            return;
-        }
         InitAttribute(heroInfo);
         InitSkill();
         ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_ENTITY, RoleModel);
+        GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, ResourceType.RESOURCE_ENTITY, CacheModel);// ResourcesMgr.Instance.Instantiate(prefab);
+        if (null == go)
+        {
+            Debug.LogError("模型出錯!~~~");
+            return;
+        }
         InitCharactor(go);
     }
 
@@ -552,7 +556,6 @@ public class Entity : IEntity
     }
 
 
-
     public void EndSkillStateToIdle()
     {
         if (RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill)
@@ -645,19 +648,31 @@ public class Entity : IEntity
             EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead(false));
             InitEntity(Occupation, HeroId);
             EndCurrentStateToOtherState(RoleStateID.Idle);
+            Vector3 location = GameMgr.Instance.RandomLocation();
+            CacheModel.position = location;
         }
     }
 
-    void Protect()
+
+    public void Protect()
     {
+        if(!string.IsNullOrEmpty(protectTimerID))
+        {
+            Timer.Instance.RemoveTimer(protectTimerID);
+        }
         State = StateType.STATE_PROTECT;
-        Timer.Instance.AddTimer(3, 1, true, ProtectTimerOut);
+        Timer.TimerData data = Timer.Instance.AddTimer(3, 1, true, ProtectTimerOut);
+        if(null != data)
+        {
+            protectTimerID = data.ID;
+        }
     }
 
     void ProtectTimerOut(Timer.TimerData data)
     {
         if(State == StateType.STATE_PROTECT)
         {
+            protectTimerID = string.Empty;
             State = StateType.NONE;
         }
     }
@@ -841,6 +856,13 @@ public class Entity : IEntity
                 }
             }
         }
+    }
+
+
+    public void Clear()
+    {
+        ArpgAnimatContorller.animator = null;
+        RoleModel = null;
     }
 
 }

@@ -75,6 +75,7 @@ public class BaseAnimatorController : MonoBehaviour
             if(walk != value)
             {
                 walk = value;
+
                 if(null != animator)
                 {
                     animator.SetBool(walkKey, value);

@@ -288,6 +288,9 @@ public class Util
             case ResourceType.RESOURCE_NET:
                 path = AppConst.NetEntityPrefabPath;
                 break;
+            case ResourceType.RESOURCE_MGR:
+                path = AppConst.MgrPrefabPath;
+                break;
         }
         return path;
     }

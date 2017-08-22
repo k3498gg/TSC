@@ -26,7 +26,12 @@ public class UIManager : UIBaseManager
         return uiCamera;
     }
 
-    public void Init()
+    private void Start()
+    {
+        ShowWindow(WindowID.WindowID_FirstUI);
+    }
+
+    void Init()
     {
         if (init)
         {
@@ -66,6 +71,7 @@ public class UIManager : UIBaseManager
     protected override void InitWindowControl()
     {
         this.managedWindowId = 0;
+        AddWindowInControl(WindowID.WindowID_FirstUI);
         AddWindowInControl(WindowID.WindowID_MainUI);
     }
 

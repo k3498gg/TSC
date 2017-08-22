@@ -7,6 +7,7 @@ public class RoleControl : MonoBehaviour
 {
     private RoleFSMSystem fsm;
     private Entity m_Entity;
+    private bool init = false;
 
     public RoleFSMSystem Fsm
     {
@@ -45,6 +46,11 @@ public class RoleControl : MonoBehaviour
 
     public void Start()
     {
+        if(init)
+        {
+            return;
+        }
+        init = true;
         MakeFSM();
         SetTransition(RoleTransition.Idle, MEntity);
     }
@@ -56,6 +62,11 @@ public class RoleControl : MonoBehaviour
             return;
         }
         if(null== MEntity)
+        {
+            return;
+        }
+
+        if(!GameMgr.Instance.IsEnterGame)
         {
             return;
         }

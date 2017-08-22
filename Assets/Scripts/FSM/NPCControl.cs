@@ -7,6 +7,7 @@ public class NPCControl : MonoBehaviour
 {
     private NetEntity m_netEntity;
     private FSMSystem fsm;
+    private bool init = false;
 
     public NetEntity NEntity
     {
@@ -49,8 +50,14 @@ public class NPCControl : MonoBehaviour
 
     public void Start()
     {
+        if(init)
+        {
+            return;
+        }
+        init = true;
         MakeFSM();
-        SetTransition(Transition.FreeWalk, NEntity);
+        //SetTransition(Transition.Idle, NEntity);
+        //NEntity.EndCurrentStateToOtherState(StateID.Idle);
     }
 
     public void Update()
@@ -97,6 +104,7 @@ public class NPCControl : MonoBehaviour
         PlayerDeadState dead = new PlayerDeadState();
         dead.AddTransition(Transition.Dead, StateID.Dead);
         dead.AddTransition(Transition.Idle, StateID.Idle);
+        dead.AddTransition(Transition.FreeWalk, StateID.Walk);
 
         PlayerAcceState acce = new PlayerAcceState();
         acce.AddTransition(Transition.Acct, StateID.Acct);

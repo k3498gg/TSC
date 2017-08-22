@@ -116,6 +116,11 @@ public class GameMgr : MonoBehaviour
         Init();
     }
 
+    private void Start()
+    {
+        BeginGame();
+    }
+
     void Init()
     {
         if (init)
@@ -168,11 +173,12 @@ public class GameMgr : MonoBehaviour
 
         //初始化常量表数据
         AppConst.InitConstData();
-        MapId = 2;
-        InitMap();
-        CreateEntity();
-        UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
-        StartCoroutine(CreateNetEntity());
+        //MapId = 2;
+        //InitMap();
+        //CreateEntity();
+        //UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
+        //StartCoroutine(CreateNetEntity());
+        //BeginGame();
     }
 
     public void BeginGame()
@@ -181,7 +187,9 @@ public class GameMgr : MonoBehaviour
         InitMap();
         CreateEntity();
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
+        UIManager.Instance.HideWindow(WindowID.WindowID_FirstUI);
         StartCoroutine(CreateNetEntity());
+        IsEnterGame = true;
     }
 
     void InitMap()
@@ -411,6 +419,8 @@ public class GameMgr : MonoBehaviour
     {
         int occp = Random.Range(1, (int)OccpType.Occp_MAZ);
         MainEntity.InitEntity((OccpType)occp, Util.GetHeroIdByOccp((OccpType)occp));
+        MainEntity.Protect();
+        MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
         Vector3 location = RandomLocation();
         MainEntity.transform.position = location;
     }
@@ -423,13 +433,13 @@ public class GameMgr : MonoBehaviour
         for (int i = 0; i < 15; i++)
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
-            NetEntity e = Util.AddComponent<NetEntity>(go);
-            e.Id = (i + 1);
+            NetEntity net = Util.AddComponent<NetEntity>(go);
+            net.EndDeadState();
+            net.Id = (i + 1);
             int occp = i % 3;
             OccpType oc = (OccpType)(occp + 1);
-            e.InitEntity(oc, Util.GetHeroIdByOccp(oc));
-
-            TSCData.Instance.EntityDic[e.Id] = e;
+            net.InitEntity(oc, Util.GetHeroIdByOccp(oc));
+            TSCData.Instance.EntityDic[net.Id] = net;
         }
     }
 

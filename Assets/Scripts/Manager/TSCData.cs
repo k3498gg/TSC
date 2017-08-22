@@ -152,6 +152,10 @@ public class TSCData : Singleton<TSCData>
 
     public void Clear()
     {
+        foreach(KeyValuePair<int, NetEntity> kv in EntityDic)
+        {
+            kv.Value.Clear();
+        }
         EntityDic.Clear();
         ObstacleDic.Clear();
         DropItemDic.Clear();

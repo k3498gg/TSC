@@ -26,6 +26,7 @@ public class AppConst
     public static string ItemPrefabPath = "Item/";
     public static string ObstaclePrefabPath = "Obstacle/";
     public static string NetEntityPrefabPath = "Net/";
+    public static string MgrPrefabPath = "Mgr/";
     public static int ItemAreaCount = 0; //区域普通能量点最大数量
     public static int ItemFreshCount = 0; //道具刷新上限
     public static float ItemSugarDistance = 0; //糖果的掉落半径
@@ -45,6 +46,7 @@ public class AppConst
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {
             { WindowID.WindowID_MainUI, "MainUI" },
+            { WindowID.WindowID_FirstUI, "WelcomeUI" },
         };
 
     public static string AppContentPath

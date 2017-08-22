@@ -46,7 +46,6 @@ public class UIDead : MonoBehaviour
     {
         if (gameObject.activeSelf)
         {
-            Debug.LogError("Live HideUI!!!");
             gameObject.SetActive(false);
         }
     }
@@ -85,7 +84,11 @@ public class UIDead : MonoBehaviour
         RemoveReliveHandler();
         TSCData.Instance.Clear();
         PoolMgr.Instance.DespawnerAll();
-        SceneManager.LoadScene(AppConst.First);
+        GameMgr.Instance.MainEntity.Clear();
+        HideDeadUI();
+        UIManager.Instance.ShowWindow(WindowID.WindowID_FirstUI);
+        UIManager.Instance.HideWindow(WindowID.WindowID_MainUI);
+        SceneManager.LoadScene(1);
         //cache.localScale = Vector3.zero;
     }
 
