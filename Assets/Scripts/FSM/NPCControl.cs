@@ -114,13 +114,13 @@ public class NPCControl : MonoBehaviour
         skill.AddTransition(Transition.Idle, StateID.Idle);
         skill.AddTransition(Transition.CrashPlayer, StateID.CrashPlayer);
 
-        PlayerSwitchState sw = new PlayerSwitchState();
-        sw.AddTransition(Transition.Skill, StateID.Skill);
-        sw.AddTransition(Transition.Acct, StateID.Acct);
-        sw.AddTransition(Transition.FreeWalk, StateID.Walk);
-        sw.AddTransition(Transition.Dead, StateID.Dead);
-        sw.AddTransition(Transition.Idle, StateID.Idle);
-        sw.AddTransition(Transition.CrashPlayer, StateID.CrashPlayer);
+        //PlayerSwitchState sw = new PlayerSwitchState();
+        //sw.AddTransition(Transition.Skill, StateID.Skill);
+        //sw.AddTransition(Transition.Acct, StateID.Acct);
+        //sw.AddTransition(Transition.FreeWalk, StateID.Walk);
+        //sw.AddTransition(Transition.Dead, StateID.Dead);
+        //sw.AddTransition(Transition.Idle, StateID.Idle);
+        //sw.AddTransition(Transition.CrashPlayer, StateID.CrashPlayer);
 
         PlayerCrashState crash = new PlayerCrashState();
         crash.AddTransition(Transition.Skill, StateID.Skill);
@@ -135,7 +135,7 @@ public class NPCControl : MonoBehaviour
         Fsm.AddState(acce);
         Fsm.AddState(skill);
         Fsm.AddState(dead);
-        Fsm.AddState(sw);
+        //Fsm.AddState(sw);
         Fsm.AddState(crash);
     }
 }

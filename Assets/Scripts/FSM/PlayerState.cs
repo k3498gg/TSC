@@ -263,8 +263,8 @@ public class PlayerSkillState : FSMState
             m_enter_time += Time.deltaTime;
             if (m_enter_time > entity.GetSkillTime())
             {
-                m_enter_time = 0;
-                entity.EndCurrentStateToOtherState(StateID.Walk);
+                entity.SwitchOccp();
+                //entity.EndCurrentStateToOtherState(StateID.Walk);
             }
         }
     }
@@ -305,37 +305,37 @@ public class PlayerDeadState : FSMState
 
 
 
-public class PlayerSwitchState : FSMState
-{
-    public PlayerSwitchState()
-    {
-        stateID = StateID.Switch;
-    }
+//public class PlayerSwitchState : FSMState
+//{
+//    public PlayerSwitchState()
+//    {
+//        stateID = StateID.Switch;
+//    }
 
 
-    public override void OnEnter(NetEntity entity)
-    {
-        if (null != entity)
-        {
-            entity.SwitchOccp();
-        }
-    }
+//    public override void OnEnter(NetEntity entity)
+//    {
+//        if (null != entity)
+//        {
+//            entity.SwitchOccp();
+//        }
+//    }
 
-    public override void OnExit(NetEntity entity)
-    {
+//    public override void OnExit(NetEntity entity)
+//    {
 
-    }
+//    }
 
-    public override void OnUpdate(NetEntity entity)
-    {
+//    public override void OnUpdate(NetEntity entity)
+//    {
 
-    }
+//    }
 
-    public override void OnExcute(NetEntity entity)
-    {
+//    public override void OnExcute(NetEntity entity)
+//    {
 
-    }
-}
+//    }
+//}
 
 
 public class PlayerCrashState : FSMState

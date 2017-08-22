@@ -545,14 +545,15 @@ public class NetEntity : IEntity
             OccpType occp = Util.GetNextOccp(Occupation);
             int id = Util.GetHeroIdByOccp(occp);
             ChangeOccp(occp, id);
-            Timer.Instance.AddTimer(1, 1, true, SwitchStateToWalkState);
+            EndCurrentStateToOtherState(StateID.Idle);
+            //Timer.Instance.AddTimer(1, 1, true, SwitchStateToWalkState);
         }
     }
 
-    void SwitchStateToWalkState(Timer.TimerData data)
-    {
-        EndCurrentStateToOtherState(StateID.Walk);
-    }
+    //void SwitchStateToWalkState(Timer.TimerData data)
+    //{
+    //    EndCurrentStateToOtherState(StateID.Walk);
+    //}
 
     public void StopAccelerate()
     {
