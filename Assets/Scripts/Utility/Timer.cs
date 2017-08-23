@@ -148,7 +148,7 @@ public class Timer : Singleton<Timer>
         float ingoreTime = GetIngoreTime();
         for (int i = 0; i < mList.Count; i++)
         {
-            if(null == mList[i])
+            if (null == mList[i])
             {
                 continue;
             }
@@ -164,11 +164,15 @@ public class Timer : Singleton<Timer>
         return time;
     }
 
-
-    public void OnDestroy()
+    public void Clear()
     {
         mList.Clear();
         mUnused.Clear();
         GC.Collect();
+    }
+
+    void OnDestroy()
+    {
+        Clear();
     }
 }

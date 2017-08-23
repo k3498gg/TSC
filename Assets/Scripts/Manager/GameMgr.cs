@@ -434,11 +434,11 @@ public class GameMgr : MonoBehaviour
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
             NetEntity net = Util.AddComponent<NetEntity>(go);
-            net.EndDeadState();
             net.Id = (i + 1);
             int occp = i % 3;
             OccpType oc = (OccpType)(occp + 1);
             net.InitEntity(oc, Util.GetHeroIdByOccp(oc));
+            net.EndDeadState();
             TSCData.Instance.EntityDic[net.Id] = net;
         }
     }

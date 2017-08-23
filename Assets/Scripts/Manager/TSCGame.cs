@@ -20,10 +20,4 @@ public class TSCGame : MonoBehaviour
             ProfilerSample.BeginSample("TSCGame");
         }
     }
-
-
-    private void OnDestroy()
-    {
-        Timer.Instance.OnDestroy();
-    }
 }

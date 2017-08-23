@@ -647,13 +647,13 @@ public class NetEntity : IEntity
 
     public void EndDeadState()
     {
-        if (NpcControl.Fsm.CurrentStateID != StateID.Dead)
-        {
+        //if (NpcControl.Fsm.CurrentStateID == StateID.Dead)
+        //{
             if(NpcControl.Fsm.CurrentStateID != StateID.Idle)
             {
                 NpcControl.SetTransition(Transition.Idle, this);
             }
-        }
+        //}
     }
 
     public void EndCurrentStateToOtherState(StateID id)
