@@ -17,6 +17,7 @@ public class AppConst
     public static char Separate = '|';
     public static string Version = "1.0";
     public static string VersionKey = "VersionKey";
+    public static float hitRadio = 0.5f;
     public static int factor = 10000;   //配置表换算因子
     public static int randomValue = 7515;
     public static string UIPrefabPath = "UIPrefab/";
@@ -115,6 +116,10 @@ public class AppConst
     public static float CrashTime;
     public static float FreshInterval;
 
+    public static float ReliveScoreParam1;
+    public static float ReliveScoreParam2;
+    public static float ReliveRandomParam1;
+    public static float ReliveRandomParam2;
 
     public static void InitConstData()
     {
@@ -197,6 +202,20 @@ public class AppConst
 
         ConstInfo FreshIntervalInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_FRESH_INTERVAL);
         FreshInterval = float.Parse(FreshIntervalInfo.data) / AppConst.factor;
+
+
+        ConstInfo ReliveScoreParam1Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_RELIVE_PARAM1);
+        ReliveScoreParam1 = float.Parse(ReliveScoreParam1Info.data) / AppConst.factor;
+        ConstInfo ReliveScoreParam2Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_RELIVE_PARAM2);
+        ReliveScoreParam2 = float.Parse(ReliveScoreParam2Info.data) / AppConst.factor;
+        ConstInfo ReliveRandomParam1Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_RELIVE_RADOM_PARAM1);
+        ReliveRandomParam1 = float.Parse(ReliveRandomParam1Info.data) / AppConst.factor;
+        ConstInfo ReliveRandomParam2Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_RELIVE_RADOM_PARAM2);
+        ReliveRandomParam2 = float.Parse(ReliveRandomParam2Info.data) / AppConst.factor;
+
         
+        
+
+
     }
 }

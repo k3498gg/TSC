@@ -116,10 +116,10 @@ public class GameMgr : MonoBehaviour
         Init();
     }
 
-    private void Start()
-    {
-        BeginGame();
-    }
+    //private void Start()
+    //{
+    //    BeginGame();
+    //}
 
     void Init()
     {
@@ -178,7 +178,7 @@ public class GameMgr : MonoBehaviour
         //CreateEntity();
         //UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
         //StartCoroutine(CreateNetEntity());
-        //BeginGame();
+        BeginGame();
     }
 
     public void BeginGame()
@@ -417,12 +417,7 @@ public class GameMgr : MonoBehaviour
     //主角模型加载
     void CreateEntity()
     {
-        int occp = Random.Range(1, (int)OccpType.Occp_MAZ);
-        MainEntity.InitEntity((OccpType)occp, Util.GetHeroIdByOccp((OccpType)occp));
-        MainEntity.Protect();
-        MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
-        Vector3 location = RandomLocation();
-        MainEntity.transform.position = location;
+        MainEntity.CreateEntity();
     }
 
     IEnumerator CreateNetEntity()
@@ -430,15 +425,11 @@ public class GameMgr : MonoBehaviour
         yield return null;
         int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
-        for (int i = 0; i < 15; i++)
+        for (int i = 0; i < count; i++)
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
             NetEntity net = Util.AddComponent<NetEntity>(go);
-            net.Id = (i + 1);
-            int occp = i % 3;
-            OccpType oc = (OccpType)(occp + 1);
-            net.InitEntity(oc, Util.GetHeroIdByOccp(oc));
-            net.EndDeadState();
+            net.CreateNetEntity(i);
             TSCData.Instance.EntityDic[net.Id] = net;
         }
     }

@@ -14,6 +14,8 @@ public enum ItemType
     ITEM_SPEED = 4,  //变速
     ITEM_PROTECT = 5,  //保护罩
     ITEM_ENERGY = 6,  //积分
+    ITEM_ENERGY = 6,  //积分
+    ITEM_ENERGY = 6,  //积分
 };
 
 [Serializable]

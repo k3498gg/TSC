@@ -136,7 +136,7 @@ public class PlayerWalkState : FSMState
         }
         else
         {
-            entity.CacheModel.forward = entity.CacheModel.forward * -1;
+            entity.CacheModel.forward = entity.CacheModel.forward * Random.Range(-1,1);
         }
     }
 

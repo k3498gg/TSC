@@ -1,5 +1,5 @@
 /// <Licensing>
-/// © 2011 (Copyright) Path-o-logical Games, LLC
+/// ?2011 (Copyright) Path-o-logical Games, LLC
 /// Licensed under the Unity Asset Package Product License (the "License");
 /// You may not use this file except in compliance with the License.
 /// You may obtain a copy of the License at: http://licensing.path-o-logical.com
@@ -321,7 +321,7 @@ namespace PathologicalGames
 
             this._pools.Add(spawnPool.poolName, spawnPool);
 
-			Debug.Log(string.Format("Added pool '{0}'", spawnPool.poolName));
+			//Debug.Log(string.Format("Added pool '{0}'", spawnPool.poolName));
 
 			if (this.onCreatedDelegates.ContainsKey(spawnPool.poolName))
 				 this.onCreatedDelegates[spawnPool.poolName](spawnPool);

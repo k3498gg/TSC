@@ -236,9 +236,31 @@ public class NetEntity : IEntity
         }
     }
 
-    public void InitEntity(OccpType occp, int heroId)
+    public void CreateNetEntity(int idx)
     {
-        Vector3 location = GameMgr.Instance. RandomLocation();
+        Id = (idx + 1);
+        int occp = idx % 3;
+        OccpType oc = (OccpType)(occp + 1);
+        InitEntity(oc, Util.GetHeroIdByOccp(oc));
+        EndDeadState();
+        ResetAttribute();
+    }
+
+    void ResetAttribute()
+    {
+        Attribute.Score = 0;
+        Attribute.Level = 0;
+        Attribute.Money = 0;
+        if(null != RoleModel)
+        {
+            RoleModel.localScale = Vector3.one;
+        }
+        CharaController.radius = AppConst.hitRadio;
+    }
+
+    void InitEntity(OccpType occp, int heroId)
+    {
+        Vector3 location = GameMgr.Instance.RandomLocation();
         CacheModel.localRotation = Quaternion.Euler(0, Random.Range(0, 360), 0);
         CacheModel.position = location;
         ChangeOccp(occp, heroId);
@@ -322,11 +344,11 @@ public class NetEntity : IEntity
 
         OccupationInfo occpInfo = InfoMgr<OccupationInfo>.Instance.GetInfo(info.occupationId);
         Attribute.Skills = occpInfo.skillId;
-        Attribute.Score = 0;
-        Attribute.Level = 0;
+        //Attribute.Score = 0;
+        //Attribute.Level = 0;
     }
 
-    public void DespawnerParticle(EffectType type)
+    void DespawnerParticle(EffectType type)
     {
         switch (type)
         {
@@ -340,7 +362,7 @@ public class NetEntity : IEntity
     }
 
     //特效加载
-    public void SpawnerParticle(int id, EffectType type, Vector3 v, Transform parent)
+    void SpawnerParticle(int id, EffectType type, Vector3 v, Transform parent)
     {
         DespawnerParticle(type);
         GameObject inst = ParticleMgr.Instance.Spawner(id, v, parent);
@@ -376,20 +398,10 @@ public class NetEntity : IEntity
         }
     }
 
-    //积分变换，体力变换
-    public void EnergyUpdate(ItemEffectInfo effect)
-    {
-        Attribute.Score = Attribute.Score + effect.param1;
-        Attribute.CurPhy = Attribute.CurPhy + effect.param2;
-        if (Attribute.CurPhy > Attribute.MaxPhy)
-        {
-            Attribute.CurPhy = Attribute.MaxPhy;
-        }
-        Attribute.Level = GetCurrentLevel();
-    }
+
 
     //等级变化
-    public int GetCurrentLevel()
+    int GetCurrentLevel()
     {
         //LevelInfo info = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
         Dictionary<int, LevelInfo> level = InfoMgr<LevelInfo>.Instance.Dict;
@@ -547,14 +559,9 @@ public class NetEntity : IEntity
             int id = Util.GetHeroIdByOccp(occp);
             ChangeOccp(occp, id);
             EndCurrentStateToOtherState(StateID.Idle);
-            //Timer.Instance.AddTimer(1, 1, true, SwitchStateToWalkState);
         }
     }
 
-    //void SwitchStateToWalkState(Timer.TimerData data)
-    //{
-    //    EndCurrentStateToOtherState(StateID.Walk);
-    //}
 
     public void StopAccelerate()
     {
@@ -630,30 +637,67 @@ public class NetEntity : IEntity
         Protect();
         CacheModel.gameObject.SetActive(true);
         InitEntity(Occupation, HeroId);
+        CalculateScore();
         ArpgAnimatContorller.Reset();
         EndCurrentStateToOtherState(StateID.Idle);
     }
 
+    void CalculateScore()
+    {
+        int score = (int)(Attribute.Score / AppConst.ReliveScoreParam1 - Attribute.Score * UnityEngine.Random.Range(AppConst.ReliveRandomParam1, AppConst.ReliveRandomParam2) / AppConst.ReliveScoreParam2);
+        score = score > 0 ? score : 0;
+        if (Attribute.Score != score)
+        {
+            Attribute.Score = score;
+            UpdateModelScale();
+        }
+        Attribute.Level = Attribute.Level < 0 ? 0 : Attribute.Level;
+    }
+
+    void UpdateModelScale()
+    {
+        if (null != RoleModel)
+        {
+            int lev = GetCurrentLevel();
+            if (Attribute.Level != lev)
+            {
+                Attribute.Level = lev;
+                LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(lev);
+                RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
+                CharaController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
+            }
+        }
+    }
+
+    //积分变换，体力变换
+    public void EnergyUpdate(ItemEffectInfo effect)
+    {
+        Attribute.Score = Attribute.Score + effect.param1;
+        Attribute.CurPhy = Attribute.CurPhy + effect.param2;
+        if (Attribute.CurPhy > Attribute.MaxPhy)
+        {
+            Attribute.CurPhy = Attribute.MaxPhy;
+        }
+        //Attribute.Level = GetCurrentLevel();
+        UpdateModelScale();
+    }
+
     void RemoveBody(Timer.TimerData data)
     {
-        if(!IsAlive)
+        if (!IsAlive)
         {
             CacheModel.gameObject.SetActive(false);
             ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_ENTITY, RoleModel);
             RoleModel = null;
-            //ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_NET, CacheModel);
         }
     }
 
     public void EndDeadState()
     {
-        //if (NpcControl.Fsm.CurrentStateID == StateID.Dead)
-        //{
-            if(NpcControl.Fsm.CurrentStateID != StateID.Idle)
-            {
-                NpcControl.SetTransition(Transition.Idle, this);
-            }
-        //}
+        if (NpcControl.Fsm.CurrentStateID != StateID.Idle)
+        {
+            NpcControl.SetTransition(Transition.Idle, this);
+        }
     }
 
     public void EndCurrentStateToOtherState(StateID id)
@@ -798,7 +842,7 @@ public class NetEntity : IEntity
         float distance = 0;
         if (GameMgr.Instance.MainEntity.IsAlive)
         {
-            if(!GameMgr.Instance.MainEntity.IsProtect())
+            if (!GameMgr.Instance.MainEntity.IsProtect())
             {
                 if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
                 {
@@ -810,9 +854,10 @@ public class NetEntity : IEntity
                             LockCache = GameMgr.Instance.MainEntity.CacheModel;
                         }
                     }
-                }else if(Util.CanKillBody( GameMgr.Instance.MainEntity.Occupation, Occupation))
+                }
+                else if (Util.CanKillBody(GameMgr.Instance.MainEntity.Occupation, Occupation))
                 {
-                    if(lastFleeTime > AppConst.FleeInterval)
+                    if (lastFleeTime > AppConst.FleeInterval)
                     {
                         if (Util.GetEntityDistance(CacheModel, GameMgr.Instance.MainEntity.CacheModel) < AppConst.FleeDis)
                         {

@@ -41,6 +41,10 @@ public enum ConstType
     CONST_CRASH_TIME = 31,  //撞开持续时间
     CONST_CRASH_SPEED = 32,  //撞开速度
     CONST_FRESH_INTERVAL = 33,  //角色刷新间隔
+    CONST_RELIVE_PARAM1 = 34,  //复活积分参数1
+    CONST_RELIVE_PARAM2 = 35,  //复活积分参数2
+    CONST_RELIVE_RADOM_PARAM1 = 36,  //复活积分随机参数1
+    CONST_RELIVE_RADOM_PARAM2 = 37,  //复活积分随机参数2
 };
 
 // 碰撞停止类型

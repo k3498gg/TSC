@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -290,6 +291,7 @@ public class Entity : IEntity
         OccpType occp = Util.GetNextOccp(occupation);
         int id = Util.GetHeroIdByOccp(occp);
         ChangeOccp(occp, id);
+        CalculateScore();
     }
 
 
@@ -315,11 +317,17 @@ public class Entity : IEntity
 
     }
 
+
+    bool isInitAttr = false;
     void InitAttribute(HeroInfo info)
     {
+        if(isInitAttr)
+        {
+            return;
+        }
+        isInitAttr = true;
         Attribute.BaseSpeed = AppConst.BaseSpeed;
         Attribute.Speed = Attribute.BaseSpeed;
-        //Attribute.RebornTime = AppConst.RebornTime;
         Attribute.Basedis = AppConst.Basedis;
         Attribute.Atkdis = Attribute.Basedis;
         Attribute.MaxPhy = AppConst.MaxPhy;
@@ -327,11 +335,8 @@ public class Entity : IEntity
         Attribute.CostPhySpeed = AppConst.CostPhySpeed;
         Attribute.MaxHp = AppConst.MaxHp;
         Attribute.Hp = Attribute.MaxHp;
-
         OccupationInfo occpInfo = InfoMgr<OccupationInfo>.Instance.GetInfo(info.occupationId);
         Attribute.Skills = occpInfo.skillId;
-        Attribute.Score = 0;
-        Attribute.Level = 0;
     }
 
     void InitSkill()
@@ -434,7 +439,45 @@ public class Entity : IEntity
         {
             Attribute.CurPhy = Attribute.MaxPhy;
         }
-        Attribute.Level = GetCurrentLevel();
+        UpdateModelScale();
+    }
+
+    internal void CreateEntity()
+    {
+        int occp = UnityEngine.Random.Range(1, (int)OccpType.Occp_MAZ);
+        InitEntity((OccpType)occp, Util.GetHeroIdByOccp((OccpType)occp));
+        ResetAttribute();
+        Protect();
+        EndCurrentStateToOtherState(RoleStateID.Idle);
+        Vector3 location = GameMgr.Instance.RandomLocation();
+        CacheModel.position = location;
+    }
+
+    void ResetAttribute()
+    {
+        Attribute.Score = 0;
+        Attribute.Level = 0;
+        Attribute.Money = 0;
+        if(null != RoleModel)
+        {
+            RoleModel.localScale = Vector3.one;
+        }
+        CharacController.radius = AppConst.hitRadio;
+    }
+
+    void UpdateModelScale()
+    {
+        if (null != RoleModel)
+        {
+            int lev = GetCurrentLevel();
+            if (Attribute.Level != lev)
+            {
+                Attribute.Level = lev;
+                LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(lev);
+                RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
+                CharacController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
+            }
+        }
     }
 
     //等级变化
@@ -642,11 +685,13 @@ public class Entity : IEntity
 
     public void Relive()
     {
-        if(!IsAlive)
+        if (!IsAlive)
         {
             Protect();
             EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead(false));
             InitEntity(Occupation, HeroId);
+            Attribute.Hp = Attribute.MaxHp;
+            CalculateScore();
             EndCurrentStateToOtherState(RoleStateID.Idle);
             Vector3 location = GameMgr.Instance.RandomLocation();
             CacheModel.position = location;
@@ -654,15 +699,27 @@ public class Entity : IEntity
     }
 
 
+    void CalculateScore()
+    {
+        int score = (int)(Attribute.Score / AppConst.ReliveScoreParam1 - Attribute.Score * UnityEngine.Random.Range(AppConst.ReliveRandomParam1, AppConst.ReliveRandomParam2) / AppConst.ReliveScoreParam2);
+        score = score > 0 ? score : 0;
+        if (Attribute.Score != score)
+        {
+            Attribute.Score = score;
+            UpdateModelScale();
+        }
+        Attribute.Level = Attribute.Level < 0 ? 0 : Attribute.Level;
+    }
+
     public void Protect()
     {
-        if(!string.IsNullOrEmpty(protectTimerID))
+        if (!string.IsNullOrEmpty(protectTimerID))
         {
             Timer.Instance.RemoveTimer(protectTimerID);
         }
         State = StateType.STATE_PROTECT;
         Timer.TimerData data = Timer.Instance.AddTimer(3, 1, true, ProtectTimerOut);
-        if(null != data)
+        if (null != data)
         {
             protectTimerID = data.ID;
         }
@@ -670,7 +727,7 @@ public class Entity : IEntity
 
     void ProtectTimerOut(Timer.TimerData data)
     {
-        if(State == StateType.STATE_PROTECT)
+        if (State == StateType.STATE_PROTECT)
         {
             protectTimerID = string.Empty;
             State = StateType.NONE;
@@ -713,12 +770,12 @@ public class Entity : IEntity
     {
         ArpgAnimatContorller.Skill = 1;
 
-        if(null == skillinfo2)
+        if (null == skillinfo2)
         {
             skillinfo2 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[1]);
             effectinfo2 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo2.effectID);
         }
-        else if(!InfoMgr<SkillInfo>.Instance.Dict.ContainsKey(skillinfo2.id))
+        else if (!InfoMgr<SkillInfo>.Instance.Dict.ContainsKey(skillinfo2.id))
         {
             skillinfo2 = InfoMgr<SkillInfo>.Instance.GetInfo(Attribute.Skills[1]);
             effectinfo2 = InfoMgr<EffectInfo>.Instance.GetInfo(skillinfo2.effectID);
@@ -863,6 +920,7 @@ public class Entity : IEntity
     {
         ArpgAnimatContorller.animator = null;
         RoleModel = null;
+        isInitAttr = false;
     }
 
 }

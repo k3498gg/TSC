@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<Project xls_path="./xls" data_path="./client_out/client" data_type="bin" code_path="./client_out/Template" code_type="c#" enum_conf="./pro_enum.xml" data_start_line="3">
+<Project xls_path="./xls" data_path="./client_out/client" data_type="bin" code_path="./client_out/Template" code_type="c#" enum_conf="./pro_enum.xml" data_start_line="3">	
 	<entry target_name="AnimatorInfo" xls_file="Z状态机.xlsx" sheet_name="角色动作状态机">
 		<field	column="编号"		name="id"	type="Number"	key="True" />
 		<field	column="名字"		name="name" 		type="String" />
@@ -44,10 +44,8 @@
 		<field	column="模型"		name="model" 		type="String"  />
 		<field	column="图标"		name="icon" 		type="String"  />
 		<field	column="职业ID"		name="occupationId" 		type="Number"  />
-		<!-- <field	column="移动速度"	name="speed" 		type="Number"  />  速度一致，配置到常量表-->
 	</entry>
 
-	
 	<entry target_name="OccupationInfo" xls_file="J角色模型.xlsx" sheet_name="职业表">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
 		<field	column="描述语言ID"	name="lanID" 		type="Number"  />
@@ -78,7 +76,7 @@
 		<field	column="效果CD时间"	name="cd" 			type="Number"  />
 		<field	column="是否可移动"	name="iscanmove" 	type="Number"  />
 		<field	column="持续时间"	name="keeptime" 	type="Number"  />
-		<field	column="效果参数"	name="param" 		type="Number"  /> <!-- 数组-->
+		<field	column="效果参数"	name="param" 		type="Number"  />
 	</entry>
 
 	<entry target_name="ConstInfo" xls_file="C常量表.xlsx" sheet_name="常量表">
@@ -112,6 +110,7 @@
 
 	<entry target_name="LevelInfo" xls_file="D等级表.xlsx" sheet_name="等级">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
+		<field	column="碰撞范围比例"	name="hitscale" 		type="Number"   />
 		<field	column="缩放比例"	name="scale" 		type="Number"   />
 		<field	column="积分"		name="score" 		type="Number"   />
 		<field	column="状态"		name="icon" 		type="String"   />

@@ -8,6 +8,7 @@ using System.Text;
 public class LevelInfo: IInfo
 {
     public int id; // 编号
+    public int hitscale; // 碰撞范围比例
     public int scale; // 缩放比例
     public int score; // 积分
     public string icon; // 状态
@@ -15,6 +16,8 @@ public class LevelInfo: IInfo
     public  void Load(BinaryReader reader)
     {
         id = reader.ReadInt32();
+ 
+        hitscale = reader.ReadInt32();
  
         scale = reader.ReadInt32();
  

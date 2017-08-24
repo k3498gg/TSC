@@ -47,7 +47,8 @@ public class First : UIBaseWindow
             string name = m_InputField.text.Trim();
             if (!string.IsNullOrEmpty(name))
             {
-                SceneManager.LoadScene(2);
+                //SceneManager.LoadScene(2);
+                SceneManager.LoadSceneAsync(2);
             }else
             {
                 m_InputField.placeholder.color = Color.red;
