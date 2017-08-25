@@ -19,6 +19,10 @@ public class TSCData : Singleton<TSCData>
 
     private Dictionary<int, ObstacleEntity> obstacleDic;
 
+    private Dictionary<int, DropItemInfo> m_RareEnergyDic;
+
+    private Dictionary<int, SugarEntity> m_SugarEntityDic;
+
     public Dictionary<int, NetEntity> EntityDic
     {
         get
@@ -121,6 +125,39 @@ public class TSCData : Singleton<TSCData>
         }
     }
 
+    public Dictionary<int, DropItemInfo> RareEnergyDic
+    {
+        get
+        {
+            if (null == m_RareEnergyDic)
+            {
+                m_RareEnergyDic = new Dictionary<int, DropItemInfo>();
+            }
+            return m_RareEnergyDic;
+        }
+        set
+        {
+            m_RareEnergyDic = value;
+        }
+    }
+
+    public Dictionary<int, SugarEntity> SugarEntityDic
+    {
+        get
+        {
+            if (null == m_SugarEntityDic)
+            {
+                m_SugarEntityDic = new Dictionary<int, SugarEntity>();
+            }
+            return m_SugarEntityDic;
+        }
+
+        set
+        {
+            m_SugarEntityDic = value;
+        }
+    }
+
     public MapInfo GetCurrentMapInfo(int mapId)
     {
         if (DicMapInfo.ContainsKey(mapId))
@@ -152,7 +189,7 @@ public class TSCData : Singleton<TSCData>
 
     public void Clear()
     {
-        foreach(KeyValuePair<int, NetEntity> kv in EntityDic)
+        foreach (KeyValuePair<int, NetEntity> kv in EntityDic)
         {
             kv.Value.Clear();
         }
@@ -161,25 +198,27 @@ public class TSCData : Singleton<TSCData>
         DropItemDic.Clear();
         BackItemMapDic.Clear();
         TotalAreaItemMapDic.Clear();
+        RareEnergyDic.Clear();
+        SugarEntityDic.Clear();
     }
 
     float fresh_time = 0;
     internal void Update(float deltaTime)
     {
-        if(fresh_time < AppConst.FreshInterval)
+        if (fresh_time < AppConst.FreshInterval)
         {
             fresh_time += Time.deltaTime;
             return;
         }
         fresh_time = 0;
-        foreach (KeyValuePair<int,NetEntity> kv in EntityDic)
+        foreach (KeyValuePair<int, NetEntity> kv in EntityDic)
         {
-            if(kv.Value.IsAlive)
+            if (kv.Value.IsAlive)
             {
                 continue;
             }
 
-            if(Time.realtimeSinceStartup - kv.Value.LastDeadTime > AppConst.FreshInterval)
+            if (Time.realtimeSinceStartup - kv.Value.LastDeadTime > AppConst.FreshInterval)
             {
                 kv.Value.Relive();
                 //ResourcesMgr.Instance.Spawner(ResourceType.RESOURCE_NET, kv.Value.CacheModel, GameMgr.Instance.EntityRoot, GameMgr.Instance.RandomLocation());

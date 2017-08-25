@@ -160,7 +160,7 @@ def parse_enum_conf(pconf):
         for entry in root:
             econf = EnumConf()
             econf.name = entry.attrib["name"]
-            #print(econf.name)
+            print(econf.name)
             econf.target_name = entry.attrib["target_name"]
             econf.desc = entry.attrib["desc"]
             for enum in entry:

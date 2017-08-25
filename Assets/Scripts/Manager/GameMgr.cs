@@ -403,7 +403,7 @@ public class GameMgr : MonoBehaviour
         {
             foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
             {
-                if (Util.PtInRectArea(kv.Value.transform, v, kv.Value.Width + 0.5f, kv.Value.Height + 0.5f))
+                if (Util.PtInRectArea(v, kv.Value.transform,  kv.Value.Width + 0.5f, kv.Value.Height + 0.5f))
                 {
                     //v = new Vector3(Random.Range(1 - width, width - 1), 0, Random.Range(1 - height, height - 1));
                     return RandomLocation();

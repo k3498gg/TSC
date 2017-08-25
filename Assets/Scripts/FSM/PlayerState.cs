@@ -115,8 +115,8 @@ public class PlayerWalkState : FSMState
                 {
                     if (Util.GetEntityDistance(entity.CacheModel, kv.Value.Cache) < AppConst.AIRandomItemRadio)
                     {
-                        Vector3 dir = kv.Value.Cache.position - entity.CacheModel.position;
-                        entity.UpdateDir(dir);
+                        //Vector3 dir = kv.Value.Cache.position - entity.CacheModel.position;
+                        entity.UpdateDir(kv.Value.Cache.position - entity.CacheModel.position);
                         force = true;
                         break;
                     }
@@ -129,14 +129,17 @@ public class PlayerWalkState : FSMState
                 Transform t = GameMgr.Instance.ItemRoot.GetChild(idx);
                 if (null != t)
                 {
-                    Vector3 dir = t.position - entity.CacheModel.position;
-                    entity.UpdateDir(dir);
+                    entity.UpdateDir(t.position - entity.CacheModel.position);
+                }
+                else
+                {
+                    entity.UpdateDir(entity.CacheModel.forward * Random.Range(-1, 1));
                 }
             }
         }
         else
         {
-            entity.CacheModel.forward = entity.CacheModel.forward * Random.Range(-1,1);
+            entity.UpdateDir(entity.CacheModel.forward * Random.Range(-1, 1));
         }
     }
 
@@ -359,7 +362,16 @@ public class PlayerCrashState : FSMState
     {
         if (null != entity)
         {
+            enter_time = 0;
             entity.Attribute.Speed = entity.Attribute.BaseSpeed;
+        }
+    }
+
+    void Crash(NetEntity entity)
+    {
+        if (null != entity)
+        {
+            entity.CharaController.SimpleMove(-entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed);
         }
     }
 
@@ -370,9 +382,10 @@ public class PlayerCrashState : FSMState
             enter_time += Time.deltaTime;
             if (enter_time >= AppConst.CrashTime)
             {
-                enter_time = 0;
                 entity.EndCurrentStateToOtherState(StateID.Walk);
+                return;
             }
+            //Crash(entity);
         }
     }
 

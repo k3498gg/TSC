@@ -132,24 +132,33 @@ public class DropItemInfo : IEntity
         }
         ItemType type = effect.effType;
 
-        if((int)type < (int)ItemType.ITEM_ENERGY)
+        if ((int)type < (int)ItemType.ITEM_ENERGY)
         {
             //碰到状态道具 停止技能
             Debuger.LogError("碰到状态道具，停止技能");
-            //entity.StopSkill(CollisionType.Collision_ITEM);
             entity.EndSkillStateToIdle();
         }
 
-        //如果是积分道具(积分发生变化)
-        if (type == ItemType.ITEM_ENERGY)
+
+        switch (type)
         {
-            entity.EnergyUpdate(effect);
-        }
-        else
-        {
-            //非积分道具  人物状态变化
-            StateType state = Util.ConvertItemType(type);
-            entity.UpdateState(state, item, effect);
+            case ItemType.ITEM_MAGNET:
+            case ItemType.ITEM_MARK:
+            case ItemType.ITEM_PROTECT:
+            case ItemType.ITEM_SPEED:
+            case ItemType.ITEM_TRANSFERGATE:
+                //非积分道具  人物状态变化
+                StateType state = Util.ConvertItemType(type);
+                entity.UpdateState(state, item, effect);
+                break;
+            case ItemType.ITEM_ENERGY:
+                entity.EnergyUpdate(effect);
+                break;
+            case ItemType.ITEM_RAREENERGY:
+                break;
+            case ItemType.ITEM_SUGAR:
+                break;
+
         }
 
         Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>
@@ -191,16 +200,25 @@ public class DropItemInfo : IEntity
             entity.EndCurrentStateToOtherState(StateID.Walk);
         }
 
-        //如果是积分道具(积分发生变化)
-        if (type == ItemType.ITEM_ENERGY)
+        switch (type)
         {
-            entity.EnergyUpdate(effect);
-        }
-        else
-        {
-            //非积分道具  人物状态变化
-            StateType state = Util.ConvertItemType(type);
-            entity.UpdateState(state, item, effect);
+            case ItemType.ITEM_MAGNET:
+            case ItemType.ITEM_MARK:
+            case ItemType.ITEM_PROTECT:
+            case ItemType.ITEM_SPEED:
+            case ItemType.ITEM_TRANSFERGATE:
+                //非积分道具  人物状态变化
+                StateType state = Util.ConvertItemType(type);
+                entity.UpdateState(state, item, effect);
+                break;
+            case ItemType.ITEM_ENERGY:
+                entity.EnergyUpdate(effect);
+                break;
+            case ItemType.ITEM_RAREENERGY:
+                break;
+            case ItemType.ITEM_SUGAR:
+                break;
+
         }
 
         Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>

@@ -121,6 +121,10 @@ public class AppConst
     public static float ReliveRandomParam1;
     public static float ReliveRandomParam2;
 
+    public static float DropItemRangeParam1;
+    public static float DropItemRangeParam2;
+
+
     public static void InitConstData()
     {
         ConstInfo areaConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ENERGY_MAXCOUNT);
@@ -131,7 +135,7 @@ public class AppConst
         ItemSugarDistance = float.Parse(sugarConstInfo.data) / AppConst.factor;
 
         ConstInfo speedConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SPEED);
-        BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor;
+        BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor ;
         ConstInfo rebornconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_REBORN);
         RebornTime = int.Parse(rebornconstInfo.data) / AppConst.factor;
         ConstInfo atkDisconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ATK_RADIO);
@@ -213,9 +217,10 @@ public class AppConst
         ConstInfo ReliveRandomParam2Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_RELIVE_RADOM_PARAM2);
         ReliveRandomParam2 = float.Parse(ReliveRandomParam2Info.data) / AppConst.factor;
 
-        
-        
 
-
+        ConstInfo DropItemRangeParam1Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ITEM_DROP_PARAM1);
+        DropItemRangeParam1 = float.Parse(DropItemRangeParam1Info.data) / AppConst.factor;
+        ConstInfo DropItemRangeParam2Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ITEM_DROP_PARAM1);
+        DropItemRangeParam2 = float.Parse(DropItemRangeParam2Info.data) / AppConst.factor;
     }
 }

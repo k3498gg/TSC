@@ -35,7 +35,7 @@ public class Entity : IEntity
 
     private CharacterController m_characController;
 
-    private string protectTimerID = string.Empty;
+    public string protectTimerID = string.Empty;
 
     public CharacterController CharacController
     {
@@ -321,7 +321,7 @@ public class Entity : IEntity
     bool isInitAttr = false;
     void InitAttribute(HeroInfo info)
     {
-        if(isInitAttr)
+        if (isInitAttr)
         {
             return;
         }
@@ -458,7 +458,7 @@ public class Entity : IEntity
         Attribute.Score = 0;
         Attribute.Level = 0;
         Attribute.Money = 0;
-        if(null != RoleModel)
+        if (null != RoleModel)
         {
             RoleModel.localScale = Vector3.one;
         }
@@ -507,7 +507,7 @@ public class Entity : IEntity
         switch (stateType)
         {
             case StateType.STATE_MARK:
-                //TurnedBody(item);
+
                 break;
             case StateType.STATE_MAGNET:
                 Magnet(item, effect);
@@ -638,6 +638,7 @@ public class Entity : IEntity
                     break;
                 case RoleStateID.Dead:
                     RoleEntityControl.SetTransition(RoleTransition.Dead, this);
+                    ItemDropMgr.Instance.DropRareItem(CacheModel.position, 2, GameMgr.Instance.ItemRoot);
                     break;
             }
         }
@@ -713,10 +714,7 @@ public class Entity : IEntity
 
     public void Protect()
     {
-        if (!string.IsNullOrEmpty(protectTimerID))
-        {
-            Timer.Instance.RemoveTimer(protectTimerID);
-        }
+        return;
         State = StateType.STATE_PROTECT;
         Timer.TimerData data = Timer.Instance.AddTimer(3, 1, true, ProtectTimerOut);
         if (null != data)
@@ -729,9 +727,9 @@ public class Entity : IEntity
     {
         if (State == StateType.STATE_PROTECT)
         {
-            protectTimerID = string.Empty;
             State = StateType.NONE;
         }
+         protectTimerID = string.Empty;
     }
 
     public void StopAccelerate()
@@ -825,6 +823,8 @@ public class Entity : IEntity
         mTotalTime = 0;
 
         DetectItem();
+
+     //   ItemDropMgr.Instance.DropRareItem(CacheModel.position, 1, 2, 1, GameMgr.Instance.ItemRoot);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -899,16 +899,16 @@ public class Entity : IEntity
                     }
                     else
                     {
-                        EndCurrentStateToOtherState(RoleStateID.Idle);
-                    }
+                        if (IsUsingSkill())
+                        {
+                            entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
+                        }
+                        else
+                        {
+                            entity.EndCurrentStateToOtherState(StateID.Walk);
+                        }
 
-                    if (IsUsingSkill())
-                    {
-                        entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
-                    }
-                    else
-                    {
-                        entity.EndCurrentStateToOtherState(StateID.Walk);
+                        EndCurrentStateToOtherState(RoleStateID.Idle);
                     }
                 }
             }

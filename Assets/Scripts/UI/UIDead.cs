@@ -81,7 +81,6 @@ public class UIDead : MonoBehaviour
     void BackToMain(GameObject go)
     {
         GameMgr.Instance.IsEnterGame = false;
-        RemoveReliveHandler();
         Timer.Instance.Clear();
         TSCData.Instance.Clear();
         PoolMgr.Instance.DespawnerAll();

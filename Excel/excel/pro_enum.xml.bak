@@ -53,9 +53,10 @@
 		<field name="STATE_MAGNET"     			value="2"   desc="吸铁石" />
         <field name="STATE_TRANSFERGATE"     	value="3"   desc="传送门" />
 		<field name="STATE_SPEED"     			value="4"   desc="变速" />
-		<field name="STATE_PROTECT"     			value="5"   desc="保护罩" />
+		<field name="STATE_PROTECT"     		value="5"   desc="保护罩" />
     </enum>
-	
+
+
 	<enum name="ConstType"		target_name="ConstInfo" desc="常量表枚举类型" >
 		<field name="NONE"					value="0"   desc="" />
 		<field name="CONST_SPEED"			value="1"   desc="移动基本速度" />
@@ -84,10 +85,20 @@
 		<filed name="CONST_AI_MINCOUNT"		value="24"   desc="AI最小在线数量" />
 		<filed name="CONST_AI_MAXCOUNT"		value="25"   desc="AI最大在线数量" />
 		<filed name="CONST_CHASE_LEV"		value="26"   desc="AI追击职业等级差" />
-		<filed name="CONST_AI_DETECT_RANGE_INTERVAL"		value="27"   desc="AI追击检测可击杀对象是否在范围内的时间间隔" />
+		<filed name="CONST_AI_DETECT_RANGE_INTERVAL"	value="27"   desc="AI追击检测可击杀对象是否在范围内的时间间隔" />
 		<filed name="CONST_AI_RANDOM_DIR_INTERVAL"		value="28"   desc="AI随机切换方向时间间隔" />
 		<filed name="CONST_AI_RANDOM_ITEM_RADIO"		value="29"   desc="AI随机指定半径内的道具" />
-    </enum>
+		<filed name="CONST_PHY_RECOVER_SPEED"		value="30"   desc="主角体力恢复速度" />
+		<filed name="CONST_CRASH_TIME"				value="31"   desc="撞开持续时间" />
+		<filed name="CONST_CRASH_SPEED"				value="32"   desc="撞开速度" />
+		<filed name="CONST_FRESH_INTERVAL"			value="33"   desc="角色刷新间隔" />
+		<filed name="CONST_RELIVE_PARAM1"			value="34"   desc="复活积分参数1"  />
+		<filed name="CONST_RELIVE_PARAM2"			value="35"   desc="复活积分参数2"  />
+		<filed name="CONST_RELIVE_RADOM_PARAM1"		value="36"   desc="复活积分随机参数1"  />
+		<filed name="CONST_RELIVE_RADOM_PARAM2"		value="37"   desc="复活积分随机参数2"  />
+		<filed name="CONST_ITEM_DROP_PARAM1"		value="36"   desc="死亡道具随机范围参数1"  />
+		<filed name="CONST_ITEM_DROP_PARAM2"		value="37"   desc="复活积分随机参数2"  />
+    </enum> 
 
 
 	<enum name="ResourceType"		target_name="HeroInfo" desc="资源类型UI,角色,特效,动画,道具" >
@@ -99,7 +110,7 @@
 		<field name="RESOURCE_ITEM"     		value="5"   desc="道具模型" />
 		<field name="RESOURCE_OBSTACLE"     	value="6"   desc="障碍物模型" />
 		<field name="RESOURCE_NET"     			value="7"   desc="网络角色" />
-		<field name="RESOURCE_MGR"     			value="8"   desc="网络角色" />
+		<field name="RESOURCE_MGR"     			value="8"   desc="角色管理器" />
     </enum>
 
 	<enum name="ItemType"			target_name="ItemInfo" desc="效果类型" >
@@ -110,6 +121,8 @@
 		<field name="ITEM_SPEED"     			value="4"   desc="变速" />
 		<field name="ITEM_PROTECT"     			value="5"   desc="保护罩" />
 		<field name="ITEM_ENERGY"     			value="6"   desc="积分" />
+		<field name="ITEM_RAREENERGY"     		value="7"   desc="稀有积分" />
+		<field name="ITEM_SUGAR"     			value="8"   desc="糖果" />
     </enum>
 
 	<enum name="NpcType"			target_name="NpcInfo" desc="npc类型" >
@@ -129,9 +142,9 @@
 	<enum name="CollisionType"			target_name="ConstInfo" desc="碰撞停止类型" >
 		<field name="NONE"						value="0"   desc="" />
 		<field name="Collision_NET"				value="1"   desc="玩家" />
-		<field name="Collision_ITEM"     			value="2"   desc="道具" />
-		<field name="Collision_OBSTACLE"     			value="3"   desc="障碍物" />
-		<field name="Collision_NOTHING"     				value="4"   desc="自动停止" />
+		<field name="Collision_ITEM"     		value="2"   desc="道具" />
+		<field name="Collision_OBSTACLE"     	value="3"   desc="障碍物" />
+		<field name="Collision_NOTHING"     	value="4"   desc="自动停止" />
     </enum>
 
 </Project>

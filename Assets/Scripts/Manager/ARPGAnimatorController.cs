@@ -17,27 +17,27 @@ public class ARPGAnimatorController : BaseAnimatorController
         }
     }
 
-    private AnimatorStateInfo m_currentStateInfo;
+    //private AnimatorStateInfo m_currentStateInfo;
     //private AnimatorStateInfo m_nextStateInfo;
     //private bool isInTransaction = false;
 
-    private static int layer = 0;
-    public static int idle_NameHash = Animator.StringToHash("Base Layer.AnimaState_IDLE");
-    public static int atk1_NameHash = Animator.StringToHash("Base Layer.AnimaState_ATK1");
-    public static int skill1_NameHash = Animator.StringToHash("Base Layer.AnimaState_SKILL1");
+    //private static int layer = 0;
+    //public static int idle_NameHash = Animator.StringToHash("Base Layer.AnimaState_IDLE");
+    //public static int atk1_NameHash = Animator.StringToHash("Base Layer.AnimaState_ATK1");
+    //public static int skill1_NameHash = Animator.StringToHash("Base Layer.AnimaState_SKILL1");
 
-    public AnimatorStateInfo CurrentStateInfo
-    {
-        get
-        {
-            return m_currentStateInfo;
-        }
+    //public AnimatorStateInfo CurrentStateInfo
+    //{
+    //    get
+    //    {
+    //        return m_currentStateInfo;
+    //    }
 
-        set
-        {
-            m_currentStateInfo = value;
-        }
-    }
+    //    set
+    //    {
+    //        m_currentStateInfo = value;
+    //    }
+    //}
 
     //public void Update()
     //{

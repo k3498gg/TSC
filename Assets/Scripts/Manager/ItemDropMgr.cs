@@ -8,25 +8,6 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
     private int min = (int)ItemType.ITEM_MARK;
     private int max = (int)ItemType.ITEM_ENERGY;
 
-    //private List<DropItemInfo> dropItemInfos;
-
-    //public List<DropItemInfo> DropItemInfos
-    //{
-    //    get
-    //    {
-    //        if (null == dropItemInfos)
-    //        {
-    //            dropItemInfos = new List<DropItemInfo>();
-    //        }
-    //        return dropItemInfos;
-    //    }
-
-    //    set
-    //    {
-    //        dropItemInfos = value;
-    //    }
-    //}
-
     public void InitMapDrop()
     {
         List<ItemMapInfo> itemMaps = TSCData.Instance.GetCurItemMapInfo(GameMgr.Instance.MapId);
@@ -56,8 +37,8 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             {
                 if (idx < points.Count)
                 {
-                    int r = Random.Range(min,max);
-                    InistantDropItem(points[idx],(ItemType)r);
+                    int r = Random.Range(min, max);
+                    InistantDropItem(points[idx], (ItemType)r);
                 }
             }
 
@@ -87,7 +68,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                     {
                         if (i < items.Count)
                         {
-                            InistantDropItem(items[i],ItemType.ITEM_ENERGY);
+                            InistantDropItem(items[i], ItemType.ITEM_ENERGY);
                         }
                     }
                 }
@@ -148,14 +129,6 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         PoolMgr.Instance.Despawner(t, inst);
     }
 
-    public void Clear()
-    {
-        TSCData.Instance.BackItemMapDic.Clear();
-        TSCData.Instance.DropItemDic.Clear();
-        PoolMgr.Instance.Despawner(ResourceType.RESOURCE_ITEM);
-    }
-
-
     private void FreshMapDrop()
     {
         foreach (KeyValuePair<MapArea, List<ItemDespawnerInfo>> kv in TSCData.Instance.BackItemMapDic)
@@ -184,7 +157,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             List<ItemMapInfo> areaItems = TSCData.Instance.TotalAreaItemMapDic[area];
             List<ItemDespawnerInfo> spans = TSCData.Instance.BackItemMapDic[area];
             int count = areaItems.Count;
-            if(count == 0)
+            if (count == 0)
             {
                 return;
             }
@@ -194,7 +167,7 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             while (set.Count < nedCount)
             {
                 int index = Random.Range(0, count);
- 
+
                 if (TSCData.Instance.DropItemDic.ContainsKey(areaItems[index].Index))
                 {
                     continue;
@@ -213,11 +186,11 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             }
 
             int spawcount = 0;
-            foreach(int pos in set)
+            foreach (int pos in set)
             {
-                if(pos < areaItems.Count)
+                if (pos < areaItems.Count)
                 {
-                    if(spans[spawcount].InfoId != (int)ItemType.ITEM_ENERGY)
+                    if (spans[spawcount].InfoId != (int)ItemType.ITEM_ENERGY)
                     {
                         int r = Random.Range(min, max); //状态道具刷新（随机一个）
                         InistantDropItem(areaItems[pos], (ItemType)r);
@@ -231,6 +204,26 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
                 }
             }
             set.Clear();
+        }
+    }
+
+
+    public void DropRareItem(Vector3 pos, int count, Transform parent)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            float dis = Random.Range(AppConst.DropItemRangeParam1, AppConst.DropItemRangeParam2);
+            float angle = 360.0f * i / count;
+            float x = Mathf.Cos(angle) * dis;
+            float y = Mathf.Sin(angle) * dis;
+            GameObject go = Spawner((int)ItemType.ITEM_RAREENERGY, new Vector3(pos.x + x, 0, pos.z + y), ResourceType.RESOURCE_ITEM, parent);
+            if (null != go)
+            {
+                DropItemInfo dropItem = Util.AddComponent<DropItemInfo>(go);
+                dropItem.ItemId = TSCData.Instance.RareEnergyDic.Count;
+                dropItem.InfoId = (int)ItemType.ITEM_RAREENERGY;
+                TSCData.Instance.RareEnergyDic[dropItem.ItemId] = dropItem;
+            }
         }
     }
 

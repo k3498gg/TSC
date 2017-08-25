@@ -251,7 +251,7 @@ public class NetEntity : IEntity
         Attribute.Score = 0;
         Attribute.Level = 0;
         Attribute.Money = 0;
-        if(null != RoleModel)
+        if (null != RoleModel)
         {
             RoleModel.localScale = Vector3.one;
         }
@@ -1105,16 +1105,17 @@ public class NetEntity : IEntity
                 }
                 else
                 {
-                    EndCurrentStateToOtherState(StateID.Walk);
-                }
+                    //EndCurrentStateToOtherState(StateID.Walk);
 
-                if (IsUsingSkill())
-                {
-                    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
-                }
-                else
-                {
-                    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                    if (IsUsingSkill())
+                    {
+                        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
+                    }
+                    else
+                    {
+                        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                    }
+                    EndCurrentStateToOtherState(StateID.Walk);
                 }
             }
         }

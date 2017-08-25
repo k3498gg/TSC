@@ -379,7 +379,7 @@ if __name__ == "__main__":
     print(data_out)
     pconf, err = pro_conf.parse_pro_conf(conf_file)
     if pconf == None:
-        print("pro_conf parse_pro_conf failed.",err)
+        print("pro_conf parse_pro_conf failed.")
         sys.exit(-1)
         
     # 替换数据输出目录

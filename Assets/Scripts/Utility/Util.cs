@@ -143,9 +143,9 @@ public class Util
         return Vector2.SqrMagnitude(s_v - t_v) < radio * radio;
     }
 
-    public static bool PtInRectArea(Transform target,Vector3 self,float width,float height)
+    public static bool PtInRectArea(Vector3 self, Transform target, float width,float height)
     {
-        Vector3 dir = new Vector3(target.position.x, 0, target.position.z) - new Vector3(self.x, 0, self.z);
+        Vector3 dir = new Vector3(self.x, 0, self.z) - new Vector3(target.position.x, 0, target.position.z) ;
         Vector3 right = target.right;
         right = new Vector3(right.x, 0, right.z);
         Vector3 forward = target.forward;
@@ -165,11 +165,13 @@ public class Util
         return lev1 - lev2;
     }
 
+
     public static float GetEntityDistance(Transform cache1,Transform cache2)
     {
         Vector2 v1 = new Vector2(cache1.position.x, cache1.position.z);
         Vector2 v2 = new Vector2(cache2.position.x, cache2.position.z);
         return Vector2.Distance(v1, v2);
+        //return Mathf.Sqrt(Mathf.Pow((cache1.position.x - cache2.position.x), 2) + Mathf.Pow((cache1.position.y - cache2.position.y), 2));
     }
 
     public static bool GetDespawnFlag(ResourceType type)

@@ -106,6 +106,7 @@ public class Timer : Singleton<Timer>
             Debuger.LogError("TimerData≥ı ºªØ ß∞‹");
             return;
         }
+
         mList.Remove(data);
         if (mUnused.Count < poolCount)
         {
