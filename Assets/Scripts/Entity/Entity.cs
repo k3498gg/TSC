@@ -167,6 +167,7 @@ public class Entity : IEntity
 
         set
         {
+            Debug.LogWarning("value: "+value);
             m_state = value;
         }
     }
@@ -503,7 +504,6 @@ public class Entity : IEntity
 
     public void UpdateState(StateType stateType, ItemInfo item, ItemEffectInfo effect)
     {
-        this.State = stateType;
         switch (stateType)
         {
             case StateType.STATE_MARK:
@@ -731,6 +731,7 @@ public class Entity : IEntity
         if (null != data)
         {
             protectTimerID = data.ID;
+            Debug.LogWarning("Create Timer:" + protectTimerID +" "+ data.invokeTimes +" "+ data.time +"  "+ Time.realtimeSinceStartup);
         }
     }
 

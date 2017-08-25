@@ -114,6 +114,7 @@ public class Timer : Singleton<Timer>
             return;
         }
 
+        Debug.LogWarning("Remove Timer:" + data.ID + " " + data.invokeTimes + " " + data.time + "  " + Time.realtimeSinceStartup);
         mList.Remove(data);
         if (mUnused.Count < poolCount)
         {
@@ -139,6 +140,7 @@ public class Timer : Singleton<Timer>
 
     public void RemoveTimer(string id)
     {
+        Debug.LogWarning("Remove Timer:" + id);
         TimerData td = mList.Find(delegate (TimerData temp) { return temp.ID.Equals(id); });
         if (null != td)
         {
