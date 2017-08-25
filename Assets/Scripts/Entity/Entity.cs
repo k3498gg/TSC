@@ -596,6 +596,18 @@ public class Entity : IEntity
                 kv.Value.FlyToEntity(this);
             }
         }
+
+        foreach (KeyValuePair<int, DropItemInfo> kv in TSCData.Instance.RareEnergyDic)
+        {
+            if (kv.Value.IsLock)
+            {
+                continue;
+            }
+            if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis + 0.5f))
+            {
+                kv.Value.FlyToEntity(this);
+            }
+        }
     }
 
 
@@ -714,7 +726,6 @@ public class Entity : IEntity
 
     public void Protect()
     {
-        return;
         State = StateType.STATE_PROTECT;
         Timer.TimerData data = Timer.Instance.AddTimer(3, 1, true, ProtectTimerOut);
         if (null != data)

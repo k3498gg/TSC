@@ -115,7 +115,6 @@ public class PlayerWalkState : FSMState
                 {
                     if (Util.GetEntityDistance(entity.CacheModel, kv.Value.Cache) < AppConst.AIRandomItemRadio)
                     {
-                        //Vector3 dir = kv.Value.Cache.position - entity.CacheModel.position;
                         entity.UpdateDir(kv.Value.Cache.position - entity.CacheModel.position);
                         force = true;
                         break;

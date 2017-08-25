@@ -154,11 +154,11 @@ public class DropItemInfo : IEntity
             case ItemType.ITEM_ENERGY:
                 entity.EnergyUpdate(effect);
                 break;
-            case ItemType.ITEM_RAREENERGY:
-                break;
-            case ItemType.ITEM_SUGAR:
-                break;
-
+            //case ItemType.ITEM_RAREENERGY:
+            //    entity.EnergyUpdate(effect);
+            //    break;
+            //case ItemType.ITEM_SUGAR:
+            //    break;
         }
 
         Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>
@@ -214,12 +214,13 @@ public class DropItemInfo : IEntity
             case ItemType.ITEM_ENERGY:
                 entity.EnergyUpdate(effect);
                 break;
-            case ItemType.ITEM_RAREENERGY:
-                break;
-            case ItemType.ITEM_SUGAR:
-                break;
-
+            //case ItemType.ITEM_RAREENERGY:
+            //    entity.EnergyUpdate(effect);
+            //    break;
+            //case ItemType.ITEM_SUGAR:
+            //    break;
         }
+
 
         Cache.DOJump(v, 3, 1, 0.35f).SetEase(Ease.Linear).OnComplete(() =>
         {

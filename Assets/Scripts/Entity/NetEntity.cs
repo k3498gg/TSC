@@ -528,6 +528,19 @@ public class NetEntity : IEntity
                 kv.Value.FlyToEntity(this);
             }
         }
+
+
+        foreach (KeyValuePair<int, DropItemInfo> kv in TSCData.Instance.RareEnergyDic)
+        {
+            if (kv.Value.IsLock)
+            {
+                continue;
+            }
+            if (Util.PtInCircleArea(kv.Value.Cache, CacheModel, Attribute.Atkdis + 0.5f))
+            {
+                kv.Value.FlyToEntity(this);
+            }
+        }
     }
 
     public bool IsUsingSkill()
@@ -731,6 +744,7 @@ public class NetEntity : IEntity
                     break;
                 case StateID.Dead:
                     NpcControl.SetTransition(Transition.Dead, this);
+                    ItemDropMgr.Instance.DropRareItem(CacheModel.position, 2, GameMgr.Instance.ItemRoot);
                     break;
             }
         }

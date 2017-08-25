@@ -41,6 +41,8 @@ public class AppConst
     public static string TAG_ITEM_PROTECT = "ItemProtect";
     public static string TAG_ITEM_ENERGY = "ItemEnergy";
     public static string NET_Entity = "NetEntity";
+    public static int DropRareIndex = 0;
+
 
 
 
@@ -222,5 +224,10 @@ public class AppConst
         DropItemRangeParam1 = float.Parse(DropItemRangeParam1Info.data) / AppConst.factor;
         ConstInfo DropItemRangeParam2Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ITEM_DROP_PARAM1);
         DropItemRangeParam2 = float.Parse(DropItemRangeParam2Info.data) / AppConst.factor;
+    }
+
+    public static void Clear()
+    {
+        DropRareIndex = 0;
     }
 }

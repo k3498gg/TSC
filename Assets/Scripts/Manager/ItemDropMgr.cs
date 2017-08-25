@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class ItemDropMgr : Singleton<ItemDropMgr>
 {
@@ -87,6 +88,10 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         dropInfo.InfoId = (int)type;
         dropInfo.Area = mapInfo.Area;
         dropInfo.IsLock = false;
+        if (TSCData.Instance.DropItemDic.ContainsKey(dropInfo.ItemId))
+        {
+            Despawner(ResourceType.RESOURCE_ITEM, TSCData.Instance.DropItemDic[dropInfo.ItemId]);
+        }
         TSCData.Instance.DropItemDic[dropInfo.ItemId] = dropInfo;
     }
 
@@ -103,23 +108,33 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             return;
         }
 
-        ItemDespawnerInfo despawnItem = new ItemDespawnerInfo(dropItem.ItemId, dropItem.InfoId);
-        MapArea area = dropItem.Area;
-
-        if (TSCData.Instance.BackItemMapDic.ContainsKey(area))
+        if (dropItem.InfoId == (int)ItemType.ITEM_RAREENERGY)
         {
-            TSCData.Instance.BackItemMapDic[area].Add(despawnItem);
+            if (TSCData.Instance.RareEnergyDic.ContainsKey(dropItem.ItemId))
+            {
+                TSCData.Instance.RareEnergyDic.Remove(dropItem.ItemId);
+            }
         }
         else
         {
-            List<ItemDespawnerInfo> itemIds = new List<ItemDespawnerInfo>();
-            itemIds.Add(despawnItem);
-            TSCData.Instance.BackItemMapDic[area] = itemIds;
-        }
+            ItemDespawnerInfo despawnItem = new ItemDespawnerInfo(dropItem.ItemId, dropItem.InfoId);
+            MapArea area = dropItem.Area;
 
-        if (TSCData.Instance.DropItemDic.ContainsKey(dropItem.ItemId))
-        {
-            TSCData.Instance.DropItemDic.Remove(dropItem.ItemId);
+            if (TSCData.Instance.BackItemMapDic.ContainsKey(area))
+            {
+                TSCData.Instance.BackItemMapDic[area].Add(despawnItem);
+            }
+            else
+            {
+                List<ItemDespawnerInfo> itemIds = new List<ItemDespawnerInfo>();
+                itemIds.Add(despawnItem);
+                TSCData.Instance.BackItemMapDic[area] = itemIds;
+            }
+
+            if (TSCData.Instance.DropItemDic.ContainsKey(dropItem.ItemId))
+            {
+                TSCData.Instance.DropItemDic.Remove(dropItem.ItemId);
+            }
         }
         Despawner(t, dropItem.Cache);
     }
@@ -216,13 +231,27 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             float angle = 360.0f * i / count;
             float x = Mathf.Cos(angle) * dis;
             float y = Mathf.Sin(angle) * dis;
-            GameObject go = Spawner((int)ItemType.ITEM_RAREENERGY, new Vector3(pos.x + x, 0, pos.z + y), ResourceType.RESOURCE_ITEM, parent);
+            Vector3 v = new Vector3(pos.x + x, 0, pos.z + y);
+            GameObject go = Spawner((int)ItemType.ITEM_RAREENERGY, pos, ResourceType.RESOURCE_ITEM, parent);
             if (null != go)
             {
                 DropItemInfo dropItem = Util.AddComponent<DropItemInfo>(go);
-                dropItem.ItemId = TSCData.Instance.RareEnergyDic.Count;
+                dropItem.IsLock = true;
+                //Debug.LogError(dropItem.ItemId);
+                if (dropItem.ItemId == 0)
+                {
+                    dropItem.ItemId = Util.GetDropRareIndex();
+                }
                 dropItem.InfoId = (int)ItemType.ITEM_RAREENERGY;
+                //if(TSCData.Instance.RareEnergyDic.ContainsKey(dropItem.ItemId))
+                //{
+                //    Debug.LogError("RareEnergyDic.Count:"+ TSCData.Instance.RareEnergyDic.Count);
+                //}
                 TSCData.Instance.RareEnergyDic[dropItem.ItemId] = dropItem;
+                dropItem.Cache.DOMove(v, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
+                {
+                    dropItem.IsLock = false;
+                });
             }
         }
     }

@@ -444,4 +444,13 @@ public class Util
         }
         return id;
     }
+
+    public static int GetDropRareIndex()
+    {
+        if(AppConst.DropRareIndex == int.MaxValue)
+        {
+            AppConst.DropRareIndex = 0;
+        }
+        return AppConst.DropRareIndex++;
+    }
 }

@@ -29,6 +29,10 @@ public class Timer : Singleton<Timer>
             {
                 return id;
             }
+            set
+            {
+                id = value;
+            }
         }
 
         public TimerData()
@@ -78,7 +82,7 @@ public class Timer : Singleton<Timer>
     public delegate void TimerHandler(TimerData data);
     private List<TimerData> mList = new List<TimerData>();
     private List<TimerData> mUnused = new List<TimerData>();
-    private int poolCount = 5; //缓存池TimerData的数量
+    private int poolCount = 20; //缓存池TimerData的数量
     TimerData Create()
     {
         if (mUnused.Count > 0)
@@ -89,6 +93,9 @@ public class Timer : Singleton<Timer>
             if (null == data)
             {
                 data = new TimerData();
+            }else
+            {
+                data.ID = Guid.NewGuid().ToString();
             }
 
             mList.Add(data);

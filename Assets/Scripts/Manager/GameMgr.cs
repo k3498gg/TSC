@@ -405,6 +405,7 @@ public class GameMgr : MonoBehaviour
             {
                 if (Util.PtInRectArea(v, kv.Value.transform,  kv.Value.Width + 0.5f, kv.Value.Height + 0.5f))
                 {
+                    //Debug.LogError(v + " " + kv.Value.Width + "  " + kv.Value.Height);
                     //v = new Vector3(Random.Range(1 - width, width - 1), 0, Random.Range(1 - height, height - 1));
                     return RandomLocation();
                 }

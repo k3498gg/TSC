@@ -85,6 +85,7 @@ public class UIDead : MonoBehaviour
         TSCData.Instance.Clear();
         PoolMgr.Instance.DespawnerAll();
         GameMgr.Instance.MainEntity.Clear();
+        AppConst.Clear();
         HideDeadUI();
         UIManager.Instance.ShowWindow(WindowID.WindowID_FirstUI);
         UIManager.Instance.HideWindow(WindowID.WindowID_MainUI);
