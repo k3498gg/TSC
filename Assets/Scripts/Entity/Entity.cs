@@ -731,7 +731,6 @@ public class Entity : IEntity
         if (null != data)
         {
             protectTimerID = data.ID;
-            Debug.LogWarning("Create Timer:" + protectTimerID +" "+ data.invokeTimes +" "+ data.time +"  "+ Time.realtimeSinceStartup);
         }
     }
 

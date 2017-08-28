@@ -56,6 +56,7 @@ public class Timer : Singleton<Timer>
                 {
                     this.time -= delatTime;
                 }
+
                 if (this.time <= 0)
                 {
                     if (null != handler)
@@ -64,7 +65,6 @@ public class Timer : Singleton<Timer>
                     }
 
                     --invokeTimes;
-
                     if (invokeTimes != 0)
                     {
                         this.time = intervalTime;
@@ -81,30 +81,32 @@ public class Timer : Singleton<Timer>
     private float realtimeSinceStartup = 0;
     public delegate void TimerHandler(TimerData data);
     private List<TimerData> mList = new List<TimerData>();
-    private List<TimerData> mUnused = new List<TimerData>();
-    private int poolCount = 20; //缓存池TimerData的数量
-    TimerData Create()
-    {
-        if (mUnused.Count > 0)
-        {
-            int idx = mUnused.Count - 1;
-            TimerData data = mUnused[idx];
-            mUnused.Remove(data);
-            if (null == data)
-            {
-                data = new TimerData();
-            }else
-            {
-                data.ID = Guid.NewGuid().ToString();
-            }
+    //private List<TimerData> mUnused = new List<TimerData>();
+    //private int poolCount = 20; //缓存池TimerData的数量
+    //TimerData Create()
+    //{
+    //    if (mUnused.Count > 0)
+    //    {
+    //        int idx = mUnused.Count - 1;
+    //        TimerData data = mUnused[idx];
+    //        mUnused.Remove(data);
+    //        if (null == data)
+    //        {
+    //            data = new TimerData();
+    //        }else
+    //        {
+    //            data.ID = Guid.NewGuid().ToString();
 
-            mList.Add(data);
-            return data;
-        }
-        TimerData td = new TimerData();
-        mList.Add(td);
-        return td;
-    }
+    //            Debug.LogWarning("data_id:" + data.ID +" "+ mList.IndexOf(data));
+    //        }
+
+    //        mList.Add(data);
+    //        return data;
+    //    }
+    //    TimerData td = new TimerData();
+    //    mList.Add(td);
+    //    return td;
+    //}
 
     void Delete(TimerData data)
     {
@@ -113,29 +115,52 @@ public class Timer : Singleton<Timer>
             Debuger.LogError("TimerData初始化失败");
             return;
         }
-
-        Debug.LogWarning("Remove Timer:" + data.ID + " " + data.invokeTimes + " " + data.time + "  " + Time.realtimeSinceStartup);
         mList.Remove(data);
-        if (mUnused.Count < poolCount)
-        {
-            mUnused.Add(data);
-        }
-        else
-        {
+        //if (mUnused.Count < poolCount)
+        //{
+        //    mUnused.Add(data);
+        //}
+        //else
+        //{
             data = null;
-        }
+        //}
     }
 
     public TimerData AddTimer(float time, int invokeTimes, bool ingoreTimeScale, TimerHandler handler)
     {
-        TimerData data = Create();
-        data.isInitialized = false;
-        data.time = time;
-        data.invokeTimes = invokeTimes;
-        data.ingoreTimeScale = ingoreTimeScale;
-        data.handler = handler;
+        //if (mUnused.Count > 0)
+        //{
+        //    int idx = mUnused.Count - 1;
+        //    TimerData data = mUnused[idx];
+        //    mUnused.Remove(data);
+        //    if (null == data)
+        //    {
+        //        data = new TimerData();
+        //    }
+        //    else
+        //    {
+        //        data.ID = Guid.NewGuid().ToString();
+
+        //        Debug.LogWarning("data_id:" + data.ID + " " + mList.IndexOf(data));
+        //    }
+        //    data.isInitialized = false;
+        //    data.time = time;
+        //    data.invokeTimes = invokeTimes;
+        //    data.ingoreTimeScale = ingoreTimeScale;
+        //    data.handler = handler;
+        //    realtimeSinceStartup = Time.realtimeSinceStartup;
+        //    mList.Add(data);
+        //    return data;
+        //}
+        TimerData td = new TimerData();
+        td.isInitialized = false;
+        td.time = time;
+        td.invokeTimes = invokeTimes;
+        td.ingoreTimeScale = ingoreTimeScale;
+        td.handler = handler;
         realtimeSinceStartup = Time.realtimeSinceStartup;
-        return data;
+        mList.Add(td);
+        return td;
     }
 
     public void RemoveTimer(string id)
@@ -177,7 +202,7 @@ public class Timer : Singleton<Timer>
     public void Clear()
     {
         mList.Clear();
-        mUnused.Clear();
+        //mUnused.Clear();
         GC.Collect();
     }
 
