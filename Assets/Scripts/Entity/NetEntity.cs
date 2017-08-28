@@ -33,6 +33,9 @@ public class NetEntity : IEntity
 
     private float lastDeadTime;
 
+    private int nameIdx = -1;
+
+
     public EntityAttribute Attribute
     {
         get
@@ -744,7 +747,7 @@ public class NetEntity : IEntity
                     break;
                 case StateID.Dead:
                     NpcControl.SetTransition(Transition.Dead, this);
-                    ItemDropMgr.Instance.DropRareItem(CacheModel.position, 2, GameMgr.Instance.ItemRoot);
+                    ItemDropMgr.Instance.DropRareItem(CacheModel.position, Attribute.Score, GameMgr.Instance.ItemRoot);
                     break;
             }
         }
@@ -836,6 +839,19 @@ public class NetEntity : IEntity
         set
         {
             lastDeadTime = value;
+        }
+    }
+
+    public int NameIdx
+    {
+        get
+        {
+            return nameIdx;
+        }
+
+        set
+        {
+            nameIdx = value;
         }
     }
 
@@ -1119,8 +1135,6 @@ public class NetEntity : IEntity
                 }
                 else
                 {
-                    //EndCurrentStateToOtherState(StateID.Walk);
-
                     if (IsUsingSkill())
                     {
                         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);

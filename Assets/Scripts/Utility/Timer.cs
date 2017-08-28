@@ -165,7 +165,6 @@ public class Timer : Singleton<Timer>
 
     public void RemoveTimer(string id)
     {
-        Debug.LogWarning("Remove Timer:" + id);
         TimerData td = mList.Find(delegate (TimerData temp) { return temp.ID.Equals(id); });
         if (null != td)
         {

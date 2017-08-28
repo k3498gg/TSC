@@ -20,7 +20,6 @@ public class UIManager : UIBaseManager
             if (null != m_canvas)
             {
                 uiCamera = m_canvas.worldCamera;
-                Debug.LogError(m_canvas.worldCamera.name);
             }
         }
         return uiCamera;

@@ -452,6 +452,7 @@ public class Entity : IEntity
         EndCurrentStateToOtherState(RoleStateID.Idle);
         Vector3 location = GameMgr.Instance.RandomLocation();
         CacheModel.position = location;
+        UIHudManager.Instance.SpawnerHUD("123455",CacheModel);
     }
 
     void ResetAttribute()
@@ -650,7 +651,7 @@ public class Entity : IEntity
                     break;
                 case RoleStateID.Dead:
                     RoleEntityControl.SetTransition(RoleTransition.Dead, this);
-                    ItemDropMgr.Instance.DropRareItem(CacheModel.position, 2, GameMgr.Instance.ItemRoot);
+                    ItemDropMgr.Instance.DropRareItem(CacheModel.position, Attribute.Score, GameMgr.Instance.ItemRoot);
                     break;
             }
         }

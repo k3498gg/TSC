@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 public class UIHUDName : MonoBehaviour
 {
-    //public Slider m_slider;
     public Transform m_target;
     public Vector3 m_offset;
     public Camera m_camera;
@@ -16,12 +15,12 @@ public class UIHUDName : MonoBehaviour
     private Text m_Name;
     private bool init = false;
 
-    private void Start()
-    {
-        Init();
-    }
+    //private void Start()
+    //{
+    //    Init();
+    //}
 
-    void Init()
+    public void Init()
     {
         if (init)
         {
@@ -31,24 +30,32 @@ public class UIHUDName : MonoBehaviour
         cache = transform;
         m_imageGo = cache.Find("Image").gameObject;
         m_nameGo = cache.Find("Text").gameObject;
-        //m_slider = m_bloodGo.GetComponent<Slider>();
         m_Name = m_nameGo.GetComponent<Text>();
         m_Image = m_imageGo.GetComponent<Image>();
         m_camera = GameMgr.Instance.CameraController.Camera;
         m_UICamera = UIManager.Instance.GetUiCamera();
-
-        SetName("My New Name");
     }
 
-    void SetName(string name)
+    public void SetOffset(float x,float y)
+    {
+        m_offset.x = x;
+        m_offset.y = y;
+    }
+
+    public void SetName(string text)
     {
         if (null != m_Name)
         {
-            m_Name.text = name;
+            m_Name.text = text;
         }
     }
 
-    void SetImage(Sprite sprite)
+    public void SetTarget(Transform target)
+    {
+        m_target = target;
+    }
+
+    public void SetImage(Sprite sprite)
     {
         if(null != m_Image)
         {

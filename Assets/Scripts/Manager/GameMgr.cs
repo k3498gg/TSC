@@ -426,7 +426,7 @@ public class GameMgr : MonoBehaviour
         yield return null;
         int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < count; i++)
         {
             GameObject go = ResourcesMgr.Instance.Spawner(AppConst.NET_Entity, ResourceType.RESOURCE_NET, EntityRoot);
             NetEntity net = Util.AddComponent<NetEntity>(go);

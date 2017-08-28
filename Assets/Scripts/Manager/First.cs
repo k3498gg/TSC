@@ -48,8 +48,16 @@ public class First : UIBaseWindow
             if (!string.IsNullOrEmpty(name))
             {
                 //SceneManager.LoadScene(2);
-                SceneManager.LoadSceneAsync(2);
-            }else
+                if (IsSymbol(name))
+                {
+                    Debug.LogError(name + "非法");
+                }
+                else
+                {
+                    SceneManager.LoadSceneAsync(2);
+                }
+            }
+            else
             {
                 m_InputField.placeholder.color = Color.red;
             }
@@ -58,14 +66,144 @@ public class First : UIBaseWindow
 
     void OnValueChanged(string value)
     {
-        if(string.IsNullOrEmpty(value))
+        if (string.IsNullOrEmpty(value))
         {
             m_InputField.placeholder.color = Color.red;
-        }else
+        }
+        else
         {
             m_InputField.text = m_InputField.text.Trim();
+            if (IsSymbol(m_InputField.text))
+            {
+                m_InputField.textComponent.color = Color.red;
+            }
         }
     }
 
 
+    bool IsSymbol(string word)
+    {
+        System.Text.RegularExpressions.Regex rx = new System.Text.RegularExpressions.Regex("^[0-9a-zA-Z\u4e00-\u9fa5_-]+$");
+        if (rx.IsMatch(word))
+        {
+            return false;
+        }
+        //非汉字，返真
+        else
+        {
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// 非法字符转换
+    /// </summary>
+    /// <param name="str"></param>
+    /// <returns></returns>
+    string ReplaceStr(string str)
+    {
+        if (str.IndexOf(",") != -1)
+        {
+            str = str.Replace(",", "");
+        }
+        if (str.IndexOf("'") != -1)
+        {
+            str = str.Replace("'", "");
+        }
+        if (str.IndexOf(";") != -1)
+        {
+            str = str.Replace(";", "");
+        }
+        if (str.IndexOf(":") != -1)
+        {
+            str = str.Replace(":", "");
+        }
+        if (str.IndexOf("/") != -1)
+        {
+            str = str.Replace("/", "");
+        }
+        if (str.IndexOf("?") != -1)
+        {
+            str = str.Replace("?", "");
+        }
+        if (str.IndexOf("<") != -1)
+        {
+            str = str.Replace("<", "");
+        }
+        if (str.IndexOf(">") != -1)
+        {
+            str = str.Replace(">", "");
+        }
+        if (str.IndexOf(".") != -1)
+        {
+            str = str.Replace(".", "");
+        }
+        if (str.IndexOf("#") != -1)
+        {
+            str = str.Replace("#", "");
+        }
+        if (str.IndexOf("%") != -1)
+        {
+            str = str.Replace("%", "");
+        }
+        if (str.IndexOf("\\") != -1)
+        {
+            str = str.Replace("\\", "");
+        }
+        if (str.IndexOf("^") != -1)
+        {
+            str = str.Replace("^", "");
+        }
+        if (str.IndexOf("//") != -1)
+        {
+            str = str.Replace("//", "");
+        }
+        if (str.IndexOf("@") != -1)
+        {
+            str = str.Replace("@", "");
+        }
+        if (str.IndexOf("(") != -1)
+        {
+            str = str.Replace("(", "");
+        }
+        if (str.IndexOf(")") != -1)
+        {
+            str = str.Replace(")", "");
+        }
+        if (str.IndexOf("*") != -1)
+        {
+            str = str.Replace("*", "");
+        }
+        if (str.IndexOf("~") != -1)
+        {
+            str = str.Replace("~", "");
+        }
+        if (str.IndexOf("`") != -1)
+        {
+            str = str.Replace("`", "");
+        }
+        if (str.IndexOf("$") != -1)
+        {
+            str = str.Replace("$", "");
+        }
+        if (str.IndexOf("|") != -1)
+        {
+            str = str.Replace("|", "");
+        }
+        if (str.IndexOf("&") != -1)
+        {
+            str = str.Replace("&", "");
+        }
+        if (str.IndexOf("￥") != -1)
+        {
+            str = str.Replace("￥", "");
+        }
+        return str;
+    }
+
+    bool checkString(string source)
+    {
+        System.Text.RegularExpressions.Regex regExp = new System.Text.RegularExpressions.Regex("[~!@#$%^&*()=+{}';:/?.,><`|()｛｝\\！·￥…—（）\"//-、；：。，》《]");
+        return !regExp.IsMatch(source);
+    }
 }

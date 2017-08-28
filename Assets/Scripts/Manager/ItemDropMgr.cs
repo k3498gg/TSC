@@ -222,9 +222,21 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
         }
     }
 
-
-    public void DropRareItem(Vector3 pos, int count, Transform parent)
+    private ItemInfo m_dropItem;
+    private ItemEffectInfo m_dropItemEffect;
+    public void DropRareItem(Vector3 pos, int score, Transform parent)
     {
+        if(null == m_dropItem)
+        {
+            m_dropItem = InfoMgr<ItemInfo>.Instance.GetInfo((int)ItemType.ITEM_RAREENERGY);
+        }
+
+        if(null == m_dropItemEffect)
+        {
+            m_dropItemEffect = InfoMgr<ItemEffectInfo>.Instance.GetInfo(m_dropItem.effectId);
+        }
+
+        int count = UnityEngine.Random.Range(score / 3 / m_dropItemEffect.param1, score / 2 / m_dropItemEffect.param1);
         for (int i = 0; i < count; i++)
         {
             float dis = Random.Range(AppConst.DropItemRangeParam1, AppConst.DropItemRangeParam2);
@@ -237,16 +249,11 @@ public class ItemDropMgr : Singleton<ItemDropMgr>
             {
                 DropItemInfo dropItem = Util.AddComponent<DropItemInfo>(go);
                 dropItem.IsLock = true;
-                //Debug.LogError(dropItem.ItemId);
                 if (dropItem.ItemId == 0)
                 {
                     dropItem.ItemId = Util.GetDropRareIndex();
                 }
                 dropItem.InfoId = (int)ItemType.ITEM_RAREENERGY;
-                //if(TSCData.Instance.RareEnergyDic.ContainsKey(dropItem.ItemId))
-                //{
-                //    Debug.LogError("RareEnergyDic.Count:"+ TSCData.Instance.RareEnergyDic.Count);
-                //}
                 TSCData.Instance.RareEnergyDic[dropItem.ItemId] = dropItem;
                 dropItem.Cache.DOMove(v, 0.5f).SetEase(Ease.Linear).OnComplete(() =>
                 {
