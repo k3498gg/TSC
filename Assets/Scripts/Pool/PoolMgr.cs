@@ -133,7 +133,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
             SpawnPool pool = PoolManager.Pools[poolName];
             while (pool._spawned.Count > 0)
             {
-                pool._spawned[0].parent = t;
+                pool._spawned[0].SetParent(t);
                 pool.Despawn(pool._spawned[0]);
             }
             //foreach(Transform inst in pool._spawned)
@@ -161,7 +161,8 @@ public class PoolMgr : UnitySingleton<PoolMgr>
             if (pool.IsSpawned(inst))
             {
                 pool.Despawn(inst);
-                inst.parent = pool.group;
+                //inst.parent = pool.group;
+                inst.SetParent(pool.group);
             }
         }
     }
@@ -169,6 +170,7 @@ public class PoolMgr : UnitySingleton<PoolMgr>
     //按顺序回收资源
     public void DespawnerAll()
     {
+        Despawner(ResourceType.RESOURCE_UI);
         Despawner(ResourceType.RESOURCE_PARTICLE);
         Despawner(ResourceType.RESOURCE_ANIMATOR);
         Despawner(ResourceType.RESOURCE_OBSTACLE);

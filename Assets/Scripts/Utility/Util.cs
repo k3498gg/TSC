@@ -4,6 +4,7 @@ using UnityEngine;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System;
+using UnityEngine.UI;
 
 public class Util
 {
@@ -96,6 +97,17 @@ public class Util
         }
     }
 
+    public static void SetEnable(MaskableGraphic graphic,bool enable)
+    {
+        if(null != graphic)
+        {
+            if(graphic.enabled != enable)
+            {
+                graphic.enabled = enable;
+            }
+        }
+    }
+
     public static T AddComponent<T>(GameObject go) where T : Component
     {
         if (null != go)
@@ -145,11 +157,14 @@ public class Util
 
     public static bool PtInRectArea(Vector3 self, Transform target, float width,float height)
     {
-        Vector3 dir = new Vector3(self.x, 0, self.z) - new Vector3(target.position.x, 0, target.position.z) ;
         Vector3 right = target.right;
         right = new Vector3(right.x, 0, right.z);
         Vector3 forward = target.forward;
         forward = new Vector3(forward.x, 0, forward.z);
+        Vector3 dir = new Vector3(self.x, 0, self.z) - new Vector3(target.position.x, 0, target.position.z);
+       
+        //float angle = Vector3.Angle(right, dir);
+        //Debug.LogWarning( Mathf.Cos(angle) * dir.magnitude +"　　　"+ Vector3.Dot(dir, right)　　+"  "+ dir.magnitude);
         if (Mathf.Abs(Vector3.Dot(dir, right)) < width * 0.5f)
         {
             if (Mathf.Abs(Vector3.Dot(dir, forward)) < height * 0.5f)

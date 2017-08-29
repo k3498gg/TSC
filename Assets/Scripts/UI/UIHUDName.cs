@@ -15,6 +15,19 @@ public class UIHUDName : MonoBehaviour
     private Text m_Name;
     private bool init = false;
 
+    public Transform Cache
+    {
+        get
+        {
+            return cache;
+        }
+
+        set
+        {
+            cache = value;
+        }
+    }
+
     //private void Start()
     //{
     //    Init();
@@ -27,9 +40,9 @@ public class UIHUDName : MonoBehaviour
             return;
         }
         init = true;
-        cache = transform;
-        m_imageGo = cache.Find("Image").gameObject;
-        m_nameGo = cache.Find("Text").gameObject;
+        Cache = transform;
+        m_imageGo = Cache.Find("Image").gameObject;
+        m_nameGo = Cache.Find("Text").gameObject;
         m_Name = m_nameGo.GetComponent<Text>();
         m_Image = m_imageGo.GetComponent<Image>();
         m_camera = GameMgr.Instance.CameraController.Camera;
@@ -64,7 +77,7 @@ public class UIHUDName : MonoBehaviour
     }
 
 
-    private void Update()
+    private void LateUpdate()
     {
         if (null == m_target)
         {
@@ -86,16 +99,16 @@ public class UIHUDName : MonoBehaviour
 
         if (isVisible)
         {
-            Util.SetActive(m_imageGo, true);
-            Util.SetActive(m_nameGo, true);
+            Util.SetEnable(m_Image, true);
+            Util.SetEnable(m_Name, true);
             pos = m_UICamera.ViewportToWorldPoint(pos);
             pos.z = 0;
-            cache.position = pos + m_offset;
+            Cache.position = pos + m_offset;
         }
         else
         {
-            Util.SetActive(m_imageGo, false);
-            Util.SetActive(m_nameGo, false);
+            Util.SetEnable(m_Image, false);
+            Util.SetEnable(m_Name, false);
         }
     }
 }

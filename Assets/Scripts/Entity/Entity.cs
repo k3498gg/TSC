@@ -37,6 +37,9 @@ public class Entity : IEntity
 
     public string protectTimerID = string.Empty;
 
+    private UIHUDName m_hudName;
+
+
     public CharacterController CharacController
     {
         get
@@ -167,7 +170,6 @@ public class Entity : IEntity
 
         set
         {
-            Debug.LogWarning("value: "+value);
             m_state = value;
         }
     }
@@ -241,6 +243,19 @@ public class Entity : IEntity
         }
     }
 
+    public UIHUDName HudName
+    {
+        get
+        {
+            return m_hudName;
+        }
+
+        set
+        {
+            m_hudName = value;
+        }
+    }
+
     //public bool IsWalking
     //{
     //    get
@@ -261,12 +276,12 @@ public class Entity : IEntity
         init = true;
     }
 
-    GameObject SpawnerGO(int heroId, Vector3 v)
-    {
-        HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, v, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
-        return go;
-    }
+    //GameObject SpawnerGO(int heroId, Vector3 v)
+    //{
+    //    HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
+    //    GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, v, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
+    //    return go;
+    //}
 
     void ChangeOccp(OccpType occp, int heroId)
     {
@@ -292,7 +307,7 @@ public class Entity : IEntity
         OccpType occp = Util.GetNextOccp(occupation);
         int id = Util.GetHeroIdByOccp(occp);
         ChangeOccp(occp, id);
-        CalculateScore();
+        UpdateModelScale();
     }
 
 
@@ -452,7 +467,28 @@ public class Entity : IEntity
         EndCurrentStateToOtherState(RoleStateID.Idle);
         Vector3 location = GameMgr.Instance.RandomLocation();
         CacheModel.position = location;
-        UIHudManager.Instance.SpawnerHUD("123455",CacheModel);
+        CreateHUDName();
+    }
+
+    void DespawnerHUDName()
+    {
+        if (null != HudName)
+        {
+            UIHudManager.Instance.Despawner(HudName.Cache);
+            HudName.SetTarget(null);
+            HudName = null;
+        }
+    }
+
+    void CreateHUDName()
+    {
+        DespawnerHUDName();
+        GameObject go = UIHudManager.Instance.SpawnerHUD();
+        HudName = Util.AddComponent<UIHUDName>(go);
+        HudName.Init();
+        HudName.SetTarget(CacheModel);
+        HudName.SetName("Entity_"+ Attribute.Level);
+        HudName.Cache.localScale = Vector3.one;
     }
 
     void ResetAttribute()
@@ -471,14 +507,10 @@ public class Entity : IEntity
     {
         if (null != RoleModel)
         {
-            int lev = GetCurrentLevel();
-            if (Attribute.Level != lev)
-            {
-                Attribute.Level = lev;
-                LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(lev);
-                RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
-                CharacController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
-            }
+            Attribute.Level = GetCurrentLevel();
+            LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
+            RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
+            CharacController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
         }
     }
 
@@ -693,6 +725,7 @@ public class Entity : IEntity
         Attribute.Hp = 0;
         UpdateCharacControllerActive(false);
         ArpgAnimatContorller.Die = true;
+        DespawnerHUDName();
         //发送事件显示UI界面
         EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead(true));
     }
@@ -709,6 +742,7 @@ public class Entity : IEntity
             EndCurrentStateToOtherState(RoleStateID.Idle);
             Vector3 location = GameMgr.Instance.RandomLocation();
             CacheModel.position = location;
+            CreateHUDName();
         }
     }
 

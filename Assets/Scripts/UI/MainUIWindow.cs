@@ -124,6 +124,8 @@ public class MainUIWindow : UIBaseWindow
         {
             if(evt.IsDead)
             {
+                EffType = EffectType.NONE;
+                Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
                 m_UIDead.ShowDeadUI();
             }
             else

@@ -23,15 +23,30 @@ public class UIHudManager : UnitySingleton<UIHudManager>
         }
     }
 
-    public void SpawnerHUD(string entityName,Transform follow)
+    public GameObject SpawnerHUD()
     {
-        GameObject go = ResourcesMgr.Instance.Spawner("Head", ResourceType.RESOURCE_UI, Cache);
-        UIHUDName hudName = Util.AddComponent<UIHUDName>(go);
-        if (null != hudName)
+        return  ResourcesMgr.Instance.Spawner(AppConst.HUD_Prefab, ResourceType.RESOURCE_UI, Cache);
+    }
+
+    //public UIHUDName SpawnerHUD(string entityName,Transform follow)
+    //{
+    //    GameObject go = ResourcesMgr.Instance.Spawner(AppConst.HUD_Prefab, ResourceType.RESOURCE_UI, Cache);
+    //    UIHUDName hudName = Util.AddComponent<UIHUDName>(go);
+    //    if (null != hudName)
+    //    {
+    //        hudName.Init();
+    //        hudName.SetTarget(follow);
+    //        hudName.SetName(entityName);
+    //    }
+    //    return hudName;
+    //}
+
+    public void Despawner(Transform inst)
+    {
+        if(null != inst)
         {
-            hudName.Init();
-            hudName.SetTarget(follow);
-            hudName.SetName(entityName);
+            ResourcesMgr.Instance.Despawner(ResourceType.RESOURCE_UI, inst);
         }
     }
+
 }

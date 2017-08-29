@@ -67,6 +67,7 @@ public class UIDead : MonoBehaviour
         cache.localScale = Vector3.one;
         Timer.TimerData data = Timer.Instance.AddTimer(1, AppConst.RebornTime, true, Handler);
         TimerDataId = data.ID;
+        //GameMgr.Instance.MainEntity.IsRecoverEnergy = true;
     }
 
     void RemoveReliveHandler()
@@ -80,6 +81,7 @@ public class UIDead : MonoBehaviour
 
     void BackToMain(GameObject go)
     {
+        GameMgr.Instance.StopAllCoroutines();
         GameMgr.Instance.IsEnterGame = false;
         Timer.Instance.Clear();
         TSCData.Instance.Clear();

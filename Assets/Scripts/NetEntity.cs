@@ -14,6 +14,8 @@ public class NetEntity : IEntity
     private Transform roleModel;
     //当前节点模型Entity
     private Transform cacheModel;
+    //HUD
+    private UIHUDName m_hudName;
 
     private SkillInfo skill1;
     private EffectInfo effect1;
@@ -247,6 +249,18 @@ public class NetEntity : IEntity
         InitEntity(oc, Util.GetHeroIdByOccp(oc));
         EndDeadState();
         ResetAttribute();
+        CreateHUDName();
+    }
+
+    void CreateHUDName()
+    {
+        DespawnerHUDName();
+        GameObject go = UIHudManager.Instance.SpawnerHUD();
+        HudName = Util.AddComponent<UIHUDName>(go);
+        HudName.Init();
+        HudName.SetTarget(CacheModel);
+        HudName.SetName("NetEntity");
+        HudName.Cache.localScale = Vector3.one;
     }
 
     void ResetAttribute()
@@ -574,6 +588,7 @@ public class NetEntity : IEntity
             OccpType occp = Util.GetNextOccp(Occupation);
             int id = Util.GetHeroIdByOccp(occp);
             ChangeOccp(occp, id);
+            UpdateModelScale();
             EndCurrentStateToOtherState(StateID.Idle);
         }
     }
@@ -646,6 +661,17 @@ public class NetEntity : IEntity
         Attribute.Hp = 0;
         ArpgAnimatContorller.Die = true;
         Timer.Instance.AddTimer(2, 1, true, RemoveBody);
+        DespawnerHUDName();
+    }
+
+    void DespawnerHUDName()
+    {
+        if (null != HudName)
+        {
+            UIHudManager.Instance.Despawner(HudName.Cache);
+            HudName.SetTarget(null);
+            HudName = null;
+        }
     }
 
     public void Relive()
@@ -656,6 +682,7 @@ public class NetEntity : IEntity
         CalculateScore();
         ArpgAnimatContorller.Reset();
         EndCurrentStateToOtherState(StateID.Idle);
+        CreateHUDName();
     }
 
     void CalculateScore()
@@ -674,14 +701,14 @@ public class NetEntity : IEntity
     {
         if (null != RoleModel)
         {
-            int lev = GetCurrentLevel();
-            if (Attribute.Level != lev)
-            {
-                Attribute.Level = lev;
-                LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(lev);
+            //int lev = GetCurrentLevel();
+            //if (Attribute.Level != lev)
+            //{
+                Attribute.Level = GetCurrentLevel();
+                LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
                 RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
                 CharaController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
-            }
+            //}
         }
     }
 
@@ -855,7 +882,20 @@ public class NetEntity : IEntity
         }
     }
 
+    public UIHUDName HudName
+    {
+        get
+        {
+            return m_hudName;
+        }
 
+        set
+        {
+            m_hudName = value;
+        }
+    }
+
+    float distance = 0;
     //查找身邊最近的玩家
     public void ChaseTarget()
     {
@@ -869,7 +909,7 @@ public class NetEntity : IEntity
         }
 
         LockCache = null;
-        float distance = 0;
+        distance = 0;
         if (GameMgr.Instance.MainEntity.IsAlive)
         {
             if (!GameMgr.Instance.MainEntity.IsProtect())

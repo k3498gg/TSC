@@ -394,24 +394,23 @@ public class GameMgr : MonoBehaviour
         MapInfo map = TSCData.Instance.GetCurrentMapInfo(MapId);
         if (null == map)
         {
-            return new Vector3(1, 0, 1);
+            return Vector3.one;
         }
         float width = map.Width;
         float height = map.Height;
         Vector3 v = new Vector3(Random.Range(1 - width, width - 1), 0, Random.Range(1 - height, height - 1));
-        while (true)
+        //while (true)
+        //{
+        foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
         {
-            foreach (KeyValuePair<int, ObstacleEntity> kv in TSCData.Instance.ObstacleDic)
+            if (Util.PtInRectArea(v, kv.Value.transform, kv.Value.Width + 0.5f, kv.Value.Height + 0.5f))
             {
-                if (Util.PtInRectArea(v, kv.Value.transform,  kv.Value.Width + 0.5f, kv.Value.Height + 0.5f))
-                {
-                    //Debug.LogError(v + " " + kv.Value.Width + "  " + kv.Value.Height);
-                    //v = new Vector3(Random.Range(1 - width, width - 1), 0, Random.Range(1 - height, height - 1));
-                    return RandomLocation();
-                }
-                return v;
+                return RandomLocation();
             }
+            return v;
         }
+        return v;
+        //}
     }
 
     #region 资源模型加载
@@ -421,9 +420,13 @@ public class GameMgr : MonoBehaviour
         MainEntity.CreateEntity();
     }
 
+    public void StopCoroutines()
+    {
+        StopAllCoroutines();
+    }
+
     IEnumerator CreateNetEntity()
     {
-        yield return null;
         int count = Random.Range(AppConst.MinCount, AppConst.MaxCount);
         TSCData.Instance.EntityDic.Clear();
         for (int i = 0; i < count; i++)
@@ -432,6 +435,7 @@ public class GameMgr : MonoBehaviour
             NetEntity net = Util.AddComponent<NetEntity>(go);
             net.CreateNetEntity(i);
             TSCData.Instance.EntityDic[net.Id] = net;
+            yield return new WaitForSeconds(1);
         }
     }
 

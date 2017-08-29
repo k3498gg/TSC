@@ -41,6 +41,7 @@ public class AppConst
     public static string TAG_ITEM_PROTECT = "ItemProtect";
     public static string TAG_ITEM_ENERGY = "ItemEnergy";
     public static string NET_Entity = "NetEntity";
+    public static string HUD_Prefab = "Head";
     public static int DropRareIndex = 0;
 
 
@@ -137,7 +138,7 @@ public class AppConst
         ItemSugarDistance = float.Parse(sugarConstInfo.data) / AppConst.factor;
 
         ConstInfo speedConstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_SPEED);
-        BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor * 3;
+        BaseSpeed = float.Parse(speedConstInfo.data) / AppConst.factor *3;
         ConstInfo rebornconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_REBORN);
         RebornTime = int.Parse(rebornconstInfo.data) / AppConst.factor;
         ConstInfo atkDisconstInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ATK_RADIO);
