@@ -10,6 +10,8 @@ public class DontDestroyOnLoad : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);
         SceneManager.sceneLoaded += SceneLoaded;
+        Application.runInBackground = true;
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
         SetTargetFramRate();
     }
 

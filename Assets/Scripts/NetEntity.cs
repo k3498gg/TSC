@@ -16,6 +16,7 @@ public class NetEntity : IEntity
     private Transform cacheModel;
     //HUD
     private UIHUDName m_hudName;
+    private string roleName;
 
     private SkillInfo skill1;
     private EffectInfo effect1;
@@ -247,9 +248,17 @@ public class NetEntity : IEntity
         int occp = idx % 3;
         OccpType oc = (OccpType)(occp + 1);
         InitEntity(oc, Util.GetHeroIdByOccp(oc));
+        RandomName();
         EndDeadState();
         ResetAttribute();
         CreateHUDName();
+    }
+
+    void RandomName()
+    {
+        int idx = Random.Range(0, InfoMgr<NameInfo>.Instance.Dict.Count);
+        NameInfo info = InfoMgr<NameInfo>.Instance.GetInfo(idx);
+        RoleName = info.name;
     }
 
     void CreateHUDName()
@@ -259,7 +268,7 @@ public class NetEntity : IEntity
         HudName = Util.AddComponent<UIHUDName>(go);
         HudName.Init();
         HudName.SetTarget(CacheModel);
-        HudName.SetName("NetEntity");
+        HudName.SetName(RoleName);
         HudName.Cache.localScale = Vector3.one;
     }
 
@@ -704,10 +713,10 @@ public class NetEntity : IEntity
             //int lev = GetCurrentLevel();
             //if (Attribute.Level != lev)
             //{
-                Attribute.Level = GetCurrentLevel();
-                LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
-                RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
-                CharaController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
+            Attribute.Level = GetCurrentLevel();
+            LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
+            RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
+            CharaController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
             //}
         }
     }
@@ -895,6 +904,19 @@ public class NetEntity : IEntity
         }
     }
 
+    public string RoleName
+    {
+        get
+        {
+            return roleName;
+        }
+
+        set
+        {
+            roleName = value;
+        }
+    }
+
     float distance = 0;
     //查找身邊最近的玩家
     public void ChaseTarget()
@@ -916,7 +938,7 @@ public class NetEntity : IEntity
             {
                 if (Util.CanKillBody(Occupation, GameMgr.Instance.MainEntity.Occupation))
                 {
-                    if (Util.GetEntityLevelGap(Attribute.Level, GameMgr.Instance.MainEntity.Attribute.Level) >= AppConst.ChaseLev)
+                    if (GameMgr.Instance.MainEntity.Attribute.Level >= Attribute.Level - AppConst.ChaseLev)
                     {
                         distance = Util.GetEntityDistance(CacheModel, GameMgr.Instance.MainEntity.CacheModel);
                         if (distance <= AppConst.ChaseDis)
@@ -951,7 +973,7 @@ public class NetEntity : IEntity
                 {
                     if (Util.CanKillBody(Occupation, kv.Value.Occupation))
                     {
-                        if (Util.GetEntityLevelGap(Attribute.Level, kv.Value.Attribute.Level) >= AppConst.ChaseLev)
+                        if (kv.Value.Attribute.Level >= Attribute.Level - AppConst.ChaseLev)
                         {
                             float dis = Util.GetEntityDistance(CacheModel, kv.Value.CacheModel);
                             if (dis < AppConst.ChaseDis)

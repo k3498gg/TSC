@@ -168,6 +168,7 @@ public class GameMgr : MonoBehaviour
         Util.Init<LevelInfo>(path);
         Util.Init<ItemEffectInfo>(path);
         Util.Init<ObstacleInfo>(path);
+        Util.Init<NameInfo>(path);
 
         Util.InitMap(path + "map.bin");
 

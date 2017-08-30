@@ -23,6 +23,8 @@ public class TSCData : Singleton<TSCData>
 
     private Dictionary<int, SugarEntity> m_SugarEntityDic;
 
+    private RoleData role;
+
     public Dictionary<int, NetEntity> EntityDic
     {
         get
@@ -158,6 +160,23 @@ public class TSCData : Singleton<TSCData>
         }
     }
 
+    public RoleData Role
+    {
+        get
+        {
+            if(null == role)
+            {
+                role = new RoleData();
+            }
+            return role;
+        }
+
+        set
+        {
+            role = value;
+        }
+    }
+
     public MapInfo GetCurrentMapInfo(int mapId)
     {
         if (DicMapInfo.ContainsKey(mapId))
@@ -226,4 +245,24 @@ public class TSCData : Singleton<TSCData>
         }
     }
 
+}
+
+
+
+public class RoleData
+{
+    private string name;
+
+    public string Name
+    {
+        get
+        {
+            return name;
+        }
+
+        set
+        {
+            name = value;
+        }
+    }
 }

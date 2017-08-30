@@ -487,7 +487,7 @@ public class Entity : IEntity
         HudName = Util.AddComponent<UIHUDName>(go);
         HudName.Init();
         HudName.SetTarget(CacheModel);
-        HudName.SetName("Entity_"+ Attribute.Level);
+        HudName.SetName(TSCData.Instance.Role.Name);
         HudName.Cache.localScale = Vector3.one;
     }
 

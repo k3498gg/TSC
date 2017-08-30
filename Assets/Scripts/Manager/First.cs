@@ -54,6 +54,7 @@ public class First : UIBaseWindow
                 }
                 else
                 {
+                    TSCData.Instance.Role.Name = name;
                     SceneManager.LoadSceneAsync(2);
                 }
             }
