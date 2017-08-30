@@ -177,9 +177,9 @@ public class Timer : Singleton<Timer>
         Delete(data);
     }
 
-    public void Update(float deltaTime)
+    public void Update(float deltaTime,float ingoreTime)
     {
-        float ingoreTime = GetIngoreTime();
+        //float ingoreTime = GetIngoreTime();
         for (int i = 0; i < mList.Count; i++)
         {
             if (null == mList[i])

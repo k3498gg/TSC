@@ -234,7 +234,7 @@ public class RoleCrashState : RoleFSMState
     {
         if(null != entity)
         {
-            entity.CharacController.SimpleMove(-entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed);
+                entity.CharacController.SimpleMove(entity.HitDir * Time.deltaTime * entity.Attribute.Speed);
         }
     }
 

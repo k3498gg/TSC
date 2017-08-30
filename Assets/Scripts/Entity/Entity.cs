@@ -21,6 +21,8 @@ public class Entity : IEntity
     //当前节点模型Entity
     private Transform cacheModel;
 
+    private Vector3 hitDir ;
+
     private bool isRecoverEnergy = false;
 
     private ARPGAnimatorController m_arpgAnimatContorller;
@@ -253,6 +255,19 @@ public class Entity : IEntity
         set
         {
             m_hudName = value;
+        }
+    }
+
+    public Vector3 HitDir
+    {
+        get
+        {
+            return hitDir;
+        }
+
+        set
+        {
+            hitDir = value;
         }
     }
 
@@ -885,6 +900,7 @@ public class Entity : IEntity
         {
             if (IsUsingSkill())
             {
+                HitDir = CacheModel.forward * -1;
                 EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
             }
         }
@@ -906,6 +922,7 @@ public class Entity : IEntity
                     {
                         if (entity.IsUsingSkill())
                         {
+                            HitDir = CacheModel.TransformVector(entity.CacheModel.position - CacheModel.position);
                             EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                         }
                         else
@@ -925,6 +942,7 @@ public class Entity : IEntity
                     {
                         if (IsUsingSkill())
                         {
+                            entity.HitDir = entity.CacheModel.TransformVector( CacheModel.position - entity.CacheModel.position);
                             entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else
@@ -941,12 +959,14 @@ public class Entity : IEntity
                 {
                     if (entity.IsUsingSkill())
                     {
+                        HitDir = CacheModel.TransformVector(entity.CacheModel.position - CacheModel.position);
                         EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                     }
                     else
                     {
                         if (IsUsingSkill())
                         {
+                            entity.HitDir = entity.CacheModel.TransformVector(CacheModel.position - entity.CacheModel.position);
                             entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else

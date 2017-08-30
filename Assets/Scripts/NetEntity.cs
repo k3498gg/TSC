@@ -38,6 +38,8 @@ public class NetEntity : IEntity
 
     private int nameIdx = -1;
 
+    private Vector3 m_hitDir;
+
 
     public EntityAttribute Attribute
     {
@@ -429,7 +431,6 @@ public class NetEntity : IEntity
     //等级变化
     int GetCurrentLevel()
     {
-        //LevelInfo info = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
         Dictionary<int, LevelInfo> level = InfoMgr<LevelInfo>.Instance.Dict;
         int lev = 0;
         foreach (KeyValuePair<int, LevelInfo> kv in level)
@@ -758,7 +759,6 @@ public class NetEntity : IEntity
         {
             return;
         }
-
         if (NpcControl.Fsm.CurrentStateID != id)
         {
             switch (id)
@@ -914,6 +914,19 @@ public class NetEntity : IEntity
         set
         {
             roleName = value;
+        }
+    }
+
+    public Vector3 HitDir
+    {
+        get
+        {
+            return m_hitDir;
+        }
+
+        set
+        {
+            m_hitDir = value;
         }
     }
 
@@ -1086,6 +1099,7 @@ public class NetEntity : IEntity
                     {
                         if (entity.IsUsingSkill())
                         {
+                            HitDir = CacheModel.TransformVector(entity.CacheModel.position - CacheModel.position);
                             EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else
@@ -1106,6 +1120,7 @@ public class NetEntity : IEntity
                     {
                         if (IsUsingSkill())
                         {
+                            entity.HitDir = entity.CacheModel.TransformVector(CacheModel.position - entity.CacheModel.position);
                             entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else
@@ -1122,6 +1137,7 @@ public class NetEntity : IEntity
                 {
                     if (entity.IsUsingSkill())
                     {
+                        HitDir = entity.CacheModel.TransformVector(entity.CacheModel.position - CacheModel.position);
                         EndCurrentStateToOtherState(StateID.CrashPlayer);
                     }
                     else
@@ -1131,6 +1147,7 @@ public class NetEntity : IEntity
 
                     if (IsUsingSkill())
                     {
+                        entity.HitDir = entity.CacheModel.TransformVector(CacheModel.position - entity.CacheModel.position);
                         entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                     }
                     else
@@ -1142,8 +1159,8 @@ public class NetEntity : IEntity
         }
         else if (temp.CompareTag(AppConst.TAG_PLAYER))
         {
-            Vector3 dir = CacheModel.position - temp.position;
-            UpdateDir(dir);
+            //Vector3 dir = CacheModel.position - temp.position;
+            //UpdateDir(dir);
             if (!GameMgr.Instance.MainEntity.IsAlive)
             {
                 return;
@@ -1157,6 +1174,7 @@ public class NetEntity : IEntity
                 {
                     if (GameMgr.Instance.MainEntity.IsUsingSkill())
                     {
+                        HitDir = CacheModel.TransformVector(GameMgr.Instance.MainEntity.CacheModel.position - CacheModel.position);
                         EndCurrentStateToOtherState(StateID.CrashPlayer);
                     }
                     else
@@ -1177,6 +1195,7 @@ public class NetEntity : IEntity
                 {
                     if (IsUsingSkill())
                     {
+                        GameMgr.Instance.MainEntity.HitDir = GameMgr.Instance.MainEntity.CacheModel.TransformVector(CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position);
                         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                     }
                     else
@@ -1193,19 +1212,21 @@ public class NetEntity : IEntity
             {
                 if (GameMgr.Instance.MainEntity.IsUsingSkill())
                 {
+                    HitDir = CacheModel.TransformVector(GameMgr.Instance.MainEntity.CacheModel.position - CacheModel.position);
                     EndCurrentStateToOtherState(StateID.CrashPlayer);
                 }
                 else
                 {
                     if (IsUsingSkill())
                     {
+                        GameMgr.Instance.MainEntity.HitDir = GameMgr.Instance.MainEntity.CacheModel.TransformVector(CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position);
                         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                     }
                     else
                     {
                         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
                     }
-                    EndCurrentStateToOtherState(StateID.Walk);
+                    //EndCurrentStateToOtherState(StateID.Walk);
                 }
             }
         }

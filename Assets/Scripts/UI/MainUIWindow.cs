@@ -210,6 +210,10 @@ public class MainUIWindow : UIBaseWindow
 
     private void UpEvent(float x, float y)
     {
+        if (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill || GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.CrashPlayer)
+        {
+            return;
+        }
         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
     }
 
@@ -308,10 +312,6 @@ public class MainUIWindow : UIBaseWindow
         {
             case EffectType.ACCELERATE:
                 GameMgr.Instance.MainEntity.IsRecoverEnergy = false;
-                //if (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Walk)
-                //{
-                //    GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
-                //}
                 break;
             case EffectType.WALKINSTANT:
                 GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Skill);

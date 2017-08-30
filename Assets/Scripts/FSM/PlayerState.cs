@@ -370,7 +370,8 @@ public class PlayerCrashState : FSMState
     {
         if (null != entity)
         {
-            entity.CharaController.SimpleMove(-entity.CacheModel.forward * Time.deltaTime * entity.Attribute.Speed);
+            Debug.LogError(entity.HitDir);
+            entity.CharaController.SimpleMove(entity.CacheModel.TransformVector(  entity.HitDir) * Time.deltaTime * entity.Attribute.Speed);
         }
     }
 
@@ -384,7 +385,7 @@ public class PlayerCrashState : FSMState
                 entity.EndCurrentStateToOtherState(StateID.Walk);
                 return;
             }
-            //Crash(entity);
+            Crash(entity);
         }
     }
 
