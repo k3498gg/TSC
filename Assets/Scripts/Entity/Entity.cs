@@ -39,8 +39,6 @@ public class Entity : IEntity
 
     public string protectTimerID = string.Empty;
 
-    private UIHUDName m_hudName;
-
 
     public CharacterController CharacController
     {
@@ -245,18 +243,7 @@ public class Entity : IEntity
         }
     }
 
-    public UIHUDName HudName
-    {
-        get
-        {
-            return m_hudName;
-        }
 
-        set
-        {
-            m_hudName = value;
-        }
-    }
 
     public Vector3 HitDir
     {
@@ -270,6 +257,21 @@ public class Entity : IEntity
             hitDir = value;
         }
     }
+
+
+
+    //public string RoleName
+    //{
+    //    get
+    //    {
+    //        return roleName;
+    //    }
+
+    //    set
+    //    {
+    //        roleName = value;
+    //    }
+    //}
 
     //public bool IsWalking
     //{
@@ -922,7 +924,7 @@ public class Entity : IEntity
                     {
                         if (entity.IsUsingSkill())
                         {
-                            HitDir = CacheModel.TransformVector(entity.CacheModel.position - CacheModel.position);
+                            HitDir =  CacheModel.position - entity.CacheModel.position ;
                             EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                         }
                         else
@@ -932,6 +934,8 @@ public class Entity : IEntity
                     }
                     else
                     {
+                        BeKilled();
+                        entity.KillBody();
                         EndCurrentStateToOtherState(RoleStateID.Dead);
                     }
                 }
@@ -942,7 +946,7 @@ public class Entity : IEntity
                     {
                         if (IsUsingSkill())
                         {
-                            entity.HitDir = entity.CacheModel.TransformVector( CacheModel.position - entity.CacheModel.position);
+                            entity.HitDir =  entity.CacheModel.position - CacheModel.position ;
                             entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else
@@ -952,6 +956,8 @@ public class Entity : IEntity
                     }
                     else
                     {
+                        entity.BeKilled();
+                        KillBody();
                         entity.EndCurrentStateToOtherState(StateID.Dead);
                     }
                 }
@@ -959,14 +965,14 @@ public class Entity : IEntity
                 {
                     if (entity.IsUsingSkill())
                     {
-                        HitDir = CacheModel.TransformVector(entity.CacheModel.position - CacheModel.position);
+                        HitDir = CacheModel.position - entity.CacheModel.position;
                         EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                     }
                     else
                     {
                         if (IsUsingSkill())
                         {
-                            entity.HitDir = entity.CacheModel.TransformVector(CacheModel.position - entity.CacheModel.position);
+                            entity.HitDir = entity.CacheModel.position - CacheModel.position;
                             entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else
@@ -987,6 +993,8 @@ public class Entity : IEntity
         ArpgAnimatContorller.animator = null;
         RoleModel = null;
         isInitAttr = false;
+        KillCount = 0;
+        BeKillCount = 0;
     }
 
 }

@@ -9,6 +9,8 @@ public class TSCData : Singleton<TSCData>
 
     private Dictionary<int, NetEntity> m_EntityDic; //实体字典存储中心
 
+    private Dictionary<int, EntityInfo> m_EntityInfoDic;
+
     private Dictionary<int, MapInfo> m_dicMapInfo; //地圖道具佈局
 
     private Dictionary<int, DropItemInfo> m_DropItemDic; //掉落道具
@@ -164,7 +166,7 @@ public class TSCData : Singleton<TSCData>
     {
         get
         {
-            if(null == role)
+            if (null == role)
             {
                 role = new RoleData();
             }
@@ -174,6 +176,23 @@ public class TSCData : Singleton<TSCData>
         set
         {
             role = value;
+        }
+    }
+
+    public Dictionary<int, EntityInfo> EntityInfoDic
+    {
+        get
+        {
+            if (null == m_EntityInfoDic)
+            {
+                m_EntityInfoDic = new Dictionary<int, EntityInfo>();
+            }
+            return m_EntityInfoDic;
+        }
+
+        set
+        {
+            m_EntityInfoDic = value;
         }
     }
 
@@ -213,6 +232,7 @@ public class TSCData : Singleton<TSCData>
             kv.Value.Clear();
         }
         EntityDic.Clear();
+        EntityInfoDic.Clear();
         ObstacleDic.Clear();
         DropItemDic.Clear();
         BackItemMapDic.Clear();

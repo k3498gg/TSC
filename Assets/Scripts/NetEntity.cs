@@ -15,7 +15,7 @@ public class NetEntity : IEntity
     //当前节点模型Entity
     private Transform cacheModel;
     //HUD
-    private UIHUDName m_hudName;
+    //private UIHUDName m_hudName;
     private string roleName;
 
     private SkillInfo skill1;
@@ -254,12 +254,24 @@ public class NetEntity : IEntity
         EndDeadState();
         ResetAttribute();
         CreateHUDName();
+        CreateEntityInfo();
+    }
+
+    void CreateEntityInfo()
+    {
+        EntityInfo info = new EntityInfo();
+        info.Id = Id;
+        info.NameIdx = NameIdx;
+        info.Socre = Attribute.Score;
+        info.Killcount = KillCount;
+        TSCData.Instance.EntityInfoDic[Id] = info;
     }
 
     void RandomName()
     {
         int idx = Random.Range(0, InfoMgr<NameInfo>.Instance.Dict.Count);
         NameInfo info = InfoMgr<NameInfo>.Instance.GetInfo(idx);
+        NameIdx = idx;
         RoleName = info.name;
     }
 
@@ -731,8 +743,15 @@ public class NetEntity : IEntity
         {
             Attribute.CurPhy = Attribute.MaxPhy;
         }
-        //Attribute.Level = GetCurrentLevel();
+        
         UpdateModelScale();
+
+        if(TSCData.Instance.EntityInfoDic.ContainsKey(Id))
+        {
+            TSCData.Instance.EntityInfoDic[Id].Socre = Attribute.Score;
+            TSCData.Instance.EntityInfoDic[Id].Killcount = KillCount;
+            TSCData.Instance.EntityInfoDic[Id].BeKillCount = BeKillCount;
+        }
     }
 
     void RemoveBody(Timer.TimerData data)
@@ -891,18 +910,18 @@ public class NetEntity : IEntity
         }
     }
 
-    public UIHUDName HudName
-    {
-        get
-        {
-            return m_hudName;
-        }
+    //public UIHUDName HudName
+    //{
+    //    get
+    //    {
+    //        return m_hudName;
+    //    }
 
-        set
-        {
-            m_hudName = value;
-        }
-    }
+    //    set
+    //    {
+    //        m_hudName = value;
+    //    }
+    //}
 
     public string RoleName
     {
@@ -1109,6 +1128,8 @@ public class NetEntity : IEntity
                     }
                     else
                     {
+                        BeKilled();
+                        entity.KillBody();
                         EndCurrentStateToOtherState(StateID.Dead);
                     }
                 }
@@ -1130,6 +1151,8 @@ public class NetEntity : IEntity
                     }
                     else
                     {
+                        entity.BeKilled();
+                        KillBody();
                         entity.EndCurrentStateToOtherState(StateID.Dead);
                     }
                 }
@@ -1174,7 +1197,7 @@ public class NetEntity : IEntity
                 {
                     if (GameMgr.Instance.MainEntity.IsUsingSkill())
                     {
-                        HitDir = CacheModel.TransformVector(GameMgr.Instance.MainEntity.CacheModel.position - CacheModel.position);
+                        HitDir = CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position;
                         EndCurrentStateToOtherState(StateID.CrashPlayer);
                     }
                     else
@@ -1184,6 +1207,8 @@ public class NetEntity : IEntity
                 }
                 else
                 {
+                    BeKilled();
+                    GameMgr.Instance.MainEntity.KillBody();
                     EndCurrentStateToOtherState(StateID.Dead);
                 }
             }
@@ -1195,7 +1220,7 @@ public class NetEntity : IEntity
                 {
                     if (IsUsingSkill())
                     {
-                        GameMgr.Instance.MainEntity.HitDir = GameMgr.Instance.MainEntity.CacheModel.TransformVector(CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position);
+                        GameMgr.Instance.MainEntity.HitDir = GameMgr.Instance.MainEntity.CacheModel.position - CacheModel.position;
                         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                     }
                     else
@@ -1205,6 +1230,8 @@ public class NetEntity : IEntity
                 }
                 else
                 {
+                    GameMgr.Instance.MainEntity.BeKilled();
+                    KillBody();
                     GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Dead);
                 }
             }
@@ -1212,14 +1239,14 @@ public class NetEntity : IEntity
             {
                 if (GameMgr.Instance.MainEntity.IsUsingSkill())
                 {
-                    HitDir = CacheModel.TransformVector(GameMgr.Instance.MainEntity.CacheModel.position - CacheModel.position);
+                    HitDir = (CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position);
                     EndCurrentStateToOtherState(StateID.CrashPlayer);
                 }
                 else
                 {
                     if (IsUsingSkill())
                     {
-                        GameMgr.Instance.MainEntity.HitDir = GameMgr.Instance.MainEntity.CacheModel.TransformVector(CacheModel.position - GameMgr.Instance.MainEntity.CacheModel.position);
+                        GameMgr.Instance.MainEntity.HitDir = GameMgr.Instance.MainEntity.CacheModel.position - CacheModel.position;
                         GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                     }
                     else
@@ -1236,5 +1263,7 @@ public class NetEntity : IEntity
     {
         RoleModel = null;
         ArpgAnimatContorller.animator = null;
+        KillCount = 0;
+        BeKillCount = 0;
     }
 }

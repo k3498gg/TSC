@@ -184,6 +184,7 @@ public class GameMgr : MonoBehaviour
 
     public void BeginGame()
     {
+        TSCData.Instance.Clear();
         MapId = 2;
         InitMap();
         CreateEntity();

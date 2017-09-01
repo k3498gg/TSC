@@ -17,6 +17,9 @@ public class MainUIWindow : UIBaseWindow
     private bool isInit = false;
     private EffectType m_EffectType = EffectType.NONE;
     private UIDead m_UIDead;
+    private float updateRankInterval = 1.5f;
+    private UIRanking m_ranking;
+
 
     public EffectType EffType
     {
@@ -51,6 +54,8 @@ public class MainUIWindow : UIBaseWindow
         Transform cache = transform;
         m_Joystick = cache.Find("Joystick").GetComponent<TCKJoystick>();
         m_UIDead = cache.Find("Dead").GetComponent<UIDead>();
+        m_ranking = cache.Find("ScrollView").GetComponent<UIRanking>();
+
 
         m_skills = new Transform[2];
         m_btnImage = new Image[2];
@@ -122,7 +127,7 @@ public class MainUIWindow : UIBaseWindow
     {
         if (null != m_UIDead)
         {
-            if(evt.IsDead)
+            if (evt.IsDead)
             {
                 EffType = EffectType.NONE;
                 Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
@@ -194,10 +199,11 @@ public class MainUIWindow : UIBaseWindow
         GameMgr.Instance.MainEntity.UpdateRotation(angle);
         if (EffType == EffectType.ACCELERATE)
         {
-            if(GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
+            if (GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
             {
                 GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Acct);
-            }else
+            }
+            else
             {
                 GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
             }
@@ -229,6 +235,12 @@ public class MainUIWindow : UIBaseWindow
             return;
         }
 
+        RecoverEnergy();
+        UpdateRanking(Time.unscaledDeltaTime);
+    }
+
+    void RecoverEnergy()
+    {
         if (GameMgr.Instance.MainEntity.IsRecoverEnergy)
         {
             if (GameMgr.Instance.MainEntity.Attribute.CurPhy < GameMgr.Instance.MainEntity.Attribute.MaxPhy)
@@ -246,10 +258,10 @@ public class MainUIWindow : UIBaseWindow
         {
             if (EffType == EffectType.ACCELERATE)
             {
-                if(GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
+                if (GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
                 {
                     GameMgr.Instance.MainEntity.Attribute.CurPhy = GameMgr.Instance.MainEntity.Attribute.CurPhy - GameMgr.Instance.MainEntity.Attribute.CostPhySpeed * Time.deltaTime;
-                    if(GameMgr.Instance.MainEntity.Attribute.CurPhy < 0)
+                    if (GameMgr.Instance.MainEntity.Attribute.CurPhy < 0)
                     {
                         GameMgr.Instance.MainEntity.Attribute.CurPhy = 0;
                     }
@@ -260,13 +272,26 @@ public class MainUIWindow : UIBaseWindow
         }
     }
 
+    private float updatetime = 0;
+    void UpdateRanking(float deltatime)
+    {
+        updatetime += deltatime;
+        if (updatetime > updateRankInterval)
+        {
+            updatetime = 0;
+            List<EntityInfo> list = new List<EntityInfo>(TSCData.Instance.EntityInfoDic.Values);
+            list.Sort(delegate (EntityInfo info1, EntityInfo info2) { return info2.Socre.CompareTo(info1.Socre); });
+            m_ranking.SetRankInfo(list);
+        }
+    }
+
     void CancelSkill(GameObject go)
     {
         EffType = EffectType.NONE;
         int idx = System.Array.IndexOf(m_skills, go.transform);
         if (idx != -1)
         {
-            if((EffectType)(idx+1) == EffectType.ACCELERATE)
+            if ((EffectType)(idx + 1) == EffectType.ACCELERATE)
             {
                 Timer.Instance.AddTimer(1, 1, true, TimerAccelerateHandler);
             }
@@ -284,7 +309,7 @@ public class MainUIWindow : UIBaseWindow
 
     void TimerAccelerateHandler(Timer.TimerData data)
     {
-        if(EffType != EffectType.ACCELERATE)
+        if (EffType != EffectType.ACCELERATE)
         {
             GameMgr.Instance.MainEntity.IsRecoverEnergy = true;
         }

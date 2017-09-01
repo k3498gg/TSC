@@ -370,8 +370,7 @@ public class PlayerCrashState : FSMState
     {
         if (null != entity)
         {
-            Debug.LogError(entity.HitDir);
-            entity.CharaController.SimpleMove(entity.CacheModel.TransformVector(  entity.HitDir) * Time.deltaTime * entity.Attribute.Speed);
+            entity.CharaController.SimpleMove(entity.HitDir.normalized * Time.deltaTime * entity.Attribute.Speed);
         }
     }
 

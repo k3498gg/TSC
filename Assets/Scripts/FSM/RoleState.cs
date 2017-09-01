@@ -136,7 +136,7 @@ public class RoleSkillState : RoleFSMState
 
     public override void OnExit(Entity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
             entity.StopWalkInstant();
         }
@@ -144,7 +144,7 @@ public class RoleSkillState : RoleFSMState
 
     public override void OnUpdate(Entity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
             entity.SimpleMove();
         }
@@ -177,7 +177,7 @@ public class RoleSwitchState : RoleFSMState
 
     public override void OnExit(Entity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
             entity.ExitSwitchState();
         }
@@ -185,7 +185,7 @@ public class RoleSwitchState : RoleFSMState
 
     public override void OnUpdate(Entity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
             enter_time += Time.deltaTime;
             if (enter_time < m_total_time)
@@ -223,7 +223,7 @@ public class RoleCrashState : RoleFSMState
 
     public override void OnExit(Entity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
             enter_time = 0;
             entity.Attribute.Speed = entity.Attribute.BaseSpeed;
@@ -232,9 +232,9 @@ public class RoleCrashState : RoleFSMState
 
     void Crash(Entity entity)
     {
-        if(null != entity)
+        if (null != entity)
         {
-                entity.CharacController.SimpleMove(entity.HitDir * Time.deltaTime * entity.Attribute.Speed);
+            entity.CharacController.SimpleMove(entity.HitDir.normalized * Time.deltaTime * entity.Attribute.Speed);
         }
     }
 
