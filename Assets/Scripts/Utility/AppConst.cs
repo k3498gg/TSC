@@ -43,7 +43,13 @@ public class AppConst
     public static string NET_Entity = "NetEntity";
     public static string HUD_Prefab = "Head";
     public static int DropRareIndex = 0;
-
+    public static string KeyScore = "KeyScore";
+    public static string KeyKilled = "KeyKilled";
+    public static string KeyBeKilled = "KeyBeKilled";
+    public static string KeyCoin = "KeyCoin";
+    public static string ShopItem = "ShopItem";
+    public static string RoleName = "KeyRName";
+    public static string RoleSkin = "KeyRSkin";
 
 
 
@@ -51,6 +57,10 @@ public class AppConst
         {
             { WindowID.WindowID_MainUI, "MainUI" },
             { WindowID.WindowID_FirstUI, "WelcomeUI" },
+            { WindowID.WindowID_Shopping, "ShopUI" },
+            { WindowID.WindowID_Bag, "BagUI" },
+            { WindowID.WindowID_Setting, "SettingUI" },
+            { WindowID.WindowID_Confirm, "ConfirmUI" },
         };
 
     public static string AppContentPath

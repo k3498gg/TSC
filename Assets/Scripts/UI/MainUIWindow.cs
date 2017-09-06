@@ -197,6 +197,7 @@ public class MainUIWindow : UIBaseWindow
 
         float angle = Mathf.Rad2Deg * (Mathf.Atan2(x, y));
         GameMgr.Instance.MainEntity.UpdateRotation(angle);
+        GameMgr.Instance.MainEntity.IsForceDrag = true;
         if (EffType == EffectType.ACCELERATE)
         {
             if (GameMgr.Instance.MainEntity.Attribute.CurPhy > 0)
@@ -216,6 +217,7 @@ public class MainUIWindow : UIBaseWindow
 
     private void UpEvent(float x, float y)
     {
+        GameMgr.Instance.MainEntity.IsForceDrag = false;
         if (GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.Skill || GameMgr.Instance.MainEntity.RoleEntityControl.Fsm.CurrentStateID == RoleStateID.CrashPlayer)
         {
             return;

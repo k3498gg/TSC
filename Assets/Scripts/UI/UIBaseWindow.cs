@@ -9,6 +9,7 @@ public class UIBaseWindow : MonoBehaviour
     // 指向上一级界面ID(BackSequence无内容，返回上一级)
     protected WindowID preWindowID = WindowID.WindowID_Invaild;
     public WindowData windowData = null;
+    private Transform m_cache;
 
     public WindowID GetID
     {
@@ -25,6 +26,23 @@ public class UIBaseWindow : MonoBehaviour
     {
         get { return preWindowID; }
         private set { preWindowID = value; }
+    }
+
+    public Transform Cache
+    {
+        get
+        {
+            if(null == m_cache)
+            {
+                m_cache = transform;
+            }
+            return m_cache;
+        }
+
+        set
+        {
+            m_cache = value;
+        }
     }
 
     public virtual void ResetWindow()

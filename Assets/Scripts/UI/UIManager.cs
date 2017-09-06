@@ -25,10 +25,10 @@ public class UIManager : UIBaseManager
         return uiCamera;
     }
 
-    private void Start()
-    {
-        ShowWindow(WindowID.WindowID_FirstUI);
-    }
+    //private void Start()
+    //{
+    //    ShowWindow(WindowID.WindowID_FirstUI);
+    //}
 
     void Init()
     {
@@ -72,6 +72,10 @@ public class UIManager : UIBaseManager
         this.managedWindowId = 0;
         AddWindowInControl(WindowID.WindowID_FirstUI);
         AddWindowInControl(WindowID.WindowID_MainUI);
+        AddWindowInControl(WindowID.WindowID_Shopping);
+        AddWindowInControl(WindowID.WindowID_Bag);
+        AddWindowInControl(WindowID.WindowID_Setting);
+        AddWindowInControl(WindowID.WindowID_Confirm);
     }
 
     public override void ShowWindow(WindowID id)
@@ -121,7 +125,19 @@ public class UIManager : UIBaseManager
                     GameObject uiObject = (GameObject)GameObject.Instantiate(prefab);
                     Util.SetActive(uiObject, true);
                     baseWindow = uiObject.GetComponent<UIBaseWindow>();
-                    Util.AddChildToTarget(UINormalWindowRoot, baseWindow.transform);
+                    switch (baseWindow.windowData.windowType)
+                    {
+                        case UIWindowType.Normal:
+                            Util.AddChildToTarget(UINormalWindowRoot, baseWindow.Cache);
+                            break;
+                        case UIWindowType.Fixed:
+                            Util.AddChildToTarget(UIFixedWidowRoot, baseWindow.Cache);
+                            break;
+                        case UIWindowType.PopUp:
+                            Util.AddChildToTarget(UIPopUpWindowRoot, baseWindow.Cache);
+                            break;
+                    }
+
                     AllWindows[id] = baseWindow;
                 }
             }

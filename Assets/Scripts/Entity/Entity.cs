@@ -25,6 +25,8 @@ public class Entity : IEntity
 
     private bool isRecoverEnergy = false;
 
+    private bool isForceDrag = false;
+
     private ARPGAnimatorController m_arpgAnimatContorller;
 
     private int m_heroId;
@@ -244,7 +246,6 @@ public class Entity : IEntity
     }
 
 
-
     public Vector3 HitDir
     {
         get
@@ -258,6 +259,21 @@ public class Entity : IEntity
         }
     }
 
+    public bool IsForceDrag
+    {
+        get
+        {
+            return isForceDrag;
+        }
+
+        set
+        {
+            if(isForceDrag != value)
+            {
+                isForceDrag = value;
+            }
+        }
+    }
 
 
     //public string RoleName
@@ -929,7 +945,15 @@ public class Entity : IEntity
                         }
                         else
                         {
-                            EndCurrentStateToOtherState(RoleStateID.Idle);
+                            //EndCurrentStateToOtherState(RoleStateID.Idle);
+                            if (IsForceDrag)
+                            {
+                                EndCurrentStateToOtherState(RoleStateID.Walk);
+                            }
+                            else
+                            {
+                                EndCurrentStateToOtherState(RoleStateID.Idle);
+                            }
                         }
                     }
                     else
@@ -980,7 +1004,14 @@ public class Entity : IEntity
                             entity.EndCurrentStateToOtherState(StateID.Walk);
                         }
 
-                        EndCurrentStateToOtherState(RoleStateID.Idle);
+                        if(IsForceDrag)
+                        {
+                            EndCurrentStateToOtherState(RoleStateID.Walk);
+                        }
+                        else
+                        {
+                            EndCurrentStateToOtherState(RoleStateID.Idle);
+                        }
                     }
                 }
             }
@@ -990,6 +1021,7 @@ public class Entity : IEntity
 
     public void Clear()
     {
+        DespawnerHUDName();
         ArpgAnimatContorller.animator = null;
         RoleModel = null;
         isInitAttr = false;

@@ -16,8 +16,8 @@ public class UGUIEventListener : EventTrigger
     public BoolDelegate onHover;
     public BoolDelegate onPress;
     public BoolDelegate onToggleChanged;
-    public FloatDelegate onSliderChanged;
-    public FloatDelegate onScrollbarChanged;
+    //public FloatDelegate onSliderChanged;
+    //public FloatDelegate onScrollbarChanged;
     public IntDelegate onDrapDownChanged;
     public StringDelegate onInputFieldChanged;
 
@@ -63,12 +63,12 @@ public class UGUIEventListener : EventTrigger
     }
     public override void OnDrag(PointerEventData eventData)
     {
-        if (onSliderChanged != null)
-            onSliderChanged(gameObject, gameObject.GetComponent<Slider>().value);
-        if (onScrollbarChanged != null)
-            onScrollbarChanged(gameObject, gameObject.GetComponent<Scrollbar>().value);
-
+        //if (onSliderChanged != null)
+        //    onSliderChanged(gameObject, gameObject.GetComponent<Slider>().value);
+        //if (onScrollbarChanged != null)
+        //    onScrollbarChanged(gameObject, gameObject.GetComponent<Scrollbar>().value);
     }
+
     public override void OnSelect(BaseEventData eventData)
     {
         if (onDrapDownChanged != null)

@@ -81,6 +81,7 @@ public class UIDead : MonoBehaviour
 
     void BackToMain(GameObject go)
     {
+        Util.SaveHeroData();
         GameMgr.Instance.StopAllCoroutines();
         GameMgr.Instance.IsEnterGame = false;
         Timer.Instance.Clear();
@@ -91,8 +92,8 @@ public class UIDead : MonoBehaviour
         HideDeadUI();
         UIManager.Instance.ShowWindow(WindowID.WindowID_FirstUI);
         UIManager.Instance.HideWindow(WindowID.WindowID_MainUI);
+     
         SceneManager.LoadScene(1);
-        //cache.localScale = Vector3.zero;
     }
 
     void HeroRelive(GameObject go)

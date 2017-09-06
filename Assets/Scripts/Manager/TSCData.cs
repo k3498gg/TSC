@@ -25,6 +25,8 @@ public class TSCData : Singleton<TSCData>
 
     private Dictionary<int, SugarEntity> m_SugarEntityDic;
 
+    private HashSet<int> m_skinSet = new HashSet<int>();
+
     private RoleData role;
 
     public Dictionary<int, NetEntity> EntityDic
@@ -224,6 +226,24 @@ public class TSCData : Singleton<TSCData>
         return null;
     }
 
+    public void ClearSkinData()
+    {
+        m_skinSet.Clear();
+    }
+
+    public void AddSkin(int skinId)
+    {
+        if (!m_skinSet.Contains(skinId))
+        {
+            m_skinSet.Add(skinId);
+        }
+    }
+
+    public bool ContainSkin(int skinId)
+    {
+        return m_skinSet.Contains(skinId);
+    }
+
 
     public void Clear()
     {
@@ -265,8 +285,28 @@ public class TSCData : Singleton<TSCData>
         }
     }
 
-}
+    public void SaveHeroName()
+    {
+        Util.SaveHeroName(Role.Name);
+    }
 
+    public void ReadHeroName()
+    {
+        Role.Name = Util.ReadHeroName();
+    }
+
+    public void SaveHeroSkin()
+    {
+        Util.SaveHeroSkin(m_skinSet);
+    }
+
+    public void ReadHeroSkin()
+    {
+        m_skinSet.Clear();
+        m_skinSet = Util.ReadHeroSkin();
+    }
+
+}
 
 
 public class RoleData

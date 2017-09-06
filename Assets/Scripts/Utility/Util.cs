@@ -6,6 +6,10 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System;
 using UnityEngine.UI;
 
+#if UNITY_ENGIN
+aaaaa
+#endif
+
 public class Util
 {
     // 网络可用
@@ -97,11 +101,11 @@ public class Util
         }
     }
 
-    public static void SetEnable(MaskableGraphic graphic,bool enable)
+    public static void SetEnable(MaskableGraphic graphic, bool enable)
     {
-        if(null != graphic)
+        if (null != graphic)
         {
-            if(graphic.enabled != enable)
+            if (graphic.enabled != enable)
             {
                 graphic.enabled = enable;
             }
@@ -137,7 +141,7 @@ public class Util
         right = new Vector3(right.x, 0, right.z);
         Vector3 forward = target.forward;
         forward = new Vector3(forward.x, 0, forward.z);
-        Vector3 dir = new Vector3( self.position.x,0,self.position.z )- new Vector3( target.position.x,0,target.position.z);
+        Vector3 dir = new Vector3(self.position.x, 0, self.position.z) - new Vector3(target.position.x, 0, target.position.z);
         if (Mathf.Abs(Vector3.Dot(dir, right)) < width * 0.5f)
         {
             if (Mathf.Abs(Vector3.Dot(dir, forward)) < height * 0.5f)
@@ -155,14 +159,14 @@ public class Util
         return Vector2.SqrMagnitude(s_v - t_v) < radio * radio;
     }
 
-    public static bool PtInRectArea(Vector3 self, Transform target, float width,float height)
+    public static bool PtInRectArea(Vector3 self, Transform target, float width, float height)
     {
         Vector3 right = target.right;
         right = new Vector3(right.x, 0, right.z);
         Vector3 forward = target.forward;
         forward = new Vector3(forward.x, 0, forward.z);
         Vector3 dir = new Vector3(self.x, 0, self.z) - new Vector3(target.position.x, 0, target.position.z);
-       
+
         //float angle = Vector3.Angle(right, dir);
         //Debug.LogWarning( Mathf.Cos(angle) * dir.magnitude +"　　　"+ Vector3.Dot(dir, right)　　+"  "+ dir.magnitude);
         if (Mathf.Abs(Vector3.Dot(dir, right)) < width * 0.5f)
@@ -175,13 +179,13 @@ public class Util
         return false;
     }
 
-    public static int GetEntityLevelGap(int lev1,int lev2)
+    public static int GetEntityLevelGap(int lev1, int lev2)
     {
         return lev1 - lev2;
     }
 
 
-    public static float GetEntityDistance(Transform cache1,Transform cache2)
+    public static float GetEntityDistance(Transform cache1, Transform cache2)
     {
         Vector2 v1 = new Vector2(cache1.position.x, cache1.position.z);
         Vector2 v2 = new Vector2(cache2.position.x, cache2.position.z);
@@ -393,7 +397,7 @@ public class Util
         return oc;
     }
 
-    public static bool IsSameOccp(OccpType occ1,OccpType occ2)
+    public static bool IsSameOccp(OccpType occ1, OccpType occ2)
     {
         return occ1 == occ2;
     }
@@ -416,15 +420,16 @@ public class Util
         return oc;
     }
 
-    public static bool CanKillBody(OccpType type1,OccpType type2)
+    public static bool CanKillBody(OccpType type1, OccpType type2)
     {
-        if(type1 == OccpType.Occp_TIGER)
+        if (type1 == OccpType.Occp_TIGER)
         {
-            if(type2 == OccpType.Occp_CHICK)
+            if (type2 == OccpType.Occp_CHICK)
             {
                 return true;
             }
-        }else if (type1 == OccpType.Occp_STICK)
+        }
+        else if (type1 == OccpType.Occp_STICK)
         {
             if (type2 == OccpType.Occp_TIGER)
             {
@@ -462,10 +467,108 @@ public class Util
 
     public static int GetDropRareIndex()
     {
-        if(AppConst.DropRareIndex == int.MaxValue)
+        if (AppConst.DropRareIndex == int.MaxValue)
         {
             AppConst.DropRareIndex = 0;
         }
         return AppConst.DropRareIndex++;
+    }
+
+
+    public static void SaveHeroData()
+    {
+        if (null != GameMgr.Instance.MainEntity)
+        {
+            if (GetHeroData(AppConst.KeyScore) < GameMgr.Instance.MainEntity.Attribute.Score)
+            {
+                PlayerPrefs.SetInt(AppConst.KeyScore, GameMgr.Instance.MainEntity.Attribute.Score);
+            }
+
+            if (GetHeroData(AppConst.KeyKilled) < GameMgr.Instance.MainEntity.KillCount)
+            {
+                PlayerPrefs.SetInt(AppConst.KeyKilled, GameMgr.Instance.MainEntity.KillCount);
+            }
+
+            if (GetHeroData(AppConst.KeyCoin) < GameMgr.Instance.MainEntity.Attribute.Money)
+            {
+                PlayerPrefs.SetInt(AppConst.KeyCoin, GameMgr.Instance.MainEntity.Attribute.Money);
+            }
+
+            if (GetHeroData(AppConst.KeyBeKilled) < GameMgr.Instance.MainEntity.BeKillCount)
+            {
+                PlayerPrefs.SetInt(AppConst.KeyBeKilled, GameMgr.Instance.MainEntity.BeKillCount);
+            }
+
+            PlayerPrefs.Save();
+        }
+    }
+
+    public static int GetHeroData(string key)
+    {
+        return PlayerPrefs.GetInt(key, 0);
+    }
+
+
+    public static void SaveHeroName(string name)
+    {
+        if (string.IsNullOrEmpty(name))
+            return;
+        PlayerPrefs.SetString(AppConst.RoleName, name);
+        PlayerPrefs.Save();
+    }
+
+    public static string ReadHeroName()
+    {
+        return PlayerPrefs.GetString(AppConst.RoleName, string.Empty);
+    }
+
+    public static HashSet<int> ReadHeroSkin()
+    {
+        string skins = PlayerPrefs.GetString(AppConst.RoleSkin, string.Empty);
+        HashSet<int> set = new HashSet<int>();
+        if (!string.IsNullOrEmpty(skins))
+        {
+            string[] strs = skins.Split('|');
+            foreach (string s in strs)
+            {
+                int result = -1;
+                if (int.TryParse(s, out result))
+                {
+                    if (!set.Contains(result))
+                    {
+                        set.Add(result);
+                    }
+                }
+            }
+        }
+        return set;
+    }
+
+
+    public static void SaveHeroSkin(HashSet<int> skins)
+    {
+        if (skins.Count == 0)
+            return;
+
+        int idx = 0;
+        System.Text.StringBuilder s = new System.Text.StringBuilder();
+
+        foreach (int key in skins)
+        {
+            idx++;
+            if (idx == skins.Count)
+            {
+                s.Append(key);
+            }
+            else
+            {
+                s.Append(key);
+                s.Append('|');
+            }
+
+        }
+        Debug.LogError("skin:" + s.ToString());
+        PlayerPrefs.SetString(AppConst.RoleSkin, s.ToString());
+        PlayerPrefs.Save();
     }
 }

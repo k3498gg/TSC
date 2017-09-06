@@ -8,6 +8,10 @@ public enum WindowID
     WindowID_Invaild = 0,
     WindowID_FirstUI,
     WindowID_MainUI,
+    WindowID_Shopping,
+    WindowID_Bag,
+    WindowID_Setting,
+    WindowID_Confirm,
 
     //WindowID_Rank,          // 排行榜界面
     //WindowID_Rank_Detail,   // 排行榜详情界面

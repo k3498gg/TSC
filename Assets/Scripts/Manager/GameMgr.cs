@@ -12,7 +12,7 @@ public class GameMgr : MonoBehaviour
     private Transform m_obstacleRoot;
     private Transform m_particleRoot;
     private int mapId;
-    private bool isEnterGame = true;
+    private bool isEnterGame = false;
     private static GameMgr instance;
 
     private Entity m_MainEntity; //主角
@@ -136,7 +136,8 @@ public class GameMgr : MonoBehaviour
         m_itemRoot = m_self.Find("ItemRoot");
         m_entityRoot = m_self.Find("EntityRoot");
         ObstacleRoot = m_self.Find("ObstacleRoot");
-        LoadTemplate();
+        BeginGame();
+        //LoadTemplate();
     }
 
     //加载模板数据
@@ -171,19 +172,18 @@ public class GameMgr : MonoBehaviour
         Util.Init<NameInfo>(path);
 
         Util.InitMap(path + "map.bin");
-
+        Debug.LogError("Load Lanague");
         //初始化常量表数据
         AppConst.InitConstData();
-        //MapId = 2;
-        //InitMap();
-        //CreateEntity();
-        //UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
-        //StartCoroutine(CreateNetEntity());
-        BeginGame();
+
+        //BeginGame();
     }
 
     public void BeginGame()
     {
+        if (IsEnterGame)
+            return;
+        IsEnterGame = true;
         TSCData.Instance.Clear();
         MapId = 2;
         InitMap();
@@ -191,7 +191,7 @@ public class GameMgr : MonoBehaviour
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
         UIManager.Instance.HideWindow(WindowID.WindowID_FirstUI);
         StartCoroutine(CreateNetEntity());
-        IsEnterGame = true;
+
     }
 
     void InitMap()

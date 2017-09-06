@@ -1225,7 +1225,15 @@ public class NetEntity : IEntity
                     }
                     else
                     {
-                        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                        if (GameMgr.Instance.MainEntity.IsForceDrag)
+                        {
+                            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
+                        }
+                        else
+                        {
+                            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                        }
+                        //GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
                     }
                 }
                 else
@@ -1251,7 +1259,15 @@ public class NetEntity : IEntity
                     }
                     else
                     {
-                        GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                        if (GameMgr.Instance.MainEntity.IsForceDrag)
+                        {
+                            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Walk);
+                        }
+                        else
+                        {
+                            GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
+                        }
+                        //GameMgr.Instance.MainEntity.EndCurrentStateToOtherState(RoleStateID.Idle);
                     }
                     //EndCurrentStateToOtherState(StateID.Walk);
                 }
@@ -1261,6 +1277,7 @@ public class NetEntity : IEntity
 
     public void Clear()
     {
+        DespawnerHUDName();
         RoleModel = null;
         ArpgAnimatContorller.animator = null;
         KillCount = 0;

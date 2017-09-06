@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LanguageMgr : Singleton<LanguageMgr>
 {
-    public string GetText(int key,params object[] param)
+    public string GetText(int key,params string[] param)
     {
         LanTxtInfo txtInfo = InfoMgr<LanTxtInfo>.Instance.GetInfo(key);
         if (null != txtInfo)
@@ -12,12 +12,15 @@ public class LanguageMgr : Singleton<LanguageMgr>
             if(param.Length >0)
             {
                return string.Format(txtInfo.text, param);
+            }else
+            {
+                return txtInfo.text;
             }
         }
         return key.ToString();
     }
 
-    public string GetSurText(int key,params object[] param)
+    public string GetSurText(int key,params string[] param)
     {
         LanSurInfo txtInfo = InfoMgr<LanSurInfo>.Instance.GetInfo(key);
         if (null != txtInfo)
@@ -26,6 +29,7 @@ public class LanguageMgr : Singleton<LanguageMgr>
             {
                 return string.Format(txtInfo.text, param);
             }
+            return txtInfo.text;
         }
         return key.ToString();
     }

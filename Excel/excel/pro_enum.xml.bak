@@ -97,7 +97,7 @@
 		<filed name="CONST_RELIVE_RADOM_PARAM1"		value="36"   desc="复活积分随机参数1"  />
 		<filed name="CONST_RELIVE_RADOM_PARAM2"		value="37"   desc="复活积分随机参数2"  />
 		<filed name="CONST_ITEM_DROP_PARAM1"		value="36"   desc="死亡道具随机范围参数1"  />
-		<filed name="CONST_ITEM_DROP_PARAM2"		value="37"   desc="复活积分随机参数2"  />
+		<filed name="CONST_ITEM_DROP_PARAM2"		value="37"   desc="死亡道具随机范围参数2"  />
     </enum> 
 
 
@@ -145,6 +145,24 @@
 		<field name="Collision_ITEM"     		value="2"   desc="道具" />
 		<field name="Collision_OBSTACLE"     	value="3"   desc="障碍物" />
 		<field name="Collision_NOTHING"     	value="4"   desc="自动停止" />
+    </enum>
+
+	<enum name="ShopItemType"			target_name="ShopInfo" desc="装备类型" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="ShopItem_ALL"				value="1"   desc="所有装备" />
+		<field name="ShopItem_TAO"     			value="2"   desc="套装" />
+		<field name="ShopItem_TIGER"     		value="3"   desc="老虎" />
+		<field name="ShopItem_STICK"     		value="4"   desc="棒子" />
+		<field name="ShopItem_CHICK"     		value="5"   desc="鸡" />
+    </enum>
+
+	<enum name="MoneyType"			target_name="ShopInfo" desc="装备类型" >
+		<field name="NONE"						value="0"   desc="" />
+		<field name="MoneyType_COIN"			value="1"   desc="金币" />
+		<field name="MoneyType_DIAMAND"     	value="2"   desc="钻石" />
+		<field name="ShopItem_TIGER"     		value="3"   desc="老虎" />
+		<field name="ShopItem_STICK"     		value="4"   desc="棒子" />
+		<field name="ShopItem_CHICK"     		value="5"   desc="鸡" />
     </enum>
 
 </Project>
