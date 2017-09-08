@@ -814,8 +814,8 @@ public class NetEntity : IEntity
                     NpcControl.SetTransition(Transition.CrashPlayer, this);
                     break;
                 case StateID.Dead:
-                    NpcControl.SetTransition(Transition.Dead, this);
                     ItemDropMgr.Instance.DropRareItem(CacheModel.position, Attribute.Score, GameMgr.Instance.ItemRoot);
+                    NpcControl.SetTransition(Transition.Dead, this);
                     break;
             }
         }

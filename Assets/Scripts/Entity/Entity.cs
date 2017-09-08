@@ -728,8 +728,8 @@ public class Entity : IEntity
                     RoleEntityControl.SetTransition(RoleTransition.CrashPlayer, this);
                     break;
                 case RoleStateID.Dead:
-                    RoleEntityControl.SetTransition(RoleTransition.Dead, this);
                     ItemDropMgr.Instance.DropRareItem(CacheModel.position, Attribute.Score, GameMgr.Instance.ItemRoot);
+                    RoleEntityControl.SetTransition(RoleTransition.Dead, this);
                     break;
             }
         }
