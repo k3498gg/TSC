@@ -1,14 +1,14 @@
 animatorinfo.bin|625
 animatortransfer.bin|228
 animatortransinfo.bin|738
-constinfo.bin|515
+constinfo.bin|526
 effectinfo.bin|52
 equipinfo.bin|2020
 fashioninfo.bin|100
 heroinfo.bin|918
 itemeffectinfo.bin|132
 iteminfo.bin|316
-lansurinfo.bin|278
+lansurinfo.bin|424
 lantxtinfo.bin|1287
 levelinfo.bin|247
 map.bin|144977

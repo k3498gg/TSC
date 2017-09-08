@@ -45,8 +45,9 @@ public enum ConstType
     CONST_RELIVE_PARAM2 = 35,  //复活积分参数2
     CONST_RELIVE_RADOM_PARAM1 = 36,  //复活积分随机参数1
     CONST_RELIVE_RADOM_PARAM2 = 37,  //复活积分随机参数2
-    CONST_ITEM_DROP_PARAM1 = 36,  //死亡道具随机范围参数1
-    CONST_ITEM_DROP_PARAM2 = 37,  //死亡道具随机范围参数2
+    CONST_ITEM_DROP_PARAM1 = 38,  //死亡道具随机范围参数1
+    CONST_ITEM_DROP_PARAM2 = 39,  //死亡道具随机范围参数2
+    CONST_TIME_TOTAL = 40,  //单局开局持续时间
 };
 
 // 碰撞停止类型

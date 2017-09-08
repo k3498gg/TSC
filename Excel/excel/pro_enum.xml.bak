@@ -96,8 +96,9 @@
 		<filed name="CONST_RELIVE_PARAM2"			value="35"   desc="复活积分参数2"  />
 		<filed name="CONST_RELIVE_RADOM_PARAM1"		value="36"   desc="复活积分随机参数1"  />
 		<filed name="CONST_RELIVE_RADOM_PARAM2"		value="37"   desc="复活积分随机参数2"  />
-		<filed name="CONST_ITEM_DROP_PARAM1"		value="36"   desc="死亡道具随机范围参数1"  />
-		<filed name="CONST_ITEM_DROP_PARAM2"		value="37"   desc="死亡道具随机范围参数2"  />
+		<filed name="CONST_ITEM_DROP_PARAM1"		value="38"   desc="死亡道具随机范围参数1"  />
+		<filed name="CONST_ITEM_DROP_PARAM2"		value="39"   desc="死亡道具随机范围参数2"  />
+		<filed name="CONST_TIME_TOTAL"				value="40"   desc="单局开局时间"  />
     </enum> 
 
 
@@ -160,9 +161,6 @@
 		<field name="NONE"						value="0"   desc="" />
 		<field name="MoneyType_COIN"			value="1"   desc="金币" />
 		<field name="MoneyType_DIAMAND"     	value="2"   desc="钻石" />
-		<field name="ShopItem_TIGER"     		value="3"   desc="老虎" />
-		<field name="ShopItem_STICK"     		value="4"   desc="棒子" />
-		<field name="ShopItem_CHICK"     		value="5"   desc="鸡" />
     </enum>
 
 </Project>

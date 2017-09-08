@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class AppConst
 {
+    public static int MainSceneIndex = 1;
     public static string First = "first";
     public static bool DebugMode = true;                       //调试模式
     public static string AppName = "Self";                       //应用程序名称
@@ -63,6 +64,7 @@ public class AppConst
             { WindowID.WindowID_Bag, "BagUI" },
             { WindowID.WindowID_Setting, "SettingUI" },
             { WindowID.WindowID_Confirm, "ConfirmUI" },
+            { WindowID.WindowID_Over, "OverUI" },
         };
 
     public static string AppContentPath
@@ -138,6 +140,8 @@ public class AppConst
 
     public static float DropItemRangeParam1;
     public static float DropItemRangeParam2;
+
+    public static float TimerTotal;
 
 
     public static void InitConstData()
@@ -237,6 +241,9 @@ public class AppConst
         DropItemRangeParam1 = float.Parse(DropItemRangeParam1Info.data) / AppConst.factor;
         ConstInfo DropItemRangeParam2Info = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_ITEM_DROP_PARAM2);
         DropItemRangeParam2 = float.Parse(DropItemRangeParam2Info.data) / AppConst.factor;
+
+        ConstInfo TimerTotalInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_TIME_TOTAL);
+        TimerTotal = float.Parse(TimerTotalInfo.data);
     }
 
     public static void Clear()

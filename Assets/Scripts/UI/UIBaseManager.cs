@@ -12,10 +12,10 @@ public abstract class UIBaseManager : UnitySingleton<UIBaseManager>
     private Stack<BackWindowSequenceData> backSequence;
     protected int managedWindowId = 0;
 
-    // 当前显示活跃界面
-    protected UIBaseWindow curShownNormalWindow = null;
-    // 上一活跃界面
-    protected UIBaseWindow lastShownNormalWindow = null;
+    //// 当前显示活跃界面
+    //protected UIBaseWindow curShownNormalWindow = null;
+    //// 上一活跃界面
+    //protected UIBaseWindow lastShownNormalWindow = null;
 
 
     protected Dictionary<WindowID, UIBaseWindow> AllWindows
@@ -107,12 +107,12 @@ public abstract class UIBaseManager : UnitySingleton<UIBaseManager>
     {
         baseWindow.ShowWindow();
         shownWindows[id] = baseWindow;
-        if (baseWindow.windowData.windowType == UIWindowType.Normal)
-        {
-            // 改变当前显示Normal窗口
-            lastShownNormalWindow = curShownNormalWindow;
-            curShownNormalWindow = baseWindow;
-        }
+        //if (baseWindow.windowData.windowType == UIWindowType.Normal)
+        //{
+        //    // 改变当前显示Normal窗口
+        //    lastShownNormalWindow = curShownNormalWindow;
+        //    curShownNormalWindow = baseWindow;
+        //}
     }
 
     public void ClearBackSequence()

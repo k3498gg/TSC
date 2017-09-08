@@ -76,6 +76,7 @@ public class UIManager : UIBaseManager
         AddWindowInControl(WindowID.WindowID_Bag);
         AddWindowInControl(WindowID.WindowID_Setting);
         AddWindowInControl(WindowID.WindowID_Confirm);
+        AddWindowInControl(WindowID.WindowID_Over);
     }
 
     public override void ShowWindow(WindowID id)

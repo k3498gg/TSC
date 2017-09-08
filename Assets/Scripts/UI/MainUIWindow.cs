@@ -19,6 +19,9 @@ public class MainUIWindow : UIBaseWindow
     private UIDead m_UIDead;
     private float updateRankInterval = 1.5f;
     private UIRanking m_ranking;
+    private Text m_timer;
+    private float cutTimer = 0;
+    private bool isTimer = false;
 
 
     public EffectType EffType
@@ -31,6 +34,19 @@ public class MainUIWindow : UIBaseWindow
         set
         {
             m_EffectType = value;
+        }
+    }
+
+    public bool IsTimer
+    {
+        get
+        {
+            return isTimer;
+        }
+
+        set
+        {
+            isTimer = value;
         }
     }
 
@@ -55,7 +71,7 @@ public class MainUIWindow : UIBaseWindow
         m_Joystick = cache.Find("Joystick").GetComponent<TCKJoystick>();
         m_UIDead = cache.Find("Dead").GetComponent<UIDead>();
         m_ranking = cache.Find("ScrollView").GetComponent<UIRanking>();
-
+        m_timer = cache.Find("Timer/Text").GetComponent<Text>();
 
         m_skills = new Transform[2];
         m_btnImage = new Image[2];
@@ -107,20 +123,60 @@ public class MainUIWindow : UIBaseWindow
 
     private void OnEnable()
     {
-        //EventCenter.Instance.Register<Event_StopSkill>(StopSkill);
-        //EventCenter.Instance.Register<Event_StopAcct>(StopAcct);
-        //EventCenter.Instance.Register<Event_OpenAcct>(OpenAcct);
         EventCenter.Instance.Register<Event_RoleDead>(RoleDead);
         BindStickEvt();
+        cutTimer = 30;// AppConst.TimerTotal;
+        IsTimer = true;
     }
 
     private void OnDisable()
     {
-        //EventCenter.Instance.Unregister<Event_StopSkill>(StopSkill);
-        //EventCenter.Instance.Unregister<Event_StopAcct>(StopAcct);
-        //EventCenter.Instance.Unregister<Event_OpenAcct>(OpenAcct);
         EventCenter.Instance.Unregister<Event_RoleDead>(RoleDead);
         UnBindStickEvt();
+    }
+
+    void UpdateTimer()
+    {
+        if (IsTimer)
+        {
+            cutTimer -= Time.unscaledDeltaTime;
+            m_timer.text = TimerFormat(cutTimer);
+            if (cutTimer <= 0)
+            {
+                TimerIsOver();
+            }
+        }
+    }
+
+    void TimerIsOver()
+    {
+        if(IsTimer)
+        {
+            IsTimer = false;
+            Debuger.LogError(cutTimer + "  GAME OVER!!!");
+            cutTimer = AppConst.TimerTotal;
+            UIManager.Instance.ShowWindow(WindowID.WindowID_Over);
+
+            Util.SaveHeroData();
+            GameMgr.Instance.StopAllCoroutines();
+            GameMgr.Instance.IsEnterGame = false;
+            Timer.Instance.Clear();
+            TSCData.Instance.Clear();
+            PoolMgr.Instance.DespawnerAll();
+            GameMgr.Instance.MainEntity.Clear();
+            AppConst.Clear();
+            UIManager.Instance.HideWindow(WindowID.WindowID_FirstUI);
+            UIManager.Instance.HideWindow(WindowID.WindowID_MainUI);
+        }
+    }
+
+    string TimerFormat(float time)
+    {
+        int minite = (int)time / 60;
+
+        int second = (int)time % 60;
+
+        return minite + ":" + second;
     }
 
     void RoleDead(object o, Event_RoleDead evt)
@@ -237,9 +293,13 @@ public class MainUIWindow : UIBaseWindow
             return;
         }
 
+        UpdateTimer();
         RecoverEnergy();
         UpdateRanking(Time.unscaledDeltaTime);
     }
+
+
+
 
     void RecoverEnergy()
     {

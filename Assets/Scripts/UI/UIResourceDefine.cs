@@ -12,6 +12,7 @@ public enum WindowID
     WindowID_Bag,
     WindowID_Setting,
     WindowID_Confirm,
+    WindowID_Over,
 
     //WindowID_Rank,          // 排行榜界面
     //WindowID_Rank_Detail,   // 排行榜详情界面

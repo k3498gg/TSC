@@ -144,6 +144,7 @@ public class UIShopInfo : UIBaseWindow
     void Close(GameObject go)
     {
         m_group.SetAllTogglesOff();
+        UIManager.Instance.ShowWindow(WindowID.WindowID_FirstUI);
         UIManager.Instance.HideWindow(WindowID.WindowID_Shopping);
     }
 

@@ -13,6 +13,11 @@ public class UIDead : MonoBehaviour
     private bool init = false;
     private string TimerDataId = string.Empty;
 
+    private void OnDisable()
+    {
+        HideDeadUI();
+    }
+
     void Init()
     {
         if (init)
@@ -93,7 +98,7 @@ public class UIDead : MonoBehaviour
         UIManager.Instance.ShowWindow(WindowID.WindowID_FirstUI);
         UIManager.Instance.HideWindow(WindowID.WindowID_MainUI);
      
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(AppConst.MainSceneIndex);
     }
 
     void HeroRelive(GameObject go)
