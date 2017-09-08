@@ -769,6 +769,7 @@ public class Entity : IEntity
     {
         init = false;
         Attribute.Hp = 0;
+        CalculateScore();
         UpdateCharacControllerActive(false);
         ArpgAnimatContorller.Die = true;
         DespawnerHUDName();
@@ -784,7 +785,8 @@ public class Entity : IEntity
             EventCenter.Instance.Publish<Event_RoleDead>(null, new Event_RoleDead(false));
             InitEntity(Occupation, HeroId);
             Attribute.Hp = Attribute.MaxHp;
-            CalculateScore();
+            UpdateModelScale();
+            //CalculateScore();
             EndCurrentStateToOtherState(RoleStateID.Idle);
             Vector3 location = GameMgr.Instance.RandomLocation();
             CacheModel.position = location;
@@ -800,7 +802,7 @@ public class Entity : IEntity
         if (Attribute.Score != score)
         {
             Attribute.Score = score;
-            UpdateModelScale();
+            //UpdateModelScale();
         }
         Attribute.Level = Attribute.Level < 0 ? 0 : Attribute.Level;
     }

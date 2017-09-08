@@ -695,6 +695,7 @@ public class NetEntity : IEntity
         ArpgAnimatContorller.Die = true;
         Timer.Instance.AddTimer(2, 1, true, RemoveBody);
         DespawnerHUDName();
+        CalculateScore();
     }
 
     void DespawnerHUDName()
@@ -712,7 +713,8 @@ public class NetEntity : IEntity
         Protect();
         CacheModel.gameObject.SetActive(true);
         InitEntity(Occupation, HeroId);
-        CalculateScore();
+        UpdateModelScale();
+        //CalculateScore();
         ArpgAnimatContorller.Reset();
         EndCurrentStateToOtherState(StateID.Idle);
         CreateHUDName();
@@ -725,7 +727,7 @@ public class NetEntity : IEntity
         if (Attribute.Score != score)
         {
             Attribute.Score = score;
-            UpdateModelScale();
+            //UpdateModelScale();
         }
         Attribute.Level = Attribute.Level < 0 ? 0 : Attribute.Level;
     }
