@@ -332,7 +332,7 @@ public class Entity : IEntity
         }
         InitCharactor(go);
     }
-
+     
 
     //进入换职业状态
     public void SwitchOtherOccp()
