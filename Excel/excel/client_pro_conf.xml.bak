@@ -126,21 +126,23 @@
 		<field	column="名字"		name="name" 		type="String"   />
 	</entry>
 
-	<entry target_name="ShopInfo" xls_file="S商城表.xlsx" sheet_name="商城表">
+	<entry target_name="ShopInfo" xls_file="Z装备表.xlsx" sheet_name="装备">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
 		<field	column="名字"		name="nameId" 		type="Number"   />
 		<field	column="ICON"		name="icon" 		type="String"   />
 		<field	column="模型ID"		name="modelId" 		type="Number"   />
+		<field	column="是否免费"   name="isFree" 		type="Number"   />
 		<field	column="金币类型"	name="priceType" 	type="Number"   />
 		<field	column="价格"		name="price" 		type="Number"   />
 		<field	column="装备类型"	name="equipType" 	type="Number"   />
+		<field	column="套装ID"		name="fashionId" 	type="Number"   />
 	</entry>
 
 
-	<entry target_name="FashionInfo" xls_file="S商城表.xlsx" sheet_name="套装">
+	<entry target_name="FashionInfo" xls_file="Z装备表.xlsx" sheet_name="套装">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
 		<field	column="老虎"		name="tigerId" 		type="Number"   />
-		<field	column="棒子"		name="stickId" 		type="String"   />
+		<field	column="棒子"		name="stickId" 		type="Number"   />
 		<field	column="鸡"			name="chickId" 		type="Number"   />
 	</entry>
 </Project>

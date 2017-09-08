@@ -249,7 +249,15 @@ public class NetEntity : IEntity
         Id = (idx + 1);
         int occp = idx % 3;
         OccpType oc = (OccpType)(occp + 1);
-        InitEntity(oc, Util.GetHeroIdByOccp(oc));
+        int equipID = Util.GetNetEquipIdByOccp(oc);
+        EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(equipID);
+        if (null == info)
+        {
+            Debuger.LogError("裝備ID錯誤:" + equipID);
+            return;
+        }
+
+        InitEntity(oc, info.modelId);
         RandomName();
         EndDeadState();
         ResetAttribute();
@@ -326,12 +334,12 @@ public class NetEntity : IEntity
         effect2 = InfoMgr<EffectInfo>.Instance.GetInfo(skill2.effectID);
     }
 
-    GameObject SpawnerGO(int heroId, Vector3 v)
-    {
-        HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
-        GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, v, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
-        return go;
-    }
+    //GameObject SpawnerGO(int heroId, Vector3 v)
+    //{
+    //    HeroInfo heroInfo = InfoMgr<HeroInfo>.Instance.GetInfo(heroId);
+    //    GameObject go = ResourcesMgr.Instance.Spawner(heroInfo.model, v, ResourceType.RESOURCE_ENTITY, transform);// ResourcesMgr.Instance.Instantiate(prefab);
+    //    return go;
+    //}
 
     void ChangeOccp(OccpType occp, int heroId)
     {
@@ -608,8 +616,11 @@ public class NetEntity : IEntity
         if (IsAlive)
         {
             OccpType occp = Util.GetNextOccp(Occupation);
-            int id = Util.GetHeroIdByOccp(occp);
-            ChangeOccp(occp, id);
+            int id = Util.GetNetEquipIdByOccp(occp);
+            EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(id);
+            if (null == info)
+                return;
+            ChangeOccp(occp, info.modelId);
             UpdateModelScale();
             EndCurrentStateToOtherState(StateID.Idle);
         }
@@ -743,10 +754,10 @@ public class NetEntity : IEntity
         {
             Attribute.CurPhy = Attribute.MaxPhy;
         }
-        
+
         UpdateModelScale();
 
-        if(TSCData.Instance.EntityInfoDic.ContainsKey(Id))
+        if (TSCData.Instance.EntityInfoDic.ContainsKey(Id))
         {
             TSCData.Instance.EntityInfoDic[Id].Socre = Attribute.Score;
             TSCData.Instance.EntityInfoDic[Id].Killcount = KillCount;

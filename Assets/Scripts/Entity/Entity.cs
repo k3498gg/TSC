@@ -339,7 +339,13 @@ public class Entity : IEntity
     {
         OccpType occp = Util.GetNextOccp(occupation);
         int id = Util.GetHeroIdByOccp(occp);
-        ChangeOccp(occp, id);
+        EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(id);
+        if(null == info)
+        {
+            Debuger.LogError("裝備表錯誤ID："+id);
+            return;
+        }
+        ChangeOccp(occp, info.modelId);
         UpdateModelScale();
     }
 

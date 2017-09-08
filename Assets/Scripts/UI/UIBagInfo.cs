@@ -6,15 +6,27 @@ using UnityEngine.UI;
 public class UIBagInfo : UIBaseWindow
 {
     private Toggle[] m_toggles;
-    private ScrollRect m_scrollRect;
+    //private ScrollRect m_scrollRect;
     private ToggleGroup m_group;
 
     private bool init = false;
     private GameObject m_close;
-    private List<UIShopItem> m_shopItems;
-    private List<ShopInfo> m_shops;
+    private List<UIBagItem> m_bagItems;
     private GameObject m_prefab;
     private Transform m_parent;
+    private List<int> skins;
+
+    public List<int> Skins
+    {
+        get
+        {
+            if (null == skins)
+            {
+                skins = new List<int>();
+            }
+            return skins;
+        }
+    }
 
     void Awake()
     {
@@ -55,9 +67,8 @@ public class UIBagInfo : UIBaseWindow
         }
 
         UGUIEventListener.Get(m_close).onClick = Close;
-        m_shopItems = new List<UIShopItem>();
-        m_shops = new List<ShopInfo>(InfoMgr<ShopInfo>.Instance.Dict.Values);
-        m_prefab = ResourcesMgr.Instance.LoadResource<GameObject>(ResourceType.RESOURCE_UI, AppConst.ShopItem);
+        m_bagItems = new List<UIBagItem>();
+        m_prefab = ResourcesMgr.Instance.LoadResource<GameObject>(ResourceType.RESOURCE_UI, AppConst.BagItem);
     }
 
     void OnValueChanged(bool isOn)
@@ -72,9 +83,84 @@ public class UIBagInfo : UIBaseWindow
         }
     }
 
+    private void OnEnable()
+    {
+        HashSet<int> sets = TSCData.Instance.GetSkin();
+        Skins.Clear();
+        Skins.AddRange(sets);
+        Skins.Sort();
+        m_toggles[0].isOn = true;
+    }
+
+    public void Refresh(int tigerId,int stickId,int chickId, int fashionId)
+    {
+        for (int i = 0; i < m_bagItems.Count; i++)
+        {
+            if (m_bagItems[i].Id == tigerId || m_bagItems[i].Id == stickId || m_bagItems[i].Id == chickId || m_bagItems[i].Id == fashionId)
+            {
+                m_bagItems[i].SetUseState(true);
+            }
+            else
+            {
+                m_bagItems[i].SetUseState(false);
+            }
+        }
+    }
+
     void ShowBagItemByType(ShopItemType type)
     {
-       
+        if (null != m_prefab)
+        {
+            if (Skins.Count > m_bagItems.Count)
+            {
+                for (int i = m_bagItems.Count; i < Skins.Count; i++)
+                {
+                    GameObject uiObject = (GameObject)GameObject.Instantiate(m_prefab);
+                    uiObject.transform.SetParent(m_parent);
+                    uiObject.transform.localScale = Vector3.one;
+                    UIBagItem item = Util.AddComponent<UIBagItem>(uiObject);
+                    m_bagItems.Add(item);
+                }
+            }
+
+
+            for (int i = 0; i < m_bagItems.Count; i++)
+            {
+                if (i < Skins.Count)
+                {
+                    int val = Skins[i];
+                    EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(val);
+                    if (null != info)
+                    {
+                        if (type == ShopItemType.ShopItem_ALL)
+                        {
+                            m_bagItems[i].SetBagItemInfo(info);
+                            Util.SetActive(m_bagItems[i].Cache, true);
+                        }
+                        else
+                        {
+                            if (info.equipType + 1 == (int)type)
+                            {
+                                m_bagItems[i].SetBagItemInfo(info);
+                                Util.SetActive(m_bagItems[i].Cache, true);
+                            }
+                            else
+                            {
+                                Util.SetActive(m_bagItems[i].Cache, false);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Util.SetActive(m_bagItems[i].Cache, false);
+                    }
+                }
+                else
+                {
+                    Util.SetActive(m_bagItems[i].Cache, false);
+                }
+            }
+        }
     }
 
     void Close(GameObject go)

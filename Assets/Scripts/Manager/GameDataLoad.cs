@@ -150,11 +150,12 @@ public class GameDataLoad : MonoBehaviour
         Util.Init<ItemEffectInfo>(path);
         Util.Init<ObstacleInfo>(path);
         Util.Init<NameInfo>(path);
-        Util.Init<ShopInfo>(path);
+        Util.Init<EquipInfo>(path);
         Util.Init<FashionInfo>(path);
         Util.InitMap(path + "map.bin");
         TSCData.Instance.ReadHeroName();
         TSCData.Instance.ReadHeroSkin();
+        Util.GetHeroUseSkin();
 
         AppConst.InitConstData();
         Debug.LogError("Start Game");

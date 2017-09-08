@@ -244,6 +244,11 @@ public class TSCData : Singleton<TSCData>
         return m_skinSet.Contains(skinId);
     }
 
+    public HashSet<int> GetSkin()
+    {
+        return m_skinSet;
+    }
+
 
     public void Clear()
     {
@@ -312,6 +317,9 @@ public class TSCData : Singleton<TSCData>
 public class RoleData
 {
     private string name;
+    private int keyTigerID;
+    private int keyStickID;
+    private int keyChickID;
 
     public string Name
     {
@@ -323,6 +331,54 @@ public class RoleData
         set
         {
             name = value;
+        }
+    }
+
+    public int KeyTigerID
+    {
+        get
+        {
+            return keyTigerID;
+        }
+
+        set
+        {
+            if (keyTigerID != value)
+            {
+                keyTigerID = value;
+            }
+        }
+    }
+
+    public int KeyStickID
+    {
+        get
+        {
+            return keyStickID;
+        }
+
+        set
+        {
+            if (keyStickID != value)
+            {
+                keyStickID = value;
+            }
+        }
+    }
+
+    public int KeyChickID
+    {
+        get
+        {
+            return keyChickID;
+        }
+
+        set
+        {
+            if (keyChickID != value)
+            {
+                keyChickID = value;
+            }
         }
     }
 }

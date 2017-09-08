@@ -449,21 +449,42 @@ public class Util
 
     public static int GetHeroIdByOccp(OccpType occp)
     {
-        int id = 1;
+        int id = -1;
         switch (occp)
         {
             case OccpType.Occp_TIGER:
-                id = 1;
+                id = TSCData.Instance.Role.KeyTigerID;
                 break;
             case OccpType.Occp_STICK:
-                id = 2;
+                id = TSCData.Instance.Role.KeyStickID;
                 break;
             case OccpType.Occp_CHICK:
-                id = 3;
+                id = TSCData.Instance.Role.KeyChickID;
                 break;
         }
         return id;
     }
+
+
+    public static int GetNetEquipIdByOccp(OccpType occp)
+    {
+        int id = -1;
+        switch (occp)
+        {
+            case OccpType.Occp_TIGER:
+                id = TSCData.Instance.Role.KeyTigerID;
+                break;
+            case OccpType.Occp_STICK:
+                id = TSCData.Instance.Role.KeyStickID;
+                break;
+            case OccpType.Occp_CHICK:
+                id = TSCData.Instance.Role.KeyChickID;
+                break;
+        }
+        return id;
+    }
+
+
 
     public static int GetDropRareIndex()
     {
@@ -565,10 +586,87 @@ public class Util
                 s.Append(key);
                 s.Append('|');
             }
-
         }
-        Debug.LogError("skin:" + s.ToString());
+
         PlayerPrefs.SetString(AppConst.RoleSkin, s.ToString());
         PlayerPrefs.Save();
+    }
+
+
+    public static void SaveHeroUseSkin()
+    {
+        PlayerPrefs.SetInt(AppConst.KeyTSkin, TSCData.Instance.Role.KeyTigerID);
+        PlayerPrefs.SetInt(AppConst.KeySSkin, TSCData.Instance.Role.KeyStickID);
+        PlayerPrefs.SetInt(AppConst.KeyCSkin, TSCData.Instance.Role.KeyChickID);
+        PlayerPrefs.Save();
+    }
+
+    public static void GetHeroUseSkin()
+    {
+        TSCData.Instance.Role.KeyTigerID = PlayerPrefs.GetInt(AppConst.KeyTSkin);
+        TSCData.Instance.Role.KeyStickID = PlayerPrefs.GetInt(AppConst.KeySSkin);
+        TSCData.Instance.Role.KeyChickID = PlayerPrefs.GetInt(AppConst.KeyCSkin);
+
+        if (TSCData.Instance.Role.KeyTigerID == 0 || TSCData.Instance.Role.KeyStickID == 0 || TSCData.Instance.Role.KeyChickID == 0)
+        {
+            foreach (KeyValuePair<int, EquipInfo> kv in InfoMgr<EquipInfo>.Instance.Dict)
+            {
+                if (kv.Value.isFree == 1)
+                {
+                    if (TSCData.Instance.Role.KeyTigerID == 0)
+                    {
+                        if ((kv.Value.equipType + 1) == (int)ShopItemType.ShopItem_TIGER)
+                        {
+                            TSCData.Instance.Role.KeyTigerID = kv.Key;
+                            TSCData.Instance.AddSkin(kv.Key);
+                        }
+                    }
+
+                    if (TSCData.Instance.Role.KeyStickID == 0)
+                    {
+                        if ((kv.Value.equipType + 1) == (int)ShopItemType.ShopItem_STICK)
+                        {
+                            TSCData.Instance.Role.KeyStickID = kv.Key;
+                            TSCData.Instance.AddSkin(kv.Key);
+                        }
+                    }
+
+                    if (TSCData.Instance.Role.KeyChickID == 0)
+                    {
+                        if ((kv.Value.equipType + 1) == (int)ShopItemType.ShopItem_CHICK)
+                        {
+                            TSCData.Instance.Role.KeyChickID = kv.Key;
+                            TSCData.Instance.AddSkin(kv.Key);
+                        }
+                    }
+                }
+            }
+            int fasionId = GetFashionClothId(TSCData.Instance.Role.KeyTigerID, TSCData.Instance.Role.KeyStickID, TSCData.Instance.Role.KeyChickID);
+
+            if (-1 != fasionId)
+            {
+                TSCData.Instance.AddSkin(fasionId);
+            }
+            SaveHeroUseSkin();
+            TSCData.Instance.SaveHeroSkin();
+        }
+    }
+
+
+    public static int GetFashionClothId(int tigerId, int stickId, int chickId)
+    {
+        int fashionId = -1;
+        EquipInfo info1 = InfoMgr<EquipInfo>.Instance.GetInfo(tigerId);
+        EquipInfo info2 = InfoMgr<EquipInfo>.Instance.GetInfo(stickId);
+        EquipInfo info3 = InfoMgr<EquipInfo>.Instance.GetInfo(chickId);
+
+        if (null != info1 && null != info2 && null != info3)
+        {
+            if (info1.fashionId == info2.fashionId && info1.fashionId == info3.fashionId)
+            {
+                fashionId = info1.fashionId;
+            }
+        }
+        return fashionId;
     }
 }

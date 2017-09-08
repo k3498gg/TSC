@@ -48,10 +48,12 @@ public class AppConst
     public static string KeyBeKilled = "KeyBeKilled";
     public static string KeyCoin = "KeyCoin";
     public static string ShopItem = "ShopItem";
+    public static string BagItem = "BagItem";
     public static string RoleName = "KeyRName";
-    public static string RoleSkin = "KeyRSkin";
-
-
+    public static string RoleSkin = "KeyRSkin"; //擁有的皮膚key
+    public static string KeyTSkin = "RoleTSkin";//使用的皮膚key
+    public static string KeySSkin = "RoleSSkin";//使用的皮膚key
+    public static string KeyCSkin = "RoleCSkin";//使用的皮膚key
 
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {

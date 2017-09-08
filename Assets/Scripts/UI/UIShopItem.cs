@@ -55,11 +55,13 @@ public class UIShopItem : MonoBehaviour
         //UGUIEventListener.Get(Cache).onClick = OpenItemDetail;
     }
 
-    public void SetShopItemInfo(ShopInfo shopInfo)
+    public void SetShopItemInfo(EquipInfo shopInfo)
     {
+        if (null == shopInfo)
+            return;
         Init();
         Id = shopInfo.id;
-        m_price.text = shopInfo.price.ToString();
+        m_price.text = LanguageMgr.Instance.GetText(shopInfo.nameId) + ":" + shopInfo.price.ToString();
         m_image.sprite = null;
         SetLock(TSCData.Instance.ContainSkin(Id));
     }
@@ -80,7 +82,7 @@ public class UIShopItem : MonoBehaviour
         }
         else
         {
-            ShopInfo info = InfoMgr<ShopInfo>.Instance.GetInfo(Id);
+            EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(Id);
             UIManager.Instance.ShowWindow(WindowID.WindowID_Confirm);
             UIConfirm confirm = UIManager.Instance.GetGameWindowScript<UIConfirm>(WindowID.WindowID_Confirm);
             string context = LanguageMgr.Instance.GetText(19, info.price.ToString(), LanguageMgr.Instance.GetText(info.nameId));
@@ -96,7 +98,8 @@ public class UIShopItem : MonoBehaviour
         if (!TSCData.Instance.ContainSkin(Id))
         {
             SetLock(true);
-            ShopInfo info = InfoMgr<ShopInfo>.Instance.GetInfo(Id);
+            TSCData.Instance.AddSkin(Id);
+            EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(Id);
             if (info.equipType + 1 == (int)ShopItemType.ShopItem_TAO)
             {
                 FashionInfo fashionInfo = InfoMgr<FashionInfo>.Instance.GetInfo(Id);
@@ -107,10 +110,23 @@ public class UIShopItem : MonoBehaviour
                     TSCData.Instance.AddSkin(fashionInfo.chickId);
                 }
             }
+            else
+            {
+                if (info.fashionId != 0 || info.fashionId != -1)
+                {
+                    FashionInfo fashionInfo = InfoMgr<FashionInfo>.Instance.GetInfo(info.fashionId);
+                    if (TSCData.Instance.ContainSkin(fashionInfo.tigerId)
+                        && TSCData.Instance.ContainSkin(fashionInfo.stickId)
+                        && TSCData.Instance.ContainSkin(fashionInfo.chickId))
+                    {
+                        TSCData.Instance.AddSkin(info.fashionId);
+                    }
+                }
+            }
 
-            TSCData.Instance.AddSkin(Id);
+
             UIShopInfo shop = UIManager.Instance.GetGameWindowScript<UIShopInfo>(WindowID.WindowID_Shopping);
-            if(null != shop)
+            if (null != shop)
             {
                 shop.BuySkinLock();
             }

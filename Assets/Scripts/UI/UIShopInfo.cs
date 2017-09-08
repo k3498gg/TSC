@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIShopInfo : UIBaseWindow
 {
     private Toggle[] m_toggles;
-    private ScrollRect m_scrollRect;
+    //private ScrollRect m_scrollRect;
     private ToggleGroup m_group;
 
     private bool init = false;
@@ -14,7 +14,7 @@ public class UIShopInfo : UIBaseWindow
     private GameObject m_close;
     private ShopItemType m_lastSelectType = ShopItemType.NONE;
     private List<UIShopItem> m_shopItems;
-    private List<ShopInfo> m_shops;
+    private List<EquipInfo> m_shops;
     private GameObject m_prefab;
     private Transform m_parent;
 
@@ -58,7 +58,7 @@ public class UIShopInfo : UIBaseWindow
 
         UGUIEventListener.Get(m_close).onClick = Close;
         m_shopItems = new List<UIShopItem>();
-        m_shops = new List<ShopInfo>(InfoMgr<ShopInfo>.Instance.Dict.Values);
+        m_shops = new List<EquipInfo>(InfoMgr<EquipInfo>.Instance.Dict.Values);
         m_prefab = ResourcesMgr.Instance.LoadResource<GameObject>(ResourceType.RESOURCE_UI, AppConst.ShopItem);
     }
 
@@ -76,10 +76,15 @@ public class UIShopInfo : UIBaseWindow
 
     private void OnEnable()
     {
+        m_shops.Sort(delegate (EquipInfo info1, EquipInfo info2) {
+            return 
+            ((TSCData.Instance.ContainSkin(info2.id) ? 1 : -1 )* info2.id).CompareTo((TSCData.Instance.ContainSkin(info1.id) ? 1 : -1 )* info1.id);
+
+        });
         m_toggles[0].isOn = true;
     }
 
-    void ShowItem(List<ShopInfo> shopInfos, ShopItemType type)
+    void ShowItem(List<EquipInfo> shopInfos, ShopItemType type)
     {
         if (null != m_prefab)
         {
