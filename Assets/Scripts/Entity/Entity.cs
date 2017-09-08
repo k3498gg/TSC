@@ -500,7 +500,14 @@ public class Entity : IEntity
     internal void CreateEntity()
     {
         int occp = UnityEngine.Random.Range(1, (int)OccpType.Occp_MAZ);
-        InitEntity((OccpType)occp, Util.GetHeroIdByOccp((OccpType)occp));
+        int id = Util.GetHeroIdByOccp((OccpType)occp);
+        EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(id);
+        if(null == info)
+        {
+            Debuger.LogError("错误装备ID："+ id);
+            return;
+        }
+        InitEntity((OccpType)occp, info.modelId);
         ResetAttribute();
         Protect();
         EndCurrentStateToOtherState(RoleStateID.Idle);
