@@ -21,7 +21,7 @@ public class Entity : IEntity
     //当前节点模型Entity
     private Transform cacheModel;
 
-    private Vector3 hitDir ;
+    private Vector3 hitDir;
 
     private bool isRecoverEnergy = false;
 
@@ -268,7 +268,7 @@ public class Entity : IEntity
 
         set
         {
-            if(isForceDrag != value)
+            if (isForceDrag != value)
             {
                 isForceDrag = value;
             }
@@ -332,7 +332,7 @@ public class Entity : IEntity
         }
         InitCharactor(go);
     }
-     
+
 
     //进入换职业状态
     public void SwitchOtherOccp()
@@ -340,9 +340,9 @@ public class Entity : IEntity
         OccpType occp = Util.GetNextOccp(occupation);
         int id = Util.GetHeroIdByOccp(occp);
         EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(id);
-        if(null == info)
+        if (null == info)
         {
-            Debuger.LogError("裝備表錯誤ID："+id);
+            Debuger.LogError("裝備表錯誤ID：" + id);
             return;
         }
         ChangeOccp(occp, info.modelId);
@@ -502,9 +502,9 @@ public class Entity : IEntity
         int occp = UnityEngine.Random.Range(1, (int)OccpType.Occp_MAZ);
         int id = Util.GetHeroIdByOccp((OccpType)occp);
         EquipInfo info = InfoMgr<EquipInfo>.Instance.GetInfo(id);
-        if(null == info)
+        if (null == info)
         {
-            Debuger.LogError("错误装备ID："+ id);
+            Debuger.LogError("错误装备ID：" + id);
             return;
         }
         InitEntity((OccpType)occp, info.modelId);
@@ -541,12 +541,14 @@ public class Entity : IEntity
     {
         Attribute.Score = 0;
         Attribute.Level = 0;
-        Attribute.Money = 0;
+        //Attribute.Money = 0;
         if (null != RoleModel)
         {
             RoleModel.localScale = Vector3.one;
+            RoleModel.localRotation = Quaternion.Euler(0, RoleModel.localRotation.y, 0);
         }
         CharacController.radius = AppConst.hitRadio;
+        CharacController.center = new Vector3(0, 1, 0);
     }
 
     void UpdateModelScale()
@@ -556,7 +558,9 @@ public class Entity : IEntity
             Attribute.Level = GetCurrentLevel();
             LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
             RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
+            RoleModel.localRotation = Quaternion.Euler(0, RoleModel.localRotation.y, 0);
             CharacController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
+            CharacController.center = new Vector3(0, level.offset * 0.0001f, 0);
         }
     }
 
@@ -823,7 +827,7 @@ public class Entity : IEntity
         {
             State = StateType.NONE;
         }
-         protectTimerID = string.Empty;
+        protectTimerID = string.Empty;
     }
 
     public void StopAccelerate()
@@ -918,7 +922,7 @@ public class Entity : IEntity
 
         DetectItem();
 
-     //   ItemDropMgr.Instance.DropRareItem(CacheModel.position, 1, 2, 1, GameMgr.Instance.ItemRoot);
+        //   ItemDropMgr.Instance.DropRareItem(CacheModel.position, 1, 2, 1, GameMgr.Instance.ItemRoot);
     }
 
     private void OnControllerColliderHit(ControllerColliderHit hit)
@@ -955,7 +959,7 @@ public class Entity : IEntity
                     {
                         if (entity.IsUsingSkill())
                         {
-                            HitDir =  CacheModel.position - entity.CacheModel.position ;
+                            HitDir = CacheModel.position - entity.CacheModel.position;
                             EndCurrentStateToOtherState(RoleStateID.CrashPlayer);
                         }
                         else
@@ -985,7 +989,7 @@ public class Entity : IEntity
                     {
                         if (IsUsingSkill())
                         {
-                            entity.HitDir =  entity.CacheModel.position - CacheModel.position ;
+                            entity.HitDir = entity.CacheModel.position - CacheModel.position;
                             entity.EndCurrentStateToOtherState(StateID.CrashPlayer);
                         }
                         else
@@ -1019,7 +1023,7 @@ public class Entity : IEntity
                             entity.EndCurrentStateToOtherState(StateID.Walk);
                         }
 
-                        if(IsForceDrag)
+                        if (IsForceDrag)
                         {
                             EndCurrentStateToOtherState(RoleStateID.Walk);
                         }

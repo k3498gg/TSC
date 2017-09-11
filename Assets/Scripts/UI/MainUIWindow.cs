@@ -125,7 +125,7 @@ public class MainUIWindow : UIBaseWindow
     {
         EventCenter.Instance.Register<Event_RoleDead>(RoleDead);
         BindStickEvt();
-        cutTimer = 30;// AppConst.TimerTotal;
+        cutTimer = AppConst.TimerTotal;
         IsTimer = true;
     }
 
@@ -160,6 +160,11 @@ public class MainUIWindow : UIBaseWindow
             Util.SaveHeroData();
             GameMgr.Instance.StopAllCoroutines();
             GameMgr.Instance.IsEnterGame = false;
+            if(null != m_UIDead)
+            {
+                m_UIDead.HideDeadUI();
+            }
+          
             Timer.Instance.Clear();
             TSCData.Instance.Clear();
             PoolMgr.Instance.DespawnerAll();

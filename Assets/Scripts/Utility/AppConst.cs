@@ -55,7 +55,7 @@ public class AppConst
     public static string KeyTSkin = "RoleTSkin";//使用的皮膚key
     public static string KeySSkin = "RoleSSkin";//使用的皮膚key
     public static string KeyCSkin = "RoleCSkin";//使用的皮膚key
-
+    //public static string KeyCoin = "RoleCoin";//金币Key
     public static Dictionary<WindowID, string> windowPrefabPath = new Dictionary<WindowID, string>()
         {
             { WindowID.WindowID_MainUI, "MainUI" },
@@ -142,6 +142,7 @@ public class AppConst
     public static float DropItemRangeParam2;
 
     public static float TimerTotal;
+    public static int NameLenth = 8;
 
 
     public static void InitConstData()
@@ -244,6 +245,10 @@ public class AppConst
 
         ConstInfo TimerTotalInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_TIME_TOTAL);
         TimerTotal = float.Parse(TimerTotalInfo.data);
+
+        ConstInfo NameLenthInfo = InfoMgr<ConstInfo>.Instance.GetInfo((int)ConstType.CONST_NAME_LENTH);
+        NameLenth = int.Parse(NameLenthInfo.data);
+        
     }
 
     public static void Clear()

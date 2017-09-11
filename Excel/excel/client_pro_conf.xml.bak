@@ -114,6 +114,7 @@
 		<field	column="缩放比例"	name="scale" 		type="Number"   />
 		<field	column="积分"		name="score" 		type="Number"   />
 		<field	column="状态"		name="icon" 		type="String"   />
+		<field	column="偏移"		name="offset" 		type="String"   />
 	</entry>
 
 	<entry target_name="ObstacleInfo" xls_file="Z障碍物表.xlsx" sheet_name="障碍物">
@@ -126,7 +127,7 @@
 		<field	column="名字"		name="name" 		type="String"   />
 	</entry>
 
-	<entry target_name="ShopInfo" xls_file="Z装备表.xlsx" sheet_name="装备">
+	<entry target_name="EquipInfo" xls_file="Z装备表.xlsx" sheet_name="装备">
 		<field	column="编号"		name="id"			type="Number"	key="True" />
 		<field	column="名字"		name="nameId" 		type="Number"   />
 		<field	column="ICON"		name="icon" 		type="String"   />

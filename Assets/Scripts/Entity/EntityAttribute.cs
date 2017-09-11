@@ -11,7 +11,7 @@ public class EntityAttribute : Attributes
     private int maxPhy; //最大体力
     private int costPhySpeed; //每秒消耗的体力
     private int[] skills;
-    private int money;
+    //private int money;
 
     public float Atkdis
     {
@@ -85,18 +85,18 @@ public class EntityAttribute : Attributes
             curPhy = value + AppConst.randomValue;
         }
     }
-    public int Money
-    {
-        get
-        {
-            return money - AppConst.randomValue;
-        }
+    //public int Money
+    //{
+    //    get
+    //    {
+    //        return money - AppConst.randomValue;
+    //    }
 
-        set
-        {
-            money = value + AppConst.randomValue;
-        }
-    }
+    //    set
+    //    {
+    //        money = value + AppConst.randomValue;
+    //    }
+    //}
 
     public float Basedis
     {

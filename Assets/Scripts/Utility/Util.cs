@@ -510,9 +510,9 @@ public class Util
                 PlayerPrefs.SetInt(AppConst.KeyKilled, GameMgr.Instance.MainEntity.KillCount);
             }
 
-            if (GetHeroData(AppConst.KeyCoin) < GameMgr.Instance.MainEntity.Attribute.Money)
+            if (GetHeroData(AppConst.KeyCoin) < TSCData.Instance.Role.Money)
             {
-                PlayerPrefs.SetInt(AppConst.KeyCoin, GameMgr.Instance.MainEntity.Attribute.Money);
+                PlayerPrefs.SetInt(AppConst.KeyCoin, TSCData.Instance.Role.Money);
             }
 
             if (GetHeroData(AppConst.KeyBeKilled) < GameMgr.Instance.MainEntity.BeKillCount)
@@ -527,6 +527,12 @@ public class Util
     public static int GetHeroData(string key)
     {
         return PlayerPrefs.GetInt(key, 0);
+    }
+
+    public static void SaveHeroCoin(string key,int value)
+    {
+        PlayerPrefs.SetInt(key, value);
+        PlayerPrefs.Save();
     }
 
 

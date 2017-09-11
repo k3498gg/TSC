@@ -295,9 +295,33 @@ public class TSCData : Singleton<TSCData>
         Util.SaveHeroName(Role.Name);
     }
 
-    public void ReadHeroName()
+    void ReadHeroName()
     {
         Role.Name = Util.ReadHeroName();
+    }
+
+    void ReadHeroCoin()
+    {
+        Role.Money = Util.GetHeroData(AppConst.KeyCoin);
+    }
+
+    void ReadHeroMaxScore()
+    {
+        Role.MaxScore = Util.GetHeroData(AppConst.KeyScore);
+    }
+
+    void ReadHeroMaxKillCount()
+    {
+        Role.MaxKillCount = Util.GetHeroData(AppConst.KeyKilled);
+    }
+
+    public void ReadHeroData()
+    {
+        ReadHeroMaxKillCount();
+        ReadHeroMaxScore();
+        ReadHeroCoin();
+        ReadHeroName();
+        ReadHeroSkin();
     }
 
     public void SaveHeroSkin()
@@ -305,7 +329,7 @@ public class TSCData : Singleton<TSCData>
         Util.SaveHeroSkin(m_skinSet);
     }
 
-    public void ReadHeroSkin()
+    void ReadHeroSkin()
     {
         m_skinSet.Clear();
         m_skinSet = Util.ReadHeroSkin();
@@ -320,6 +344,10 @@ public class RoleData
     private int keyTigerID;
     private int keyStickID;
     private int keyChickID;
+    private int money;
+    private int maxScore;
+    private int maxKillCount;
+
 
     public string Name
     {
@@ -379,6 +407,45 @@ public class RoleData
             {
                 keyChickID = value;
             }
+        }
+    }
+
+    public int Money
+    {
+        get
+        {
+            return money - AppConst.randomValue;
+        }
+
+        set
+        {
+            money = value + AppConst.randomValue;
+        }
+    }
+
+    public int MaxScore
+    {
+        get
+        {
+            return maxScore;
+        }
+
+        set
+        {
+            maxScore = value;
+        }
+    }
+
+    public int MaxKillCount
+    {
+        get
+        {
+            return maxKillCount;
+        }
+
+        set
+        {
+            maxKillCount = value;
         }
     }
 }

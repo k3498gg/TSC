@@ -191,7 +191,6 @@ public class GameMgr : MonoBehaviour
         UIManager.Instance.ShowWindow(WindowID.WindowID_MainUI);
         UIManager.Instance.HideWindow(WindowID.WindowID_FirstUI);
         StartCoroutine(CreateNetEntity());
-
     }
 
     void InitMap()

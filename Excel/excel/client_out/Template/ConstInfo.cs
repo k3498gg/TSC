@@ -48,6 +48,7 @@ public enum ConstType
     CONST_ITEM_DROP_PARAM1 = 38,  //死亡道具随机范围参数1
     CONST_ITEM_DROP_PARAM2 = 39,  //死亡道具随机范围参数2
     CONST_TIME_TOTAL = 40,  //单局开局持续时间
+    CONST_NAME_LENTH = 41,  //固定名字长度
 };
 
 // 碰撞停止类型

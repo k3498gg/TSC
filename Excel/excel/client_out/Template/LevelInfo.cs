@@ -12,6 +12,7 @@ public class LevelInfo: IInfo
     public int scale; // 缩放比例
     public int score; // 积分
     public string icon; // 状态
+    public int offset; // 偏移
 
     public  void Load(BinaryReader reader)
     {
@@ -25,6 +26,8 @@ public class LevelInfo: IInfo
  
         int iconLen = reader.ReadInt32();
         icon = System.Text.Encoding.UTF8.GetString(reader.ReadBytes(iconLen));
+ 
+        offset = reader.ReadInt32();
  
     }
 

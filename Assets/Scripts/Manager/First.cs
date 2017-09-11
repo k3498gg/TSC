@@ -50,6 +50,7 @@ public class First : UIBaseWindow
         m_killed = cache.Find("Score/Value1").GetComponent<Text>();
         m_skin = cache.Find("Skin/Image").GetComponent<Image>();
 
+        m_InputField.characterLimit = AppConst.NameLenth;
         m_InputField.onValueChanged.AddListener(OnValueChanged);
         UGUIEventListener.Get(m_Btn.gameObject).onClick = EnterGame;
         UGUIEventListener.Get(m_SetBtn.gameObject).onClick = OpenSetting;
@@ -82,17 +83,17 @@ public class First : UIBaseWindow
     {
         if(null != m_coin)
         {
-            m_coin .text = Util.GetHeroData(AppConst.KeyCoin).ToString();
+            m_coin .text = TSCData.Instance.Role.Money.ToString();
         }
 
         if(null != m_score)
         {
-            m_score.text = Util.GetHeroData(AppConst.KeyScore).ToString();
+            m_score.text = TSCData.Instance.Role.MaxScore.ToString();
         }
 
         if(null != m_killed)
         {
-            m_killed.text = Util.GetHeroData(AppConst.KeyKilled).ToString();
+            m_killed.text = TSCData.Instance.Role.MaxKillCount.ToString();
         }
 
         if(null != m_skin)

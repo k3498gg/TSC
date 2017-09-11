@@ -298,12 +298,13 @@ public class NetEntity : IEntity
     {
         Attribute.Score = 0;
         Attribute.Level = 0;
-        Attribute.Money = 0;
+        //Attribute.Money = 0;
         if (null != RoleModel)
         {
             RoleModel.localScale = Vector3.one;
         }
         CharaController.radius = AppConst.hitRadio;
+        CharaController.center = new Vector3(0, 1, 0);
     }
 
     void InitEntity(OccpType occp, int heroId)
@@ -742,7 +743,9 @@ public class NetEntity : IEntity
             Attribute.Level = GetCurrentLevel();
             LevelInfo level = InfoMgr<LevelInfo>.Instance.GetInfo(Attribute.Level);
             RoleModel.localScale = Vector3.one * (1.0f * level.scale / AppConst.factor);
+            RoleModel.localRotation = Quaternion.Euler(0, RoleModel.localRotation.eulerAngles.y, 0);
             CharaController.radius = AppConst.hitRadio * level.hitscale / AppConst.factor;
+            CharaController.center = new Vector3(0, level.offset * 0.0001f, 0);
             //}
         }
     }

@@ -153,8 +153,7 @@ public class GameDataLoad : MonoBehaviour
         Util.Init<EquipInfo>(path);
         Util.Init<FashionInfo>(path);
         Util.InitMap(path + "map.bin");
-        TSCData.Instance.ReadHeroName();
-        TSCData.Instance.ReadHeroSkin();
+        TSCData.Instance.ReadHeroData();
         Util.GetHeroUseSkin();
 
         AppConst.InitConstData();

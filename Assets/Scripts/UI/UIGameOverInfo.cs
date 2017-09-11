@@ -54,6 +54,33 @@ public class UIGameOverInfo : UIBaseWindow
     }
 
 
+    void SetRewardData()
+    {
+        Init();
+        if (null != GameMgr.Instance.MainEntity)
+        {
+            m_score.text = (GameMgr.Instance.MainEntity.Attribute.Score).ToString();
+            int gain = GameMgr.Instance.MainEntity.Attribute.Score / 100;
+            m_coin.text = gain.ToString();
+            int rand = Random.Range(1, 7);
+            m_factor.text = rand.ToString();
+            int total = rand * gain;
+            m_totalcoin.text = total.ToString();
+
+            if(total != 0)
+            {
+                TSCData.Instance.Role.Money += total;
+                Util.SaveHeroCoin(AppConst.KeyCoin, total);
+            }
+        }
+    }
+
+    private void OnEnable()
+    {
+        SetRewardData();
+    }
+
+
     void OpenShopUI(GameObject go)
     {
         UIManager.Instance.HideWindow(WindowID.WindowID_Over);
@@ -70,20 +97,21 @@ public class UIGameOverInfo : UIBaseWindow
 
     void AgainGame(GameObject go)
     {
-        //if (SceneManager.sc.buildIndex > 1)
-        //{
-        //    if (null == GameMgr.Instance)
-        //    {
-        //        GameObject prefab = ResourcesMgr.Instance.LoadResource<GameObject>(ResourceType.RESOURCE_MGR, "GameManager");
-        //        if (null != prefab)
-        //        {
-        //            GameObject.Instantiate(prefab);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        GameMgr.Instance.BeginGame();
-        //    }
-        //}
+        if (SceneManager.GetActiveScene().buildIndex > 1)
+        {
+            UIManager.Instance.HideWindow(WindowID.WindowID_Over);
+            if (null == GameMgr.Instance)
+            {
+                GameObject prefab = ResourcesMgr.Instance.LoadResource<GameObject>(ResourceType.RESOURCE_MGR, "GameManager");
+                if (null != prefab)
+                {
+                    GameObject.Instantiate(prefab);
+                }
+            }
+            else
+            {
+                GameMgr.Instance.BeginGame();
+            }
+        }
     }
 }

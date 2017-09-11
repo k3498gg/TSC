@@ -99,6 +99,7 @@
 		<filed name="CONST_ITEM_DROP_PARAM1"		value="38"   desc="死亡道具随机范围参数1"  />
 		<filed name="CONST_ITEM_DROP_PARAM2"		value="39"   desc="死亡道具随机范围参数2"  />
 		<filed name="CONST_TIME_TOTAL"				value="40"   desc="单局开局持续时间"  />
+		<filed name="CONST_NAME_LENTH"				value="41"   desc="固定名字长度"  />
     </enum> 
 
 

@@ -1,7 +1,7 @@
 animatorinfo.bin|625
 animatortransfer.bin|228
 animatortransinfo.bin|738
-constinfo.bin|526
+constinfo.bin|536
 effectinfo.bin|52
 equipinfo.bin|2020
 fashioninfo.bin|100
@@ -10,7 +10,7 @@ itemeffectinfo.bin|132
 iteminfo.bin|316
 lansurinfo.bin|424
 lantxtinfo.bin|1287
-levelinfo.bin|247
+levelinfo.bin|283
 map.bin|144977
 nameinfo.bin|26066
 obstacleinfo.bin|36
