@@ -503,11 +503,13 @@ public class Util
             if (GetHeroData(AppConst.KeyScore) < GameMgr.Instance.MainEntity.Attribute.Score)
             {
                 PlayerPrefs.SetInt(AppConst.KeyScore, GameMgr.Instance.MainEntity.Attribute.Score);
+                TSCData.Instance.Role.MaxScore = GameMgr.Instance.MainEntity.Attribute.Score;
             }
 
             if (GetHeroData(AppConst.KeyKilled) < GameMgr.Instance.MainEntity.KillCount)
             {
                 PlayerPrefs.SetInt(AppConst.KeyKilled, GameMgr.Instance.MainEntity.KillCount);
+                TSCData.Instance.Role.MaxKillCount = GameMgr.Instance.MainEntity.KillCount;
             }
 
             if (GetHeroData(AppConst.KeyCoin) < TSCData.Instance.Role.Money)

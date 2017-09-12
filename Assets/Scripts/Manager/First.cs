@@ -66,7 +66,7 @@ public class First : UIBaseWindow
 
     void OpenSetting(GameObject go)
     {
-        Debug.LogError("打开设置");
+        UIManager.Instance.ShowWindow(WindowID.WindowID_Setting);
     }
 
     void OpenBag(GameObject go)

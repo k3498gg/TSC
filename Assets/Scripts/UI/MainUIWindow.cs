@@ -154,10 +154,9 @@ public class MainUIWindow : UIBaseWindow
         {
             IsTimer = false;
             Debuger.LogError(cutTimer + "  GAME OVER!!!");
+            Util.SaveHeroData();
             cutTimer = AppConst.TimerTotal;
             UIManager.Instance.ShowWindow(WindowID.WindowID_Over);
-
-            Util.SaveHeroData();
             GameMgr.Instance.StopAllCoroutines();
             GameMgr.Instance.IsEnterGame = false;
             if(null != m_UIDead)
